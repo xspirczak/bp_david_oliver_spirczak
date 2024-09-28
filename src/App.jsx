@@ -49,7 +49,7 @@ export default function App() {
     <>
       <TodoForm onSubmit={addTodo}/>
       <div className="max-w-sm mx-auto">
-        <h1 className="mb-5">Todo List</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-500 dark:text-gray-300 p-4">Todo List</h1>
         <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} />
       </div>
 
