@@ -1,6 +1,6 @@
 import { TodoItem } from "./TodoItem"
 
-export function TodoList({todos, toggleTodo, deleteTodo}) {
+export function TodoList({todos, toggleTodo, deleteTodo, updateTodoTitle}) {
     return (
     <ul>
           {/*Short Circuiting - when there is no todos it renders the text...*/}
@@ -17,6 +17,7 @@ export function TodoList({todos, toggleTodo, deleteTodo}) {
                 key={todo.id}
                 toggleTodo={toggleTodo}
                 deleteTodo={deleteTodo}
+                updateTodoTitle={updateTodoTitle}
                 /* {...todo} or -> 
                 {
                 id={todo.id} 

@@ -1,13 +1,17 @@
 import { useState } from "react"
 
 export function TodoForm({onSubmit}) {
+
     const [newItem, setNewItem] = useState("")
 
+    // handling of adding new todo item
     function handleSubmit(e) {
-        e.preventDefault()
+        e.preventDefault() // prevents the page from refreshing
 
+        // checking if the new item is empty string
         if (newItem === "")
             return 
+
 
         onSubmit(newItem)        
 
