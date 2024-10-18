@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function Keys() {
+  let counter = 0;
   const [keys, setKeys] = useState([]);
 
   useEffect(() => {
@@ -17,10 +18,11 @@ function Keys() {
 
   return (
     <div>
-      <h1>Keys List</h1>
+      <h1>Keys List: </h1>
       <ul>
         {keys.map(key => (
           <li key={key._id}>
+            <p>{counter++}</p>
             <strong>Key:</strong> {key.key}
             <br />
             <strong>Values:</strong> {key.values.join(', ')}  {/* Display the array */}
