@@ -36,7 +36,7 @@ export default function Navbar() {
             <span className="sr-only">Substitution cipher key mapping webapp</span>
             <img
               alt=""
-              src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600"
+              src="#"
               className="h-8 w-auto"
             />
           </a>

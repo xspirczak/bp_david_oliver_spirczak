@@ -84,7 +84,7 @@ export default function JSONInputField() {
                             rows="6"
                             value={inputText}
                             onChange={handleTextChange}
-                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-4 resize-none"
+                            className="mt-1 block w-full border border-gray-400 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-4 resize-none"
                             placeholder='{
   "key": [
     { "keyName": "a", "values": ["#111", "#1", "#11"] },

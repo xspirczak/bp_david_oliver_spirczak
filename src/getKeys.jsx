@@ -7,7 +7,7 @@ function Keys() {
 
   useEffect(() => {
     // Fetch the keys collection from the backend API
-    axios.get('http://localhost:3000/api/keys')  // Adjust the port if needed
+    axios.get('http://localhost:3000/api/keys')
       .then(response => {
         setKeys(response.data);  // Set the response data to the keys state
       })
@@ -16,16 +16,21 @@ function Keys() {
       });
   }, []);
 
+  
   return (
-    <div>
-      <h1>Keys List: </h1>
-      <ul>
-        {keys.map(key => (
-          <li key={key._id}>
-            <p>{counter++}</p>
-            <strong>Key:</strong> {key.key}
-            <br />
-            <strong>Values:</strong> {key.values.join(', ')}  {/* Display the array */}
+    <div className="flex flex-col justify-center items-center">
+      <h1 className='text-2xl font-bold'>Key Lists: </h1>
+      <ul className='w-full flex flex-col justify-center items-center'>
+        {keys.map(keyData => (
+          <li key={keyData._id} className=' w-1/2 mb-4'>
+          <p className='font-bold text-lg'>Keyset {counter++}.</p>
+          <hr></hr>
+            {keyData.key.map((keyItem, index) => (
+              <div key={index} className=''>
+                <span className='font-bold'>Key: </span>{keyItem.keyName}<span className='font-bold'> - Values: </span>{keyItem.values.join(', ')}  {/* Display the values array */}
+                <br />
+              </div>
+            ))}
           </li>
         ))}
       </ul>
