@@ -25,7 +25,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="bg-white bg-gradient-to-r from-blue-500 to-cyan-200">
+    <header className="bg-gradient-to-r from-blue-500 to-cyan-200">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
         <div className="flex lg:flex-1">
           <NavLink to="/" className="text-white font-extrabold text-fontSize32">
@@ -61,9 +61,9 @@ export default function Navbar() {
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 hover:bg-custom-dark-blue-hover hover:border-custom-dark-blue-hover">
-            <a href="#" className="text-md font-semibold leading-6 text-white">
-              Log in
-            </a>
+            <NavLink to="/login" className="text-md font-semibold leading-6 text-white">
+              Prihlásiť sa
+            </NavLink>
           </div>
         </div>
       </nav>
@@ -105,10 +105,10 @@ export default function Navbar() {
                 </NavLink>
               </div>
               <div className="py-6">
-                 <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 w-20 flex justify-center">
-                    <a href="#" className="text-md font-semibold leading-6 text-white">
-                      Log in
-                    </a>
+                 <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 w-32 flex justify-center">
+                   <NavLink to="/login" className="text-md font-semibold leading-6 text-white">
+                     Prihlásiť sa
+                   </NavLink>
                 </div>
                 </div>
               </div>

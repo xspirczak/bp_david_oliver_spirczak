@@ -4,6 +4,7 @@ import {KeysPage} from './Pages/keys'
 import {DocumentsPage} from './Pages/documents'
 import {MappingPage} from './Pages/mapping'
 import {Layout} from './layout'
+import {LoginPage} from "./Pages/login";
 
 export default function App() {
 
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/keys" element={<KeysPage/>}/>
           <Route path="/documents" element={<DocumentsPage/>}/>
           <Route path="/mapping" element={<MappingPage/>}/>
+          <Route path="/login" element={<LoginPage/>}/>
         </Route>
       </Routes>
     </Router>

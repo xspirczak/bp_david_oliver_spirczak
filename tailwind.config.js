@@ -26,6 +26,8 @@ export default {
         'fontSize17' : '17px',
         'fontSize61' : '61px',
         'fontSize32' : '32px',
+        'fontSize24' : '24px',
+        'fontSize16' : '16px',
       }
     },
   },
