@@ -1,5 +1,10 @@
+import DocumentInputField from "../Components/DocumentInputField";
+import Documents  from "../getDocuments";
 export function DocumentsPage() {
     return (
-        <h1>Documents</h1>
+        <>
+        <DocumentInputField></DocumentInputField>
+        <Documents></Documents>
+        </>
     )
 }

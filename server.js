@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import Key from './models/Keys.js';
+import Document from './models/Documents.js';
 
 // Initialize app
 const app = express();
@@ -22,8 +23,7 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-
-
+//keys
 
 app.post('/api/keys', async (req, res) => {
   try {
@@ -49,11 +49,6 @@ app.post('/api/keys', async (req, res) => {
   }
 });
 
-
-
-
-
-
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
   res.status(500).send('Something went wrong.');
@@ -67,5 +62,41 @@ app.get('/api/keys', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+// documents
+
+app.post('/api/documents', async (req, res) => {
+  try {
+    
+    const { document } = req.body;
+
+    // Check if 'key' exists and is an array
+    if (!document  || typeof document != 'string') {
+      console.log('Invalid data format:', document ); // Log invalid format
+      return res.status(400).json({ error: 'Invalid key format. Expecting an array of strings.' });
+    }
+
+    // Save the key to the database
+    const newDocument = new Document({ document  });
+
+    const savedDocument = await newDocument.save(); // Await saving the document
+    console.log('New document saved to MongoDB:', savedDocument); // Log saved document
+    res.status(201).json(savedDocument); // Send a response with the created document
+  } catch (err) {
+    console.error('Error during document creation:', err.message); // Log the error message
+    res.status(500).json({ error: 'Server error: ' + err.message });
+  }
+});
+
+
+app.get('/api/documents', async (req, res) => {
+  try {
+    const documents = await Document.find();
+    res.json(documents); 
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
+});
+
 
 

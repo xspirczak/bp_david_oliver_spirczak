@@ -27,7 +27,7 @@ function Keys() {
           <hr></hr>
             {keyData.key.map((keyItem, index) => (
               <div key={index} className=''>
-                <span className='font-bold'>Key: </span>{keyItem.keyName}<span className='font-bold'> - Values: </span>{keyItem.values.join(', ')}  {/* Display the values array */}
+                <span className='font-bold'>Key: </span>{keyItem.keyName}<span className='font-bold'> - Values: </span>{keyItem.values.join(', ')}  
                 <br />
               </div>
             ))}
