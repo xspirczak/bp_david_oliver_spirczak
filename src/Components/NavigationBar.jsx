@@ -4,42 +4,33 @@ import { useState } from 'react'
 import {
   Dialog,
   DialogPanel,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
   Popover,
-  PopoverButton,
   PopoverGroup,
-  PopoverPanel,
 } from '@headlessui/react'
 import {
-  ArrowPathIcon,
   Bars3Icon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 
-import { Link } from 'react-router-dom'
+import {NavLink} from 'react-router-dom'
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  const getActiveStyles = ({isActive}) => {
+    return {
+      "textDecoration": isActive ? 'underline' : 'none',
+      "textUnderlineOffset": isActive ? '5px' : 'none'
+    }
+  }
+
   return (
-    <header className="bg-white">
+    <header className="bg-white bg-gradient-to-r from-blue-500 to-cyan-200">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
         <div className="flex lg:flex-1">
-          <a href="#" className="-m-1.5 p-1.5">
-            <span className="sr-only">Substitution cipher key mapping webapp</span>
-            <img
-              alt=""
-              src="#"
-              className="h-8 w-auto"
-            />
-          </a>
+          <NavLink to="/" className="text-white font-extrabold text-fontSize32">
+            Lorem
+          </NavLink>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -55,23 +46,25 @@ export default function Navbar() {
           <Popover className="relative">
           </Popover>
 
-          <Link to="/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-            Home
-          </Link>
-          <Link to="/mapping" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-            Mapping Tool
-          </Link>
-          <Link to="/keys" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-            Keys
-          </Link>
-          <Link to="/documents" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-            Documents
-          </Link>
+          <NavLink to="/" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
+            Domov
+          </NavLink>
+          <NavLink to="/mapping" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
+            Mapovanie
+          </NavLink>
+          <NavLink to="/keys" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
+            Kľúče
+          </NavLink>
+          <NavLink to="/documents" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
+            Dokumenty
+          </NavLink>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 hover:bg-custom-dark-blue-hover hover:border-custom-dark-blue-hover">
+            <a href="#" className="text-md font-semibold leading-6 text-white">
+              Log in
+            </a>
+          </div>
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -98,29 +91,28 @@ export default function Navbar() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <Link to="/" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                  Home
-                </Link>
-                <Link to="/mapping" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                  Mapping Tool
-                </Link>
-                <Link to="/keys" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                  Keys
-                </Link>
-                <Link to="/documents" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                  Documents
-                </Link>
+                <NavLink to="/" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                  Domov
+                </NavLink>
+                <NavLink to="/mapping" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                  Mapovanie
+                </NavLink>
+                <NavLink to="/keys" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                  Kľúče
+                </NavLink>
+                <NavLink to="/documents" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                  Dokumenty
+                </NavLink>
               </div>
               <div className="py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </a>
+                 <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 w-20 flex justify-center">
+                    <a href="#" className="text-md font-semibold leading-6 text-white">
+                      Log in
+                    </a>
+                </div>
+                </div>
               </div>
             </div>
-          </div>
         </DialogPanel>
       </Dialog>
     </header>
