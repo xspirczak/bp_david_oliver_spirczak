@@ -68,7 +68,7 @@ app.get('/api/keys', async (req, res) => {
 app.post('/api/documents', async (req, res) => {
   try {
     
-    const { document } = req.body;
+    const { document, name, description, language, country, year } = req.body;
 
     // Check if 'key' exists and is an array
     if (!document  || typeof document != 'string') {
@@ -77,7 +77,7 @@ app.post('/api/documents', async (req, res) => {
     }
 
     // Save the key to the database
-    const newDocument = new Document({ document  });
+    const newDocument = new Document({ document, name, description, language, country, year });
 
     const savedDocument = await newDocument.save(); // Await saving the document
     console.log('New document saved to MongoDB:', savedDocument); // Log saved document

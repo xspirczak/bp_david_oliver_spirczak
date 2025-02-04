@@ -10,6 +10,7 @@ export default {
         'custom-dark-blue' : '#212D40',
         'custom-dark-blue-hover' : '#364156',
         'custom-light-blue' : '#5EC9FF',
+        'custom-light-blue-hover' : "#95C2D1",
       },
       width: {
         '284' : '284px',
@@ -27,8 +28,10 @@ export default {
         'fontSize17' : '17px',
         'fontSize61' : '61px',
         'fontSize32' : '32px',
+        'fontSize48' : '48px',
         'fontSize24' : '24px',
         'fontSize16' : '16px',
+        'fontSize12' : '12px',
       }
     },
   },

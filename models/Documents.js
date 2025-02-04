@@ -1,11 +1,26 @@
 import mongoose from 'mongoose';
 
-// Define the schema for your 'documents' collection
+// Schema for 'documents' collection
 const DocumentSchema = new mongoose.Schema({
     document: {
         type: String,
-        required: true,  // Make this field required if necessary
+        required: true,
     },
+    name: {
+        type: String,
+    },
+    description: {
+        type: String,
+    },
+    language: {
+        type: String,
+    },
+    country: {
+        type: String,
+    },
+    year: {
+        type: Number,
+    }
 });
 
 // Create and export the model

@@ -12,7 +12,7 @@ export default function TitlePageInfo () {
                 <Link to="#" className="text-fontSize20 border border-custom-dark-blue bg-custom-dark-blue px-10 py-2 text-white rounded-full hover:bg-custom-dark-blue-hover hover:border-custom-dark-blue-hover">
                     Lorem
                 </Link>
-                <Link to="#" className="text-fontSize20 border border-custom-dark-blue px-10 py-2 rounded-full text-white ">
+                <Link to="#" className="text-fontSize20 border border-custom-dark-blue px-10 py-2 rounded-full text-custom-dark-blue ">
                     Lorem
                 </Link>
             </div>

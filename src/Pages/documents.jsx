@@ -1,10 +1,11 @@
 import DocumentInputField from "../Components/DocumentInputField";
-import Documents  from "../getDocuments";
+import Footer from "../Components/Footer.jsx";
+
 export function DocumentsPage() {
     return (
         <>
         <DocumentInputField></DocumentInputField>
-        <Documents></Documents>
+            <Footer></Footer>
         </>
     )
 }
