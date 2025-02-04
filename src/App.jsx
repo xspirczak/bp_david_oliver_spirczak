@@ -5,6 +5,7 @@ import {DocumentsPage} from './Pages/documents'
 import {MappingPage} from './Pages/mapping'
 import {Layout} from './layout'
 import {LoginPage} from "./Pages/login";
+import {RegisterPage} from "./Pages/register.jsx";
 
 export default function App() {
 
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/documents" element={<DocumentsPage/>}/>
           <Route path="/mapping" element={<MappingPage/>}/>
           <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/register" element={<RegisterPage/>}/>
         </Route>
       </Routes>
     </Router>

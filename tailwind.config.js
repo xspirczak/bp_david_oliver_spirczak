@@ -19,6 +19,7 @@ export default {
       },
       borderRadius: {
         '54' : '54px',
+        '91' : '91px',
       },
       fontSize: {
         'fontSize28' : '28px',

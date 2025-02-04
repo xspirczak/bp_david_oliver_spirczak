@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 
 export default function TitlePageBoxSection() {
     return (
-        <section className="py-20 bg-white grid justify-center gap-10 sm:flex">
+        <section className="py-20 bg-white grid justify-center gap-10 md:flex">
             <Link to="/mapping" className="px-6 border border-custom-light-blue rounded-54 text-center w-284 h-284 flex flex-col items-center justify-center hover:bg-blue-100">
                 <svg width="116" height="116" viewBox="0 0 116 116" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
