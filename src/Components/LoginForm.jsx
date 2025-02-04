@@ -3,6 +3,7 @@ import {NavLink} from "react-router-dom";
 export default function LoginForm() {
     function togglePasswordVisibility() {
         let e = document.getElementById("password")
+
         if (e.type === "password") {
             e.type = "text"
             e.placeholder = "password"
@@ -27,7 +28,7 @@ export default function LoginForm() {
                         </p>
                         <form className="space-y-4 md:space-y-6" action="#">
                             <div>
-                                <label htmlFor="email" className="block mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Email</label>
+                                <label htmlFor="email" className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Email</label>
                                 <div className="relative">
                                     <svg width="20" height="16" viewBox="0 0 20 16" fill="none" className="absolute top-4 left-3"
                                          xmlns="http://www.w3.org/2000/svg">

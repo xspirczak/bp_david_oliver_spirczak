@@ -1,8 +1,10 @@
 import {NavLink} from "react-router-dom";
 
 export default function RegisterForm() {
-    function togglePasswordVisibility() {
-        let e = document.getElementById("password")
+
+    const togglePasswordVisibility = (inputId) => {
+        let e = document.getElementById(inputId);
+
         if (e.type === "password") {
             e.type = "text"
             e.placeholder = "password"
@@ -10,7 +12,7 @@ export default function RegisterForm() {
             e.type = "password"
             e.placeholder = "••••••••"
         }
-    }
+    };
 
     return (
 
@@ -59,8 +61,8 @@ export default function RegisterForm() {
                                               d="M0 12.5C0 22.7937 2.20625 25 12.5 25C22.7937 25 25 22.7937 25 12.5C25 2.20625 22.7937 0 12.5 0C2.20625 0 0 2.20625 0 12.5ZM8.33335 16.6667C6.03218 16.6667 4.1667 14.8011 4.1667 12.5C4.1667 10.1988 6.03218 8.33335 8.33335 8.33335C10.2777 8.33335 11.911 9.66514 12.3708 11.4663C12.4131 11.461 12.4563 11.4584 12.5 11.4584H19.7917C20.3669 11.4584 20.8333 11.9247 20.8333 12.5V15.625C20.8333 16.2003 20.3669 16.6667 19.7917 16.6667C19.2164 16.6667 18.75 16.2003 18.75 15.625V13.5417H16.6667V14.5833C16.6667 15.1586 16.2003 15.625 15.625 15.625C15.0497 15.625 14.5833 15.1586 14.5833 14.5833V13.5417H12.5C12.4563 13.5417 12.4131 13.539 12.3708 13.5337C11.911 15.3349 10.2777 16.6667 8.33335 16.6667Z"
                                               fill="black"/>
                                     </svg>
-                                    <button type="button" className="absolute top-4 right-4"
-                                            onClick={togglePasswordVisibility}>
+                                    <button type="button" id="btnNewPassword" className="absolute top-4 right-4"
+                                            onClick={() => togglePasswordVisibility("newPassword")}>
                                         <svg width="14" height="12" viewBox="0 0 14 12" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -71,7 +73,7 @@ export default function RegisterForm() {
                                                 fill="black" fillOpacity="0.8"/>
                                         </svg>
                                     </button>
-                                    <input type="password" name="password" id="password" placeholder="••••••••"
+                                    <input type="password" name="newPassword" id="newPassword" placeholder="••••••••"
                                            className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                            required=""/>
 
@@ -93,8 +95,8 @@ export default function RegisterForm() {
                                               d="M0 12.5C0 22.7937 2.20625 25 12.5 25C22.7937 25 25 22.7937 25 12.5C25 2.20625 22.7937 0 12.5 0C2.20625 0 0 2.20625 0 12.5ZM8.33335 16.6667C6.03218 16.6667 4.1667 14.8011 4.1667 12.5C4.1667 10.1988 6.03218 8.33335 8.33335 8.33335C10.2777 8.33335 11.911 9.66514 12.3708 11.4663C12.4131 11.461 12.4563 11.4584 12.5 11.4584H19.7917C20.3669 11.4584 20.8333 11.9247 20.8333 12.5V15.625C20.8333 16.2003 20.3669 16.6667 19.7917 16.6667C19.2164 16.6667 18.75 16.2003 18.75 15.625V13.5417H16.6667V14.5833C16.6667 15.1586 16.2003 15.625 15.625 15.625C15.0497 15.625 14.5833 15.1586 14.5833 14.5833V13.5417H12.5C12.4563 13.5417 12.4131 13.539 12.3708 13.5337C11.911 15.3349 10.2777 16.6667 8.33335 16.6667Z"
                                               fill="black"/>
                                     </svg>
-                                    <button type="button" className="absolute top-4 right-4"
-                                            onClick={togglePasswordVisibility}>
+                                    <button type="button" id="btnNewPasswordRepeat" className="absolute top-4 right-4"
+                                            onClick={() => togglePasswordVisibility("newPasswordRepeat")}>
                                         <svg width="14" height="12" viewBox="0 0 14 12" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -105,7 +107,7 @@ export default function RegisterForm() {
                                                 fill="black" fillOpacity="0.8"/>
                                         </svg>
                                     </button>
-                                    <input type="password" name="password" id="password" placeholder="••••••••"
+                                    <input type="password" name="newPasswordRepeat" id="newPasswordRepeat" placeholder="••••••••"
                                            className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                            required=""/>
                                 </div>
