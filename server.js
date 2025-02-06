@@ -27,18 +27,20 @@ app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 app.post('/api/keys', async (req, res) => {
   try {
-    const { key } =  req.body;
+    const { key, name, description, country, year } =  req.body;
 
-    console.log(req.body);
+    console.log("SERVER: ", key, name, description, country, year);
 
     // Check if 'key' exists and is an array
-    if (!key || !Array.isArray(key)) {
+
+    console.log(key)
+    if (!key) {
       console.log('Invalid data format:', key); // Log invalid format
       return res.status(400).json({ error: 'Invalid key format. Expecting an array of strings.' });
     }
 
     // Save the key to the database
-    const newKey = new Key({ key });
+    const newKey = new Key({ key, name, description, country, year  });
 
     const savedKey = await newKey.save(); // Await saving the document
     console.log('New key saved to MongoDB:', savedKey); // Log saved document

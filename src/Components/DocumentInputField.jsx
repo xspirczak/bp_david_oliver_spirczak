@@ -1,18 +1,16 @@
 import  { useState } from 'react'
 
 export default function DocumentInputField() {
-    const [inputText, setInputText] = useState('');
     const [error, setError] = useState(''); // State to store the error message
     const [isValid, setIsValid] = useState(false); // State to store the JSON validation status
     const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
-
+    const [inputText, setInputText] = useState('');
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [language, setLanguage] = useState('');
-    const [country, setCountry] = useState('');
     const [year, setYear] = useState('');
-
+    const [country, setCountry] = useState("");
 
     const handleInputChange = (setter) => (event) => {
         setter(event.target.value);
@@ -60,7 +58,7 @@ export default function DocumentInputField() {
         }
 
 
-        console.log(name, description, language, country);
+        console.log("PRINT" ,name, description, language, country);
         const jsonData = {
             document: inputText,  // This is the plain text to be sent as JSON
             name,
@@ -70,7 +68,6 @@ export default function DocumentInputField() {
             year: year ? Number(year) : -1 // -1 when there is no year provided (so later I know  that are is no year provided, when displaying or filtering)
         };
 
-        console.log("jsonData: " + JSON.stringify(jsonData))
 
         try {
             // Use fetch with proper configuration
@@ -118,16 +115,6 @@ export default function DocumentInputField() {
             <div className="bg-white shadow-lg rounded-lg sm:p-6 p-2 w-11/12 max-w-4xl">
                 <form className="space-y-6" onSubmit={handleSubmit} encType="multipart/form-data">
 
-                    <div className="flex justify-center">
-                        <input
-                            type="file"
-                            accept='.txt'
-                            id="inputTxtFile"
-                            onChange={handleFileChange}
-                            className="ml-4 p-1 md:w-2/5 sm:w-2/3 w-5/6 text-fontSize12 md:text-fontSize16 text-custom-dark-blue file:text-custom-dark-blue focus:outline-custom-dark-blue-hover file:bg-custom-light-blue text-sm rounded-full leading-6 file:font-semibold file:border-none file:px-4 file:py-1 file:mr-6 file:rounded-full hover:file:bg-custom-light-blue-hover border border-custom-light-blue"
-                        />
-                    </div>
-
                     <div className="grid justify-center gap-6">
                         <div className="flex justify-center gap-6">
                             <div>
@@ -154,12 +141,14 @@ export default function DocumentInputField() {
                                        className="text-fontSize12 border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover block w-full p-2"
                                        placeholder="Jazyk dokumentu" required=""/>
                             </div>
+
+
                         </div>
                         <div className="flex justify-start gap-6">
                             <div>
                                 <label htmlFor="description"
                                        className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Popis</label>
-                                <textarea name="description" id="description" rows="4" cols="40" value={description}
+                                <textarea name="description" id="description" rows="4" cols="35" value={description}
                                           onChange={handleInputChange(setDescription)}
                                           className="text-fontSize12 border border-custom-dark-blue-hover text-custom-dark-blue rounded-lg focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover block w-full p-2"
                                           placeholder="Popis dokumentu" required=""/>
@@ -176,14 +165,24 @@ export default function DocumentInputField() {
                         </div>
                     </div>
 
-                    <div className="relative rounded-3xl sm:p-6 p-0">
+                    <div className="flex justify-center">
+                        <input
+                            type="file"
+                            accept='.txt'
+                            id="inputTxtFile"
+                            onChange={handleFileChange}
+                            className="ml-4 p-1 md:w-2/5 sm:w-2/3 w-5/6 text-fontSize12 md:text-fontSize16 text-custom-dark-blue file:text-custom-dark-blue focus:outline-custom-dark-blue-hover file:bg-custom-light-blue text-sm rounded-full leading-6 file:font-semibold file:border-none file:px-4 file:py-1 file:mr-6 file:rounded-full hover:file:bg-custom-light-blue-hover border border-custom-light-blue"
+                        />
+                    </div>
+
+                    <div className="relative rounded-3xl">
                         <textarea
                             id="textarea"
                             name="textarea"
                             rows="10"
                             value={inputText}
                             onChange={handleInputChange(setInputText)}
-                            className="mt-1 block w-full rounded-3xl shadow-md sm:text-sm p-4 resize-none border-2 focus:outline-custom-dark-blue-hover border-dashed border-custom-dark-blue-hover"
+                            className="block w-full rounded-3xl shadow-md sm:text-sm p-4 resize-none border-2 focus:outline-custom-dark-blue-hover border-dashed border-custom-dark-blue-hover"
                             placeholder='Sem vložte šifrovaný text v digitalnom formáte'></textarea>
                     </div>
                     <div className="flex justify-center">

@@ -1,12 +1,10 @@
-import Key from '../getKeys';
-import JSONInputField from '../Components/JSONInputField';
 import Footer from "../Components/Footer.jsx";
+import JSONInputField from "../Components/JSONInputField.jsx";
 
 export function KeysPage() {
     return (
         <>
             <JSONInputField></JSONInputField>
-            <Key></Key>
             <Footer></Footer>
         </>
     )
