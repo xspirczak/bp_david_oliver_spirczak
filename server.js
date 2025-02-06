@@ -60,6 +60,7 @@ app.get('/api/keys', async (req, res) => {
   try {
     const keys = await Key.find();  // Fetch all documents in the 'keys' collection
     res.json(keys);  // Send the result as JSON
+    //console.log("KEYS", keys)
   } catch (err) {
     res.status(500).send('Server error');
   }
