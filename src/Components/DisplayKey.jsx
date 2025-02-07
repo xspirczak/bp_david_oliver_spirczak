@@ -1,7 +1,49 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import { BiWorld } from "react-icons/bi";
+import { FaRegCalendarAlt } from "react-icons/fa";
 
 export default function DisplayKey({ keys }) {
+    const [isClient, setIsClient] = useState(false);
+    const [copiedKeyId, setCopiedKeyId] = useState(null);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     let counter = 1;
+
+    const handleCopy = (key, keyId) => {
+        navigator.clipboard.writeText(key)
+            .then(() => {
+                setCopiedKeyId(keyId);
+                setTimeout(() => setCopiedKeyId(null), 2000);
+            })
+            .catch(err => console.error("Error copying text: ", err));
+    };
+
+
+    const handleDownload = (name, doc) => {
+        if (typeof window === "undefined") return;
+
+        const jsonData = {
+            key: doc.key,
+            name: doc.name || "Neznámy dokument",
+            description: doc.description || "Bez popisu",
+            country: doc.country || "Neznáma krajina",
+            year: doc.year !== undefined ? doc.year : -1
+        };
+
+        const jsonString = JSON.stringify(jsonData, null, 2);
+
+        const element = document.createElement("a");
+        const file = new Blob([jsonString], { type: "application/json" });
+        element.href = URL.createObjectURL(file);
+        element.download = `${name || "document"}.json`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    };
+
     return (
         <div className="flex flex-col justify-center items-center w-full max-w-xl mx-auto mb-6">
             <ul className='flex flex-col justify-center items-center w-full gap-5'>
@@ -24,14 +66,70 @@ export default function DisplayKey({ keys }) {
                             <div className="flex justify-between">
                                 <div
                                     className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 gap-5">
-                                    <span>🌍 {keyData.country ? keyData.country : "-"}</span>
-                                    <span>📅 {keyData.year ? keyData.year : "-"}</span>
+                                    <div className="flex items-center">
+                                        <BiWorld />
+                                        <span className="ml-1">{keyData.country ? keyData.country : "-"}</span>
+                                    </div>
+
+                                    <div className="flex items-center">
+                                        <FaRegCalendarAlt />
+                                        <span className="ml-1">{keyData.year !== -1 ? keyData.year : "-"}</span>
+                                    </div>
                                 </div>
 
-                                <div
-                                    className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 gap-5">
-                                    <span>Stiahni</span>
-                                    <span>Copy</span>
+                                <div className="mt-4 flex text-fontSize16 font-semibold text-white mb-2">
+
+                                    <div className="relative flex items-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDownload(keyData.name, keyData)}
+                                            disabled={!isClient}
+                                            className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M12 16L7 11L8.4 9.55L11 12.15V4H13V12.15L15.6 9.55L17 11L12 16ZM6 20C5.45 20 4.97917 19.8042 4.5875 19.4125C4.19583 19.0208 4 18.55 4 18V15H6V18H18V15H20V18C20 18.55 19.8042 19.0208 19.4125 19.4125C19.0208 19.8042 18.55 20 18 20H6Z"
+                                                    fill="#FEF7FF"/>
+                                            </svg>
+                                            <span
+                                                className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    Stiahni .json súbor
+                                            </span>
+
+                                        </button>
+                                    </div>
+
+                                    <div className="relative flex items-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCopy(JSON.stringify(keyData.key), keyData._id)}
+                                            className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <g clipPath="url(#clip0_118_80)">
+                                                    <path
+                                                        d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z"
+                                                        stroke="#D9D9D9" strokeWidth="4" strokeLinecap="round"
+                                                        strokeLinejoin="round"/>
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_118_80">
+                                                        <rect width="24" height="24" fill="white"/>
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+                                            <span
+                                                className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    Kopírovať kľúč
+                                            </span>
+                                        </button>
+                                        {copiedKeyId === keyData._id && (
+                                            <div className="absolute bg-custom-dark-blue-hover top-0 right-0 text-white text-sm px-2 py-1 rounded-3xl shadow-lg mt-[-35px] mr-2">
+                                                Skopírované!
+                                            </div>
+                                        )}
+                                    </div>
+
                                 </div>
                             </div>
 

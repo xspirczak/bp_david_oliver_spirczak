@@ -293,8 +293,8 @@ export default function JSONInputField() {
                                                 className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
                                                 +
                                                 <span
-                                                    className="absolute left-full ml-2 whitespace-nowrap bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    Pridaj hodnotu
+                                                    className="absolute md:left-full md:bottom-1 left-0 bottom-8 ml-2 whitespace-nowrap bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    Hodnota
                                                 </span>
                                             </button>
                                         </div>
@@ -318,8 +318,8 @@ export default function JSONInputField() {
                                             className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
                                             +
                                             <span
-                                                className="absolute left-full ml-2 whitespace-nowrap bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    Pridaj kľúč
+                                                className="absolute md:left-full md:bottom-1 left-0 bottom-8 ml-2 whitespace-nowrap bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    Kľúč
                                                 </span>
                                         </button>
                                     </div>

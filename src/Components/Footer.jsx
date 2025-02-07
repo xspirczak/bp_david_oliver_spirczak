@@ -3,7 +3,6 @@ import {Link} from "react-router-dom";
 export default function Footer() {
     return (
 
-
         <footer className="bg-gradient-to-r from-blue-500 to-cyan-200">
             <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
                 <div className="sm:flex sm:items-center sm:justify-between">

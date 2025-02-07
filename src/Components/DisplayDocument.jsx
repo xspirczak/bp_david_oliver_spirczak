@@ -1,12 +1,47 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {FaRegCalendarAlt} from "react-icons/fa";
+import {BiWorld} from "react-icons/bi";
+import { IoLanguage } from "react-icons/io5";
 
-export default function DisplayDocument({document}) {
+
+export default function DisplayDocument({docs}) {
+    const [isClient, setIsClient] = useState(false);
+    const [copiedDocId, setCopiedDocId] = useState(null);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     let counter = 1;
+
+    const handleCopy = (text, docId) => {
+        navigator.clipboard.writeText(text)
+            .then(() =>  {
+                setCopiedDocId(docId);
+                setTimeout(() => setCopiedDocId(null), 2000);
+            })
+            .catch(err => console.error("Error copying text: ", err));
+    };
+
+
+    const handleDownload = (name, text) => {
+        if (!isClient) return;
+        const element = document.createElement("a");
+        const file = new Blob([text], { type: "text/plain" });
+        element.href = URL.createObjectURL(file);
+        element.download = `${name || "document"}.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    };
+
+
+
     return (
         <div className="flex flex-col justify-center items-center w-full max-w-xl mx-auto mb-6">
             <ul className='flex flex-col justify-center items-center w-full gap-5'>
-                {document.map((document) => (
-                    <React.Fragment key={document._id}>
+                {docs.map((doc) => (
+                    <React.Fragment key={doc._id}>
                         <div className="sm:w-full w-5/6 max-w-3xl rounded-3xl px-6 py-5 bg-custom-dark-blue shadow-lg">
                             <div className="flex gap-3 mb-3">
                                 <svg width="41" height="44" viewBox="0 0 41 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,28 +60,84 @@ export default function DisplayDocument({document}) {
                                 </svg>
 
 
-                                <h2 className="text-fontSize24 font-bold text-white">{document.name ? document.name : "Šifrovaný dokument č. " + counter++}</h2>
+                                <h2 className="text-fontSize24 font-bold text-white">{doc.name ? doc.name : "Šifrovaný dokument č. " + counter++}</h2>
                             </div>
-                            <p className="text-fontSize12 font-light text-white">{document.description ? document.description : "Bez popisu"}</p>
+                            <p className="text-fontSize12 font-light text-white">{doc.description ? doc.description : "Bez popisu"}</p>
 
 
                             <div className="flex justify-between">
                                 <div
                                     className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 gap-5">
-                                    <span>🌍 {document.country ? document.country : "-"}</span>
-                                    <span>🌍 {document.language ? document.language : "-"}</span>
-                                    <span>📅 {document.year !== -1 ? document.year : "-" }</span>
+                                    <div className="flex items-center">
+                                        <BiWorld/>
+                                        <span className="ml-1">{doc.country ? doc.country : "-"}</span>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <IoLanguage/>
+                                        <span className="ml-1">{doc.language ? doc.language : "-"}</span>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <FaRegCalendarAlt/>
+                                        <span className="ml-1">{doc.year !== -1 ? doc.year : "-"}</span>
+                                    </div>
                                 </div>
 
-                                <div
-                                    className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 gap-5">
-                                    <span>Stiahni</span>
-                                    <span>Copy</span>
+                                <div className="mt-4 flex text-fontSize16 font-semibold text-white mb-2">
+
+                                    <div className="relative flex items-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleDownload(doc.name, doc.document)}
+                                            disabled={!isClient}
+                                            className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M12 16L7 11L8.4 9.55L11 12.15V4H13V12.15L15.6 9.55L17 11L12 16ZM6 20C5.45 20 4.97917 19.8042 4.5875 19.4125C4.19583 19.0208 4 18.55 4 18V15H6V18H18V15H20V18C20 18.55 19.8042 19.0208 19.4125 19.4125C19.0208 19.8042 18.55 20 18 20H6Z"
+                                                    fill="#FEF7FF"/>
+                                            </svg>
+                                            <span
+                                                className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    Stiahni .txt súbor
+                                                </span>
+                                        </button>
+                                    </div>
+
+                                    <div className="relative flex items-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCopy(doc.document, doc._id)}
+                                            className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <g clipPath="url(#clip0_118_80)">
+                                                    <path
+                                                        d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z"
+                                                        stroke="#D9D9D9" strokeWidth="4" strokeLinecap="round"
+                                                        strokeLinejoin="round"/>
+                                                </g>
+                                                <defs>
+                                                    <clipPath id="clip0_118_80">
+                                                        <rect width="24" height="24" fill="white"/>
+                                                    </clipPath>
+                                                </defs>
+                                            </svg>
+                                            <span
+                                                className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    Kopírovať text
+                                                </span>
+                                        </button>
+                                        {copiedDocId === doc._id && (
+                                            <div className="absolute bg-custom-dark-blue-hover top-0 right-0 text-white text-sm px-2 py-1 rounded-3xl shadow-lg mt-[-35px] mr-2">
+                                                Skopírované!
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
                             <li className='mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover'>
-                                <p className="break-all">{document.document}</p>
+                                <p className="break-all">{doc.document}</p>
                             </li>
                         </div>
                     </React.Fragment>

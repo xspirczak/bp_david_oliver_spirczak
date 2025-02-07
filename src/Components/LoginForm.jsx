@@ -37,7 +37,7 @@ export default function LoginForm() {
                                               fill="black"/>
                                     </svg>
                                     <input type="email" name="email" id="email"
-                                           className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                           className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-custom-dark-blue-hover focus:border-custom-dark-blue block w-full p-2.5"
                                            placeholder="name@company.com" required=""/>
                                 </div>
                             </div>
@@ -70,7 +70,7 @@ export default function LoginForm() {
                                         </svg>
                                     </button>
                                     <input type="password" name="password" id="password" placeholder="••••••••"
-                                           className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                           className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:border-custom-dark-blue focus:ring-custom-dark-blue-hover  block w-full p-2.5"
                                            required=""/>
 
                                 </div>
