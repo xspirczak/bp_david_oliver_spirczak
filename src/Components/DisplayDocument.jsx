@@ -137,7 +137,7 @@ export default function DisplayDocument({docs}) {
                             </div>
 
                             <li className='mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover'>
-                                <p className="break-all">{doc.document}</p>
+                                <p className="break-all text-white">{doc.document}</p>
                             </li>
                         </div>
                     </React.Fragment>
