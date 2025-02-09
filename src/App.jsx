@@ -7,6 +7,7 @@ import {Layout} from './layout'
 import {LoginPage} from "./Pages/login";
 import {RegisterPage} from "./Pages/register.jsx";
 import {SearchPage} from "./Pages/search.jsx";
+import {ProfilePage} from "./Pages/profile.jsx";
 
 export default function App() {
 
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/mapping" element={<MappingPage/>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/register" element={<RegisterPage/>}/>
+          <Route path="/profile" element={<ProfilePage/>}/>
         </Route>
       </Routes>
     </Router>

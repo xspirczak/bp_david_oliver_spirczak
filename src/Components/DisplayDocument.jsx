@@ -65,7 +65,7 @@ export default function DisplayDocument({docs}) {
                             <p className="text-fontSize12 font-light text-white">{doc.description ? doc.description : "Bez popisu"}</p>
 
 
-                            <div className="flex justify-between">
+                            <div className="sm:flex grid justify-between">
                                 <div
                                     className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 gap-5">
                                     <div className="flex items-center">

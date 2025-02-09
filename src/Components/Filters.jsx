@@ -4,10 +4,19 @@ import MultiRangeSlider from "./RangeSlider.jsx";
 const SearchBar = ({ filters, onFilterChange }) => {
 
     const handleFilterChange = (e) => {
+        console.log(e.bubbles)
         onFilterChange({
             [e.target.name]: e.target.checked,
         });
     };
+
+    const changeTooltip = (e, id) => {
+        const x = document.getElementById(id);
+
+        let splitStr = x.innerText.split(" ");
+        splitStr[0] === "Zobraziť" ? x.innerText = "Skryť" + " " + splitStr[1] : x.innerText = "Zobraziť" +  " " + splitStr[1];
+    }
+
 
     const handleSearchTextChange = (e) => {
         onFilterChange({
@@ -35,10 +44,15 @@ const SearchBar = ({ filters, onFilterChange }) => {
                 <li className="list-none">
                     <div className="relative group">
                         <input type="checkbox" id="optionDocuments" className="hidden peer" name="document"
-                               checked={filters.document} onChange={handleFilterChange}/>
+                               checked={filters.document}
+                               onChange={(e) => {
+                                   handleFilterChange(e);
+                                   changeTooltip(e, "tooltipDocuments");
+                               }}
+                        />
                         <label
                             htmlFor="optionDocuments"
-                            className="flex flex-col items-center justify-center w-28 h-28 border-2 rounded-3xl text-white cursor-pointer peer-checked:text-white border-custom-dark-blue bg-custom-dark-blue hover:bg-gray-700 peer-checked:opacity-100 opacity-80"
+                            className="flex flex-col items-center justify-center sm:w-28 sm:h-28 w-20 h-20 border-2 rounded-3xl text-white cursor-pointer peer-checked:text-white border-custom-dark-blue bg-custom-dark-blue hover:bg-gray-700 peer-checked:opacity-100 opacity-80"
                         >
                             <svg width="41" height="44" viewBox="0 0 41 44" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
@@ -82,8 +96,9 @@ const SearchBar = ({ filters, onFilterChange }) => {
                             <div className="text-fontSize12 font-semibold">Dokumenty</div>
                         </label>
                         <span
-                            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
-                            Zobraziť / skryť dokumenty
+                            className="absolute bottom-1/4 right-full mr-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
+                            id="tooltipDocuments">
+                            Skryť dokumenty
                     </span>
                     </div>
                 </li>
@@ -91,10 +106,13 @@ const SearchBar = ({ filters, onFilterChange }) => {
                 <li className="list-none">
                     <div className="relative group">
                     <input type="checkbox" id="optionKeys" className="hidden peer" name="key" checked={filters.key}
-                           onChange={handleFilterChange}/>
+                           onChange={(e) => {
+                               handleFilterChange(e);
+                               changeTooltip(e, "tooltipKeys");
+                           }}/>
                     <label
                         htmlFor="optionKeys"
-                        className="flex flex-col items-center justify-center w-28 h-28 border-2 rounded-3xl text-white cursor-pointer peer-checked:text-white border-custom-dark-blue bg-custom-dark-blue hover:bg-gray-700 peer-checked:opacity-100 opacity-80"
+                        className="flex flex-col items-center justify-center sm:w-28 sm:h-28 w-20 h-20 border-2 rounded-3xl text-white cursor-pointer peer-checked:text-white border-custom-dark-blue bg-custom-dark-blue hover:bg-gray-700 peer-checked:opacity-100 opacity-80"
                     >
                         <svg width="44" height="42" viewBox="0 0 44 42" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
@@ -105,8 +123,10 @@ const SearchBar = ({ filters, onFilterChange }) => {
                         <div className="text-fontSize12 font-semibold">Kľúče</div>
                     </label>
                     <span
-                        className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
-                            Zobraziť / skryť kľúče
+                        className="absolute bottom-1/4 left-full ml-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
+                        id="tooltipKeys"
+                    >
+                            Skryť kľúče
                     </span>
             </div>
         </li>

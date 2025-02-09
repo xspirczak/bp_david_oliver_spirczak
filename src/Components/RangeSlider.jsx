@@ -62,7 +62,7 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
                 className="thumb thumb--right"
             />
 
-            <div className="slider">
+            <div className="slider pb-10">
                 <div className="slider__track" />
                 <div ref={range} className="slider__range" />
                 <div className="slider__left-value text-custom-dark-blue">{minVal}</div>

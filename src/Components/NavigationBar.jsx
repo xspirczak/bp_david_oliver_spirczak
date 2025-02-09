@@ -61,6 +61,9 @@ export default function Navbar() {
           <NavLink to="/search" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
             Vyhľadávať
           </NavLink>
+          <NavLink to="/profile" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
+            Profil
+          </NavLink>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 hover:bg-custom-dark-blue-hover hover:border-custom-dark-blue-hover">
