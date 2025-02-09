@@ -1,5 +1,4 @@
 import DisplayAllDocuments from "../Components/DisplayAllDocuments.jsx";
-import Footer from "../Components/Footer.jsx";
 
 export function SearchPage()  {
     return (
@@ -10,7 +9,6 @@ export function SearchPage()  {
                 <div className="flex-grow">
                     <DisplayAllDocuments></DisplayAllDocuments>
                 </div>
-                <Footer/>
             </div>
         </>
     )

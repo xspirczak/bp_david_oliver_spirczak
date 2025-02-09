@@ -1,5 +1,4 @@
 import { CiEdit } from "react-icons/ci";
-import React from "react";
 
 export default function Profile() {
     const profileData = {
