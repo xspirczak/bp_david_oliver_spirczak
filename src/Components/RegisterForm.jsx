@@ -1,6 +1,16 @@
 import {NavLink} from "react-router-dom";
+import { useState } from "react";
 
 export default function RegisterForm() {
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        role: "user",
+    });
 
     const togglePasswordVisibility = (inputId) => {
         let e = document.getElementById(inputId);
@@ -14,9 +24,45 @@ export default function RegisterForm() {
         }
     };
 
+    const handleChange = (e) => {
+        console.log(`Name: ${e.target.name}, Value: ${e.target.value}`); // Debugging log
+
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+        setSuccess(null);
+
+        if (formData.password === formData.newPasswordRepeat) {
+            try {
+                console.log(JSON.stringify(formData.password + " " + formData.newPasswordRepeat));
+
+                console.log(formData)
+                const response = await fetch("http://localhost:3000/api/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData),
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message);
+
+                setSuccess("Registration successful!");
+                setFormData({ firstName: "", lastName: "", email: "", password: "", role: "user" });
+            } catch (err) {
+                setError(err.message);
+            }
+        } else {
+            setError('Heslá sa musia zhodovať');
+        }
+
+    };
+
     return (
 
-        <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
+        <section className="bg-gradient-to-r from-blue-500 to-cyan-200 py-10">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
                 <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center">
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-28 py-10">
@@ -28,10 +74,11 @@ export default function RegisterForm() {
                                  Prihláste sa
                             </NavLink>
                         </p>
-                        <form className="space-y-4 md:space-y-6" action="#">
+
+                        <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label htmlFor="email"
-                                       className="block mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Email</label>
+                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Email</label>
                                 <div className="relative">
                                     <svg width="20" height="16" viewBox="0 0 20 16" fill="none"
                                          className="absolute top-4 left-3"
@@ -42,7 +89,41 @@ export default function RegisterForm() {
                                     </svg>
                                     <input type="email" name="email" id="email"
                                            className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                           placeholder="name@company.com" required=""/>
+                                           placeholder="name@company.com" required="" onChange={handleChange}/>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="firstName"
+                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Krstné meno</label>
+                                <div className="relative">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         className="absolute top-3 left-3"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 12C10.9 12 9.95833 11.6083 9.175 10.825C8.39167 10.0417 8 9.1 8 8C8 6.9 8.39167 5.95833 9.175 5.175C9.95833 4.39167 10.9 4 12 4C13.1 4 14.0417 4.39167 14.825 5.175C15.6083 5.95833 16 6.9 16 8C16 9.1 15.6083 10.0417 14.825 10.825C14.0417 11.6083 13.1 12 12 12ZM4 20V17.2C4 16.6333 4.14583 16.1125 4.4375 15.6375C4.72917 15.1625 5.11667 14.8 5.6 14.55C6.63333 14.0333 7.68333 13.6458 8.75 13.3875C9.81667 13.1292 10.9 13 12 13C13.1 13 14.1833 13.1292 15.25 13.3875C16.3167 13.6458 17.3667 14.0333 18.4 14.55C18.8833 14.8 19.2708 15.1625 19.5625 15.6375C19.8542 16.1125 20 16.6333 20 17.2V20H4ZM6 18H18V17.2C18 17.0167 17.9542 16.85 17.8625 16.7C17.7708 16.55 17.65 16.4333 17.5 16.35C16.6 15.9 15.6917 15.5625 14.775 15.3375C13.8583 15.1125 12.9333 15 12 15C11.0667 15 10.1417 15.1125 9.225 15.3375C8.30833 15.5625 7.4 15.9 6.5 16.35C6.35 16.4333 6.22917 16.55 6.1375 16.7C6.04583 16.85 6 17.0167 6 17.2V18ZM12 10C12.55 10 13.0208 9.80417 13.4125 9.4125C13.8042 9.02083 14 8.55 14 8C14 7.45 13.8042 6.97917 13.4125 6.5875C13.0208 6.19583 12.55 6 12 6C11.45 6 10.9792 6.19583 10.5875 6.5875C10.1958 6.97917 10 7.45 10 8C10 8.55 10.1958 9.02083 10.5875 9.4125C10.9792 9.80417 11.45 10 12 10Z"
+                                            fill="#1D1B20"/>
+                                    </svg>
+
+                                    <input type="text" name="firstName" id="fistName"
+                                           className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                           placeholder="Jozef" required="" onChange={handleChange}/>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="lastName"
+                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Priezvisko</label>
+                                <div className="relative">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                         className="absolute top-3 left-3"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12 12C10.9 12 9.95833 11.6083 9.175 10.825C8.39167 10.0417 8 9.1 8 8C8 6.9 8.39167 5.95833 9.175 5.175C9.95833 4.39167 10.9 4 12 4C13.1 4 14.0417 4.39167 14.825 5.175C15.6083 5.95833 16 6.9 16 8C16 9.1 15.6083 10.0417 14.825 10.825C14.0417 11.6083 13.1 12 12 12ZM4 20V17.2C4 16.6333 4.14583 16.1125 4.4375 15.6375C4.72917 15.1625 5.11667 14.8 5.6 14.55C6.63333 14.0333 7.68333 13.6458 8.75 13.3875C9.81667 13.1292 10.9 13 12 13C13.1 13 14.1833 13.1292 15.25 13.3875C16.3167 13.6458 17.3667 14.0333 18.4 14.55C18.8833 14.8 19.2708 15.1625 19.5625 15.6375C19.8542 16.1125 20 16.6333 20 17.2V20H4ZM6 18H18V17.2C18 17.0167 17.9542 16.85 17.8625 16.7C17.7708 16.55 17.65 16.4333 17.5 16.35C16.6 15.9 15.6917 15.5625 14.775 15.3375C13.8583 15.1125 12.9333 15 12 15C11.0667 15 10.1417 15.1125 9.225 15.3375C8.30833 15.5625 7.4 15.9 6.5 16.35C6.35 16.4333 6.22917 16.55 6.1375 16.7C6.04583 16.85 6 17.0167 6 17.2V18ZM12 10C12.55 10 13.0208 9.80417 13.4125 9.4125C13.8042 9.02083 14 8.55 14 8C14 7.45 13.8042 6.97917 13.4125 6.5875C13.0208 6.19583 12.55 6 12 6C11.45 6 10.9792 6.19583 10.5875 6.5875C10.1958 6.97917 10 7.45 10 8C10 8.55 10.1958 9.02083 10.5875 9.4125C10.9792 9.80417 11.45 10 12 10Z"
+                                            fill="#1D1B20"/>
+                                    </svg>
+
+                                    <input type="text" name="lastName" id="lastName"
+                                           className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                           placeholder="Horvát" required="" onChange={handleChange}/>
                                 </div>
                             </div>
                             <div>
@@ -62,7 +143,7 @@ export default function RegisterForm() {
                                               fill="black"/>
                                     </svg>
                                     <button type="button" id="btnNewPassword" className="absolute top-4 right-4"
-                                            onClick={() => togglePasswordVisibility("newPassword")}>
+                                            onClick={() => togglePasswordVisibility("password")}>
                                         <svg width="14" height="12" viewBox="0 0 14 12" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -73,16 +154,17 @@ export default function RegisterForm() {
                                                 fill="black" fillOpacity="0.8"/>
                                         </svg>
                                     </button>
-                                    <input type="password" name="newPassword" id="newPassword" placeholder="••••••••"
+                                    <input type="password" name="password" id="password" placeholder="••••••••"
                                            className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                           required=""/>
+                                           required="" onChange={handleChange}/>
 
                                 </div>
                             </div>
                             <div>
                                 <div className="flex justify-center">
-                                    <label htmlFor="password"
-                                           className="block mb-2 text-fontSize16 text-custom-dark-blue text-center">Opakované heslo</label>
+                                    <label htmlFor="newPasswordRepeat"
+                                           className="block mb-2 text-fontSize16 text-custom-dark-blue text-center">Opakované
+                                        heslo</label>
                                 </div>
                                 <div className="relative">
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none"
@@ -107,13 +189,15 @@ export default function RegisterForm() {
                                                 fill="black" fillOpacity="0.8"/>
                                         </svg>
                                     </button>
-                                    <input type="password" name="newPasswordRepeat" id="newPasswordRepeat" placeholder="••••••••"
+                                    <input type="password" name="newPasswordRepeat" id="newPasswordRepeat"
+                                           placeholder="••••••••"
                                            className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                           required=""/>
+                                           required="" onChange={handleChange}/>
                                 </div>
 
                                 <div className="flex justify-center mt-5 text-red-500">
-                                    Error správa
+                                    {error && <p className="text-red-500 text-center">{error}</p>}
+                                    {success && <p className="text-green-500 text-center">{success}</p>}
                                 </div>
                             </div>
 

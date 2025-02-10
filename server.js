@@ -8,6 +8,7 @@ import jwt from 'jsonwebtoken';
 import User from './models/User.js';
 import Key from './models/Keys.js';
 import Document from './models/Documents.js';
+import authRoutes from './routes/auth.js';
 
 // Initialize app
 dotenv.config();
@@ -126,6 +127,7 @@ app.post('/api/users', async (req, res) => {
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
     console.log("TOKEN: ", token);
+
     res.json({ message: 'Login successful', token });
   } catch (err) {
     console.log("login error: ", err);
@@ -133,6 +135,20 @@ app.post('/api/users', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+app.get('/api/users', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password'); // Exclude password
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.use('/api/auth', authRoutes);
+
 
 app.get('/api/protected', authMiddleware, (req, res) => {
   res.json({ message: `Hello, ${req.user.email}! You accessed a protected route.` });
