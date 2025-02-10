@@ -9,6 +9,7 @@ import {RegisterPage} from "./Pages/register.jsx";
 import {SearchPage} from "./Pages/search.jsx";
 import {ProfilePage} from "./Pages/profile.jsx";
 import {useEffect, useState} from "react";
+import PrivateRoute from "./Components/PrivateRoute.jsx";
 
 export default function App() {
   // State to track if the user is logged in
@@ -31,10 +32,14 @@ export default function App() {
           <Route path="/keys" element={<KeysPage/>}/>
           <Route path="/documents" element={<DocumentsPage/>}/>
           <Route path="/search" element={<SearchPage/>}/>
-          <Route path="/mapping" element={<MappingPage/>}/>
+          <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
+            <Route path="/mapping" element={<MappingPage />} />
+          </Route>
           <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} setUser={setUser} />}/>
           <Route path="/register" element={<RegisterPage/>}/>
-          <Route path="/profile" element={<ProfilePage/>}/>
+          <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
         </Route>
       </Routes>
     </Router>
