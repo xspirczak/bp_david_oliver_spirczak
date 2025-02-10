@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import {
   Dialog,
   DialogPanel,
@@ -12,10 +12,11 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 
-import {NavLink} from 'react-router-dom'
+import {NavLink, useNavigate} from 'react-router-dom'
 
-export default function Navbar() {
+export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navigate = useNavigate();
 
   const getActiveStyles = ({isActive}) => {
     return {
@@ -23,6 +24,15 @@ export default function Navbar() {
       "textUnderlineOffset": isActive ? '5px' : 'none'
     }
   }
+
+  // Handle logout by clearing the user state and token
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    setIsLoggedIn(false);
+    navigate('/login')
+  };
+
 
   return (
     <header className="bg-gradient-to-r from-blue-500 to-cyan-200">
@@ -61,15 +71,22 @@ export default function Navbar() {
           <NavLink to="/search" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
             Vyhľadávať
           </NavLink>
-          <NavLink to="/profile" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
-            Profil
-          </NavLink>
+          { isLoggedIn ? (
+              <NavLink to="/profile" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
+                Profil
+              </NavLink>
+          ) : (<></>)}
+
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 hover:bg-custom-dark-blue-hover hover:border-custom-dark-blue-hover">
-            <NavLink to="/login" className="text-md font-semibold leading-6 text-white">
-              Prihlásiť sa
-            </NavLink>
+            {isLoggedIn ? (
+                <button onClick={handleLogout} className="text-md font-semibold leading-6 text-white">Odhlásiť sa</button>
+              ) : (
+              <NavLink to="/login" className="text-md font-semibold leading-6 text-white">
+                  Prihlásiť sa
+                </NavLink>
+            )}
           </div>
         </div>
       </nav>
@@ -112,12 +129,21 @@ export default function Navbar() {
                 <NavLink to="/search" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                   Vyhľadávať
                 </NavLink>
+                {isLoggedIn ? (
+                    <NavLink to="/profile" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                      Profil
+                    </NavLink>
+                ) : (<></>)}
               </div>
               <div className="py-6">
                  <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 w-32 flex justify-center">
-                   <NavLink to="/login" className="text-md font-semibold leading-6 text-white">
-                     Prihlásiť sa
-                   </NavLink>
+                   {isLoggedIn ? (
+                       <button onClick={handleLogout} className="text-md font-semibold leading-6 text-white">Odhlásiť sa</button>
+                   ) : (
+                       <NavLink to="/login" className="text-md font-semibold leading-6 text-white">
+                         Prihlásiť sa
+                       </NavLink>
+                   )}
                 </div>
                 </div>
               </div>

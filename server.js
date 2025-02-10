@@ -1,10 +1,16 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+import authMiddleware from './authMiddleware/authMiddleware.js';
+import jwt from 'jsonwebtoken';
+import User from './models/User.js';
 import Key from './models/Keys.js';
 import Document from './models/Documents.js';
 
 // Initialize app
+dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -13,6 +19,8 @@ app.use(cors());
 mongoose.connect('mongodb://localhost:27017/keys')
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
+
+const JWT_SECRET = process.env.JWT_SECRET || 'random'; // Use env variable
 
 // Create a simple route
 app.get('/', (req, res) => {
@@ -100,6 +108,36 @@ app.get('/api/documents', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+// Login Route
+app.post('/api/users', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ error: 'Invalid email or password' });
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ error: 'Invalid email or password' });
+
+    // Generate JWT token
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+
+    console.log("TOKEN: ", token);
+    res.json({ message: 'Login successful', token });
+  } catch (err) {
+    console.log("login error: ", err);
+
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/protected', authMiddleware, (req, res) => {
+  res.json({ message: `Hello, ${req.user.email}! You accessed a protected route.` });
+});
+
 
 
 

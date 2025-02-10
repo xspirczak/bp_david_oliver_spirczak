@@ -1,9 +1,9 @@
 import LoginForm from "../Components/LoginForm.jsx";
 
-export function LoginPage() {
+export function LoginPage({setIsLoggedIn, setUser}) {
     return (
         <>
-            <LoginForm></LoginForm>
+            <LoginForm setIsLoggedIn={setIsLoggedIn} setUser={setUser}></LoginForm>
         </>
     )
 }

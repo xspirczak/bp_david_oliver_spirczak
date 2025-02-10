@@ -2,10 +2,10 @@ import { Outlet } from "react-router-dom";
 import NavigationBar from "./Components/NavigationBar"
 import Footer from "./Components/Footer.jsx";
 
-export function Layout() {
+export function Layout({ isLoggedIn, setIsLoggedIn, user, setUser }) {
     return (
         <>
-            <NavigationBar></NavigationBar>
+            <NavigationBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser}></NavigationBar>
             <main>
                 <Outlet/>
             </main>

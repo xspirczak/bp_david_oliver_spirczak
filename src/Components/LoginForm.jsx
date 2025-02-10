@@ -1,6 +1,12 @@
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
+import {useState} from "react";
 
-export default function LoginForm() {
+export default function LoginForm({ setIsLoggedIn, setUser }) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
     function togglePasswordVisibility() {
         let e = document.getElementById("password")
 
@@ -12,6 +18,76 @@ export default function LoginForm() {
             e.placeholder = "••••••••"
         }
     }
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+
+        try {
+            const response = await fetch('http://localhost:3000/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+            console.log("DATA: ",data)
+            if (!response.ok) throw new Error(data.error || 'Login failed');
+
+            localStorage.setItem('token', data.token); // Save token for session
+            alert('Login successful!');
+
+
+            setIsLoggedIn(true);
+
+            const decoded = decodeJWT(data.token)
+
+            setUser(decoded.email);
+
+            fetch('http://localhost:3000/api/protected', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .then(data => console.log("Protected Route Response:", data))
+                .catch(err => console.error('Fetch error:', err));
+
+            navigate('/');
+
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const decodeJWT = (token) => {
+        // Check if the token is defined and is a string
+        if (!token || typeof token !== 'string') {
+            throw new Error('Token is missing or invalid');
+        }
+
+        // Split the token into three parts: header, payload, and signature
+        const parts = token.split('.');
+
+        // Validate the token structure (it should have 3 parts)
+        if (parts.length !== 3) {
+            throw new Error('Invalid JWT format');
+        }
+
+        try {
+            // Decode the payload from base64Url to a regular base64 string
+            const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+
+            // Decode the base64 string into a UTF-8 string, then parse it as JSON
+            return JSON.parse(atob(payload));
+        } catch (error) {
+            console.error('Error decoding JWT token:', error);
+            throw new Error('Error decoding JWT token');
+        }
+    };
 
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
@@ -26,7 +102,7 @@ export default function LoginForm() {
                             Registrujte sa
                         </NavLink>
                         </p>
-                        <form className="space-y-4 md:space-y-6" action="#">
+                        <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label htmlFor="email" className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Email</label>
                                 <div className="relative">
@@ -38,7 +114,9 @@ export default function LoginForm() {
                                     </svg>
                                     <input type="email" name="email" id="email"
                                            className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-custom-dark-blue-hover focus:border-custom-dark-blue block w-full p-2.5"
-                                           placeholder="name@company.com" required=""/>
+                                           placeholder="name@company.com" required=""
+                                           onChange={(e) => setEmail(e.target.value)}
+                                    />
                                 </div>
                             </div>
                             <div>
@@ -71,7 +149,9 @@ export default function LoginForm() {
                                     </button>
                                     <input type="password" name="password" id="password" placeholder="••••••••"
                                            className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:border-custom-dark-blue focus:ring-custom-dark-blue-hover  block w-full p-2.5"
-                                           required=""/>
+                                           required=""
+                                           onChange={(e) => setPassword(e.target.value)}
+                                    />
 
                                 </div>
 
@@ -85,7 +165,7 @@ export default function LoginForm() {
                             <button type="submit"
                                     className="w-full text-white text-fontSize24 hover:bg-custom-dark-blue-hover bg-custom-dark-blue hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-3xl text-sm px-5 py-2.5 text-center">Prihlásiť
                             </button>
-
+                            {error && <p className="text-red-500">{error}</p>}
                         </form>
                     </div>
                 </div>
