@@ -1,9 +1,9 @@
 import RegisterForm from "../Components/RegisterForm.jsx";
 
-export function RegisterPage() {
+export function RegisterPage({validateEmail, validEmail}) {
     return (
         <>
-            <RegisterForm></RegisterForm>
+            <RegisterForm validateEmail={validateEmail} validEmail={validEmail}></RegisterForm>
         </>
     )
 }

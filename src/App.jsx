@@ -15,6 +15,7 @@ export default function App() {
   // State to track if the user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [validEmail, setValidEmail] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -22,6 +23,23 @@ export default function App() {
       setIsLoggedIn(true);
     }
   }, []);
+
+  const validateEmail = (email, id) => {
+    const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    const input = document.getElementById(id);
+
+    if (email && email.match(isValidEmail)) {
+      setValidEmail(true);
+      input.classList.remove("border-red-400");
+      input.classList.remove("border-custom-dark-blue");
+      input.classList.add("border-green-400");
+    } else {
+      setValidEmail(false);
+      input.classList.remove("border-green-400");
+      input.classList.remove("border-custom-dark-blue");
+      input.classList.add("border-red-400");
+    }
+  }
 
   return (
     
@@ -35,8 +53,8 @@ export default function App() {
           <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
             <Route path="/mapping" element={<MappingPage />} />
           </Route>
-          <Route path="/login" element={<LoginPage setIsLoggedIn={setIsLoggedIn} setUser={setUser} />}/>
-          <Route path="/register" element={<RegisterPage/>}/>
+          <Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUser={setUser} validateEmail={validateEmail}/>}/>
+          <Route path="/register" element={<RegisterPage validateEmail={validateEmail} validEmail={validEmail}/>}/>
           <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
             <Route path="/profile" element={<ProfilePage />} />
           </Route>

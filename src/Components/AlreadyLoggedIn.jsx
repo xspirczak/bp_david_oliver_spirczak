@@ -1,0 +1,36 @@
+import {useNavigate} from "react-router-dom";
+
+export default function AlreadyLoggedIn({setIsLoggedIn, setUser}) {
+    const navigate = useNavigate();
+
+    const navigateTo = (route) => {
+        navigate(route);
+    }
+
+    // Handle logout by clearing the user state and token
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setUser(null);
+        setIsLoggedIn(false);
+        navigate('/login')
+    };
+
+
+    return (
+        <div className="grid justify-center p-6 gap-6">
+            <h3 className="text-fontSize28 text-custom-dark-blue font-bold text-center">Už ste prihlásený.</h3>
+            <div className="flex justify-center">
+                <button type="button" onClick={()=> navigateTo('/')}
+                        className="flex justify-center items-center w-1/4 px-6 py-2 ml-3 bg-custom-dark-blue text-white text-fontSize16 font-medium rounded-xl hover:bg-custom-dark-blue-hover focus:outline-none">Domovská stránka
+                </button>
+                <button type="button" onClick={()=> navigateTo('/profile')}
+                        className="flex justify-center items-center w-1/4 px-6 py-2 ml-3 bg-custom-dark-blue text-white text-fontSize16 font-medium rounded-xl hover:bg-custom-dark-blue-hover focus:outline-none">Profil
+                </button>
+                <button type="button" onClick={handleLogout}
+                        className="flex justify-center items-center w-1/4 px-6 py-2 ml-3 bg-custom-dark-blue text-white text-fontSize16 font-medium rounded-xl hover:bg-custom-dark-blue-hover focus:outline-none">Odhlásiť sa
+                </button>
+
+            </div>
+        </div>
+    )
+}

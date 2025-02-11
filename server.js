@@ -117,18 +117,18 @@ app.post('/api/users', async (req, res) => {
 
     // Check if user exists
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ error: 'Invalid email or password' });
+    if (!user) return res.status(400).json({ error: 'Email alebo heslo je nesprávne.' });
 
     // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: 'Invalid email or password' });
+    if (!isMatch) return res.status(400).json({ error: 'Email alebo heslo je nesprávne.' });
 
     // Generate JWT token
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
     console.log("TOKEN: ", token);
 
-    res.json({ message: 'Login successful', token });
+    res.json({ message: 'Prihlásenie bolo úspešné', token });
   } catch (err) {
     console.log("login error: ", err);
 
@@ -139,7 +139,7 @@ app.post('/api/users', async (req, res) => {
 app.get('/api/users', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password'); // Exclude password
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) return res.status(404).json({ error: 'Používateľ sa nenašiel' });
 
     res.json(user);
   } catch (err) {

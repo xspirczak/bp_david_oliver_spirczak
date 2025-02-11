@@ -1,7 +1,7 @@
 import {NavLink} from "react-router-dom";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 
-export default function RegisterForm() {
+export default function RegisterForm({ validateEmail, validEmail }) {
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
     const [formData, setFormData] = useState({
@@ -9,8 +9,10 @@ export default function RegisterForm() {
         lastName: "",
         email: "",
         password: "",
+        newPasswordRepeat: "",
         role: "user",
     });
+    const [passwordMatch, setPasswordMatch] = useState(false);
 
     const togglePasswordVisibility = (inputId) => {
         let e = document.getElementById(inputId);
@@ -30,35 +32,53 @@ export default function RegisterForm() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    useEffect(() => {
+        if (formData.password === "" || formData.newPasswordRepeat === "") {
+            setPasswordMatch(false);
+        } else {
+            setPasswordMatch(formData.password === formData.newPasswordRepeat);
+        }
+    }, [formData.password, formData.newPasswordRepeat]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
         setSuccess(null);
 
-        if (formData.password === formData.newPasswordRepeat) {
-            try {
-                console.log(JSON.stringify(formData.password + " " + formData.newPasswordRepeat));
 
-                console.log(formData)
-                const response = await fetch("http://localhost:3000/api/auth/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData),
-                });
-
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message);
-
-                setSuccess("Registration successful!");
-                setFormData({ firstName: "", lastName: "", email: "", password: "", role: "user" });
-            } catch (err) {
-                setError(err.message);
-            }
-        } else {
+        if (!passwordMatch) {
             setError('Heslá sa musia zhodovať');
+            return;
         }
 
+        if (!validEmail) {
+            setError('Zlý tvar emailu. (meno@domena.sk)');
+            return;
+        }
+
+        try {
+            console.log(JSON.stringify(formData.password + " " + formData.newPasswordRepeat));
+
+            console.log(formData)
+            const response = await fetch("http://localhost:3000/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                setError(data.error || "Neznáma chyba pri registrácii.");
+                return;
+            }
+
+            setSuccess("Registrácia bola úspešná!");
+            setFormData({ firstName: "", lastName: "", email: "", password: "",newPasswordRepeat: "", role: "user" });
+        } catch (err) {
+            setError(err.message);
+        }
     };
+
 
     return (
 
@@ -78,7 +98,7 @@ export default function RegisterForm() {
                         <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label htmlFor="email"
-                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Email</label>
+                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Email<span className="text-red-400 ml-1">*</span></label>
                                 <div className="relative">
                                     <svg width="20" height="16" viewBox="0 0 20 16" fill="none"
                                          className="absolute top-4 left-3"
@@ -87,14 +107,16 @@ export default function RegisterForm() {
                                               d="M0 2.08696C0 0.934358 0.95939 0 2.14286 0H17.8571C19.0406 0 20 0.934358 20 2.08696V2.56271L10.5477 8.70094C10.4144 8.78442 10.2209 8.84401 9.99999 8.84401C9.7791 8.84401 9.58559 8.78442 9.45227 8.70094L0 2.56273V2.08696ZM0 4.65301V13.913C0 15.0656 0.95939 16 2.14286 16H17.8571C19.0406 16 20 15.0656 20 13.913V4.65299L11.5334 10.1511L11.5252 10.1565C11.0757 10.4414 10.5359 10.5831 9.99999 10.5831C9.46409 10.5831 8.92431 10.4414 8.47481 10.1564L8.46653 10.1512L0 4.65301Z"
                                               fill="black"/>
                                     </svg>
-                                    <input type="email" name="email" id="email"
-                                           className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                           placeholder="name@company.com" required="" onChange={handleChange}/>
+                                    <input type="email" name="email" id="email" autoComplete={"email"}
+                                           className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:outline-custom-dark-blue focus:border-primary-600 block w-full p-2.5"
+                                           placeholder="name@company.com" required="" onChange={(e) => {handleChange(e)
+                                        validateEmail(e.target.value, "email")
+                                        setError(null)}}/>
                                 </div>
                             </div>
                             <div>
                                 <label htmlFor="firstName"
-                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Krstné meno</label>
+                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Krstné meno<span className="text-red-400 ml-1">*</span></label>
                                 <div className="relative">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                          className="absolute top-3 left-3"
@@ -104,14 +126,21 @@ export default function RegisterForm() {
                                             fill="#1D1B20"/>
                                     </svg>
 
-                                    <input type="text" name="firstName" id="fistName"
-                                           className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                    {formData.firstName ? (
+                                    <input type="text" name="firstName" id="fistName" autoComplete={"username"}
+                                           className="border border-green-400 text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 focus:outline-custom-dark-blue"
                                            placeholder="Jozef" required="" onChange={handleChange}/>
+                                    ) : (
+                                        <input type="text" name="firstName" id="fistName" autoComplete={"username"}
+                                               className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 focus:outline-custom-dark-blue"
+                                               placeholder="Jozef" required="" onChange={handleChange}/>
+                                    )}
                                 </div>
                             </div>
                             <div>
                                 <label htmlFor="lastName"
-                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Priezvisko</label>
+                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Priezvisko<span
+                                    className="text-red-400 ml-1">*</span></label>
                                 <div className="relative">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                          className="absolute top-3 left-3"
@@ -121,15 +150,22 @@ export default function RegisterForm() {
                                             fill="#1D1B20"/>
                                     </svg>
 
-                                    <input type="text" name="lastName" id="lastName"
-                                           className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                    {formData.lastName ? (
+                                    <input type="text" name="lastName" id="lastName" autoComplete={"username"}
+                                           className="border border-green-400 text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:outline-custom-dark-blue focus:border-primary-600 block w-full p-2.5"
                                            placeholder="Horvát" required="" onChange={handleChange}/>
+                                    ) : (
+                                        <input type="text" name="lastName" id="lastName" autoComplete={"username"}
+                                               className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:outline-custom-dark-blue focus:border-primary-600 block w-full p-2.5"
+                                               placeholder="Horvát" required="" onChange={handleChange}/>
+                                    )}
                                 </div>
                             </div>
                             <div>
                                 <div className="flex justify-center">
                                     <label htmlFor="password"
-                                           className="block mb-2 text-fontSize16 text-custom-dark-blue text-center">Heslo</label>
+                                           className="block mb-2 text-fontSize16 text-custom-dark-blue text-center">Heslo<span
+                                        className="text-red-400 ml-1">*</span></label>
                                 </div>
                                 <div className="relative">
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none"
@@ -154,17 +190,23 @@ export default function RegisterForm() {
                                                 fill="black" fillOpacity="0.8"/>
                                         </svg>
                                     </button>
-                                    <input type="password" name="password" id="password" placeholder="••••••••"
-                                           className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                    {passwordMatch ? (
+                                    <input type="password" name="password" id="password" placeholder="••••••••" autoComplete={"new-password"}
+                                           className="border border-green-400 text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                            required="" onChange={handleChange}/>
-
+                                    ) : (
+                                        <input type="password" name="password" id="password" placeholder="••••••••"
+                                               autoComplete={"new-password"}
+                                               className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                               required="" onChange={handleChange}/>
+                                    )}
                                 </div>
                             </div>
                             <div>
                                 <div className="flex justify-center">
                                     <label htmlFor="newPasswordRepeat"
                                            className="block mb-2 text-fontSize16 text-custom-dark-blue text-center">Opakované
-                                        heslo</label>
+                                        heslo<span className="text-red-400 ml-1">*</span></label>
                                 </div>
                                 <div className="relative">
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none"
@@ -189,16 +231,31 @@ export default function RegisterForm() {
                                                 fill="black" fillOpacity="0.8"/>
                                         </svg>
                                     </button>
-                                    <input type="password" name="newPasswordRepeat" id="newPasswordRepeat"
+                                    {passwordMatch ? (
+                                    <input type="password" name="newPasswordRepeat" id="newPasswordRepeat" autoComplete={"new-password"}
                                            placeholder="••••••••"
-                                           className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                           className="border border-green-400 text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                            required="" onChange={handleChange}/>
+                                    ) : (
+                                        <input type="password" name="newPasswordRepeat" id="newPasswordRepeat"
+                                               autoComplete={"new-password"}
+                                               placeholder="••••••••"
+                                               className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                               required="" onChange={handleChange}/>
+                                    )}
                                 </div>
 
-                                <div className="flex justify-center mt-5 text-red-500">
-                                    {error && <p className="text-red-500 text-center">{error}</p>}
-                                    {success && <p className="text-green-500 text-center">{success}</p>}
-                                </div>
+                                {error || success ? (
+                                    <div className="flex justify-center mt-5 text-red-500">
+                                        {error && <p className="text-red-5+00 text-center text-fontSize20">{error}</p>}
+                                        {success && <p className="text-green-500 text-center text-fontSize20">{success}</p>}
+                                    </div>
+
+                                ) : (
+                                    <div className="flex justify-center mt-5 text-red-500 invisible">
+                                        <p className="text-red-500 text-center text-fontSize20">Final state placeholder</p>
+                                    </div>
+                                )}
                             </div>
 
                             <button type="submit"

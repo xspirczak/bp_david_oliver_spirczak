@@ -1,10 +1,14 @@
 import {NavLink, useNavigate} from "react-router-dom";
 import {useState} from "react";
+import LoginSuccess from "./LoginSuccess.jsx";
+import AlreadyLoggedIn from "./AlreadyLoggedIn.jsx";
 
-export default function LoginForm({ setIsLoggedIn, setUser }) {
+export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validateEmail }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
+    const [isLoginSuccesFull, setIsLoginSuccesFull] = useState(false);
+
     const navigate = useNavigate();
 
     function togglePasswordVisibility() {
@@ -12,7 +16,7 @@ export default function LoginForm({ setIsLoggedIn, setUser }) {
 
         if (e.type === "password") {
             e.type = "text"
-            e.placeholder = "password"
+            e.placeholder = "vaše heslo"
         } else {
             e.type = "password"
             e.placeholder = "••••••••"
@@ -24,6 +28,11 @@ export default function LoginForm({ setIsLoggedIn, setUser }) {
         e.preventDefault();
         setError(null);
 
+        if (!email && !password) {
+            setError('Zadajte prihlasovacie údaje');
+            return;
+        }
+
         try {
             const response = await fetch('http://localhost:3000/api/users', {
                 method: 'POST',
@@ -32,12 +41,11 @@ export default function LoginForm({ setIsLoggedIn, setUser }) {
             });
 
             const data = await response.json();
-            console.log("DATA: ",data)
+            //console.log("DATA: ",data)
+
             if (!response.ok) throw new Error(data.error || 'Login failed');
 
             localStorage.setItem('token', data.token); // Save token for session
-            alert('Login successful!');
-
 
             setIsLoggedIn(true);
 
@@ -56,7 +64,13 @@ export default function LoginForm({ setIsLoggedIn, setUser }) {
                 .then(data => console.log("Protected Route Response:", data))
                 .catch(err => console.error('Fetch error:', err));
 
-            navigate('/');
+
+            setIsLoginSuccesFull(true);
+
+            setTimeout(() => {
+                setIsLoginSuccesFull(false);
+                navigate('/');
+            }, 3000);
 
         } catch (err) {
             setError(err.message);
@@ -89,10 +103,14 @@ export default function LoginForm({ setIsLoggedIn, setUser }) {
         }
     };
 
+
+
+
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
                 <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center">
+                    {!isLoginSuccesFull && !isLoggedIn ? (
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-28 py-10">
                         <h1 className="lg:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
                             Prihlásiť sa
@@ -104,7 +122,7 @@ export default function LoginForm({ setIsLoggedIn, setUser }) {
                         </p>
                         <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                             <div>
-                                <label htmlFor="email" className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Email</label>
+                                <label htmlFor="email" className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Email<span className="text-red-400 ml-1">*</span></label>
                                 <div className="relative">
                                     <svg width="20" height="16" viewBox="0 0 20 16" fill="none" className="absolute top-4 left-3"
                                          xmlns="http://www.w3.org/2000/svg">
@@ -112,17 +130,19 @@ export default function LoginForm({ setIsLoggedIn, setUser }) {
                                               d="M0 2.08696C0 0.934358 0.95939 0 2.14286 0H17.8571C19.0406 0 20 0.934358 20 2.08696V2.56271L10.5477 8.70094C10.4144 8.78442 10.2209 8.84401 9.99999 8.84401C9.7791 8.84401 9.58559 8.78442 9.45227 8.70094L0 2.56273V2.08696ZM0 4.65301V13.913C0 15.0656 0.95939 16 2.14286 16H17.8571C19.0406 16 20 15.0656 20 13.913V4.65299L11.5334 10.1511L11.5252 10.1565C11.0757 10.4414 10.5359 10.5831 9.99999 10.5831C9.46409 10.5831 8.92431 10.4414 8.47481 10.1564L8.46653 10.1512L0 4.65301Z"
                                               fill="black"/>
                                     </svg>
-                                    <input type="email" name="email" id="email"
+                                    <input type="email" name="email" id="email" autoComplete={email}
                                            className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-custom-dark-blue-hover focus:border-custom-dark-blue block w-full p-2.5"
-                                           placeholder="name@company.com" required=""
-                                           onChange={(e) => setEmail(e.target.value)}
+                                               placeholder="meno@domena.sk"
+                                           onChange={(e) => {setEmail(e.target.value)
+                                                                        validateEmail(e.target.value, "email")
+                                                                        setError(null)}}
                                     />
                                 </div>
                             </div>
                             <div>
                                 <div className="flex justify-center">
                                     <label htmlFor="password"
-                                           className="block mb-2 text-fontSize16 text-custom-dark-blue text-center">Heslo</label>
+                                           className="block mb-2 text-fontSize16 text-custom-dark-blue text-center">Heslo<span className="text-red-400 ml-1">*</span></label>
                                 </div>
                                 <div className="relative">
                                     <svg width="25" height="25" viewBox="0 0 25 25" fill="none"
@@ -147,11 +167,21 @@ export default function LoginForm({ setIsLoggedIn, setUser }) {
                                                 fill="black" fillOpacity="0.8"/>
                                         </svg>
                                     </button>
+                                    {password ? (
                                     <input type="password" name="password" id="password" placeholder="••••••••"
-                                           className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:border-custom-dark-blue focus:ring-custom-dark-blue-hover  block w-full p-2.5"
+                                           className="border border-green-400 text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:border-custom-dark-blue focus:ring-custom-dark-blue-hover block w-full p-2.5"
                                            required=""
-                                           onChange={(e) => setPassword(e.target.value)}
+                                           onChange={(e) => {setPassword(e.target.value)
+                                                                                            setError(null)}}
                                     />
+                                    ) : (<input type="password" name="password" id="password" placeholder="••••••••" autoComplete={password}
+                                                className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:border-custom-dark-blue focus:ring-custom-dark-blue-hover block w-full p-2.5"
+                                                required=""
+                                                onChange={(e) => {
+                                                    setPassword(e.target.value)
+                                                    setError(null)
+                                                }}
+                                    />)}
 
                                 </div>
 
@@ -165,9 +195,18 @@ export default function LoginForm({ setIsLoggedIn, setUser }) {
                             <button type="submit"
                                     className="w-full text-white text-fontSize24 hover:bg-custom-dark-blue-hover bg-custom-dark-blue hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-3xl text-sm px-5 py-2.5 text-center">Prihlásiť
                             </button>
-                            {error && <p className="text-red-500">{error}</p>}
+                            {error ? ( <p className="text-red-500 text-center text-fontSize20">{error}</p>
+                            ) : (
+                                <p className="text-center text-fontSize20 invisible">Error placeholder</p>
+                            )
+                            }
                         </form>
                     </div>
+                    ) : isLoginSuccesFull ? (
+                        <LoginSuccess email={email}></LoginSuccess>
+                    ) : isLoggedIn ? (
+                        <AlreadyLoggedIn setIsLoggedIn={setIsLoggedIn} setUser={setUser}></AlreadyLoggedIn>
+                    ) : (<></>)}
                 </div>
             </div>
         </section>

@@ -8,16 +8,16 @@ const JWT_SECRET = process.env.JWT_SECRET || 'random';
 // Register a new user
 router.post('/register', async (req, res) => {
     try {
-        const { firstName, lastName, email, password, role  } = req.body;
+        const { firstName, lastName, email, password, role } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
+        if (!email || !password || !firstName || !lastName) {
+            return res.status(400).json({ error: 'Vyplnte povinné polia.' });
         }
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: 'User already exists' });
+            return res.status(400).json({ error: 'Použivateľ s emailom už existuje.' });
         }
 
         /* Don't need this because I already hash the password in schema
