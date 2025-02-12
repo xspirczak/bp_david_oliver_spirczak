@@ -1,5 +1,6 @@
 import {NavLink} from "react-router-dom";
 import {useEffect, useState} from "react";
+import VerifyCodeForm from "./VerifyCodeForm.jsx";
 
 export default function RegisterForm({ validateEmail, validEmail }) {
     const [error, setError] = useState(null);
@@ -13,6 +14,8 @@ export default function RegisterForm({ validateEmail, validEmail }) {
         role: "user",
     });
     const [passwordMatch, setPasswordMatch] = useState(false);
+    const [showVerification, setShowVerification] = useState(false);
+    const [registrationDone, setRegistrationDone] = useState(false);
 
     const togglePasswordVisibility = (inputId) => {
         let e = document.getElementById(inputId);
@@ -57,9 +60,9 @@ export default function RegisterForm({ validateEmail, validEmail }) {
         }
 
         try {
-            console.log(JSON.stringify(formData.password + " " + formData.newPasswordRepeat));
+            //console.log(JSON.stringify(formData.password + " " + formData.newPasswordRepeat));
 
-            console.log(formData)
+            //console.log(formData)
             const response = await fetch("http://localhost:3000/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -73,7 +76,8 @@ export default function RegisterForm({ validateEmail, validEmail }) {
             }
 
             setSuccess("Registrácia bola úspešná!");
-            setFormData({ firstName: "", lastName: "", email: "", password: "",newPasswordRepeat: "", role: "user" });
+            setShowVerification(true);
+            //setFormData({ firstName: "", lastName: "", email: "", password: "",newPasswordRepeat: "", role: "user" });
         } catch (err) {
             setError(err.message);
         }
@@ -83,18 +87,24 @@ export default function RegisterForm({ validateEmail, validEmail }) {
     return (
 
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200 py-10">
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
+            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0 my-6">
                 <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center">
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-28 py-10">
-                        <h1 className="lg:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
-                            Registrovať sa
-                        </h1>
-                        <p className="text-fontSize16 font-light text-gray-500 text-center mb-10">
-                            Máte účet? <NavLink to="/login" className="font-medium text-primary-600 hover:underline">
-                                 Prihláste sa
-                            </NavLink>
-                        </p>
-
+                        { !registrationDone ? (
+                            <>
+                                <h1 className="lg:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
+                                    Registrovať sa
+                                </h1>
+                                <p className="text-fontSize16 font-light text-gray-500 text-center mb-10">
+                                    Máte účet? <NavLink to="/login" className="font-medium text-primary-600 hover:underline">
+                                         Prihláste sa
+                                    </NavLink>
+                                </p>
+                            </>
+                            ) : (
+                                <></>
+                            )}
+                        {!showVerification ? (
                         <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label htmlFor="email"
@@ -259,10 +269,13 @@ export default function RegisterForm({ validateEmail, validEmail }) {
                             </div>
 
                             <button type="submit"
-                                    className="w-full text-white text-fontSize24 hover:bg-custom-dark-blue-hover bg-custom-dark-blue hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-3xl text-sm px-5 py-2.5 text-center">Registrovať
+                                    className="w-full text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl px-5 py-1.5 text-center">Registrovať sa
                             </button>
 
                         </form>
+                        ) : (
+                            <VerifyCodeForm setRegistrationDone={setRegistrationDone} formnData={formData} setShowVerification={setShowVerification} setPasswordMatch={setPasswordMatch} setSuccess={setSuccess} email={formData.email} firstName={formData.firstName} lastName={formData.lastName} password={formData.password} role={formData.role} />
+                        )}
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 import {NavLink, useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import LoginSuccess from "./LoginSuccess.jsx";
 import AlreadyLoggedIn from "./AlreadyLoggedIn.jsx";
 
@@ -7,9 +7,11 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
-    const [isLoginSuccesFull, setIsLoginSuccesFull] = useState(false);
-
+    const [isLoginSuccessful, setIsLoginSuccessful] = useState(false);
+    const [fullName, setFullName] = useState("");
     const navigate = useNavigate();
+
+    const relocateRef = useRef(null);
 
     function togglePasswordVisibility() {
         let e = document.getElementById("password")
@@ -41,15 +43,16 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
             });
 
             const data = await response.json();
-            //console.log("DATA: ",data)
 
-            if (!response.ok) throw new Error(data.error || 'Login failed');
+            if (!response.ok) throw new Error(data.error || 'Prihlásenie zlyhaLo.');
 
             localStorage.setItem('token', data.token); // Save token for session
 
             setIsLoggedIn(true);
 
             const decoded = decodeJWT(data.token)
+
+            setFullName(data.user.firstName + ' ' + data.user.lastName);
 
             setUser(decoded.email);
 
@@ -65,16 +68,23 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                 .catch(err => console.error('Fetch error:', err));
 
 
-            setIsLoginSuccesFull(true);
+            setIsLoginSuccessful(true);
 
-            setTimeout(() => {
-                setIsLoginSuccesFull(false);
+            relocateRef.current = setTimeout(() => {
+                setIsLoginSuccessful(false);
                 navigate('/');
             }, 3000);
 
         } catch (err) {
             setError(err.message);
         }
+    };
+
+    const navigateTo = (route) => {
+        if (relocateRef.current) {
+            clearTimeout(relocateRef.current);
+        }
+        navigate(route);
     };
 
     const decodeJWT = (token) => {
@@ -110,7 +120,7 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
                 <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center">
-                    {!isLoginSuccesFull && !isLoggedIn ? (
+                    {!isLoginSuccessful && !isLoggedIn ? (
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-28 py-10">
                         <h1 className="lg:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
                             Prihlásiť sa
@@ -191,9 +201,8 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                                         heslo</a>
                                 </div>
                             </div>
-
                             <button type="submit"
-                                    className="w-full text-white text-fontSize24 hover:bg-custom-dark-blue-hover bg-custom-dark-blue hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-3xl text-sm px-5 py-2.5 text-center">Prihlásiť
+                                    className="w-full text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl px-5 py-1.5 text-center">Prihlásiť sa
                             </button>
                             {error ? ( <p className="text-red-500 text-center text-fontSize20">{error}</p>
                             ) : (
@@ -202,10 +211,10 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                             }
                         </form>
                     </div>
-                    ) : isLoginSuccesFull ? (
-                        <LoginSuccess email={email}></LoginSuccess>
+                    ) : isLoginSuccessful ? (
+                        <LoginSuccess navigateTo={navigateTo} fullName={fullName}></LoginSuccess>
                     ) : isLoggedIn ? (
-                        <AlreadyLoggedIn setIsLoggedIn={setIsLoggedIn} setUser={setUser}></AlreadyLoggedIn>
+                        <AlreadyLoggedIn navigateTo={navigateTo} setIsLoggedIn={setIsLoggedIn} setUser={setUser}></AlreadyLoggedIn>
                     ) : (<></>)}
                 </div>
             </div>

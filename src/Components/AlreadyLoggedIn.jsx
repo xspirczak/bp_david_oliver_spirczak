@@ -1,11 +1,7 @@
 import {useNavigate} from "react-router-dom";
 
-export default function AlreadyLoggedIn({setIsLoggedIn, setUser}) {
+export default function AlreadyLoggedIn({setIsLoggedIn, setUser, navigateTo}) {
     const navigate = useNavigate();
-
-    const navigateTo = (route) => {
-        navigate(route);
-    }
 
     // Handle logout by clearing the user state and token
     const handleLogout = () => {

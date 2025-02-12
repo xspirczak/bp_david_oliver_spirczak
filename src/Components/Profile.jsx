@@ -43,8 +43,13 @@ export default function Profile() {
         fetchUserProfile();
     }, []);
 
-    if (loading) return <p>Loading profile...</p>;
-    if (error) return <p>Error: {error}</p>;
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-32">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+            </div>
+        );
+    }
 
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
@@ -56,7 +61,7 @@ export default function Profile() {
                              className="rounded-3xl md:w-[200px] md:h-[200px] w-[100px] h-[100px]" />
                         <div className="mt-4" id="titleInfo">
                             <p className="md:text-fontSize28 text-fontSize20 font-bold text-custom-dark-blue">
-                                {profileData.email.split("@")[0]} {profileData.email.split("@")[0]}
+                                {profileData.firstName} {profileData.lastName}
                             </p>
                             <p className="md:text-fontSize20 text-fontSize16 font-semibold text-custom-dark-blue">
                                 {profileData.email}

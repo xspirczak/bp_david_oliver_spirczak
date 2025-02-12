@@ -81,9 +81,9 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 hover:bg-custom-dark-blue-hover hover:border-custom-dark-blue-hover">
             {isLoggedIn ? (
-                <button onClick={handleLogout} className="text-md font-semibold leading-6 text-white">Odhlásiť sa</button>
+                <button onClick={handleLogout} className="text-fontSize16 font-semibold leading-6 text-white">Odhlásiť sa</button>
               ) : (
-              <NavLink to="/login" className="text-md font-semibold leading-6 text-white">
+              <NavLink to="/login" className="text-fontSize16 font-semibold leading-6 text-white">
                   Prihlásiť sa
                 </NavLink>
             )}
@@ -138,9 +138,9 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
               <div className="py-6">
                  <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 w-32 flex justify-center">
                    {isLoggedIn ? (
-                       <button onClick={handleLogout} className="text-md font-semibold leading-6 text-white">Odhlásiť sa</button>
+                       <button onClick={handleLogout} className="text-fontSize16 font-semibold leading-6 text-white">Odhlásiť sa</button>
                    ) : (
-                       <NavLink to="/login" className="text-md font-semibold leading-6 text-white">
+                       <NavLink to="/login" className="text-fontSize16 font-semibold leading-6 text-white">
                          Prihlásiť sa
                        </NavLink>
                    )}

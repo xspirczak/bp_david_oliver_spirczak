@@ -115,8 +115,10 @@ app.post('/api/users', async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log(req.body);
     // Check if user exists
     const user = await User.findOne({ email });
+
     if (!user) return res.status(400).json({ error: 'Email alebo heslo je nesprávne.' });
 
     // Compare password
@@ -128,7 +130,7 @@ app.post('/api/users', async (req, res) => {
 
     console.log("TOKEN: ", token);
 
-    res.json({ message: 'Prihlásenie bolo úspešné', token });
+    res.json({ message: 'Prihlásenie bolo úspešné', token, user});
   } catch (err) {
     console.log("login error: ", err);
 
