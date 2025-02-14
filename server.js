@@ -138,6 +138,7 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
+// Get user
 app.get('/api/users', authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password'); // Exclude password
@@ -155,6 +156,66 @@ app.use('/api/auth', authRoutes);
 app.get('/api/protected', authMiddleware, (req, res) => {
   res.json({ message: `Hello, ${req.user.email}! You accessed a protected route.` });
 });
+
+// Update user name
+app.put('/api/users/update-name', authMiddleware, async (req, res) => {
+  try {
+    const { firstName, lastName } = req.body;
+
+    if (!firstName || !lastName) {
+      return res.status(400).json({ error: "First name and last name are required" });
+    }
+
+    // Find the user by ID (from authMiddleware)
+    const updatedUser = await User.findByIdAndUpdate(
+        req.user.id,
+        { firstName, lastName },
+        { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json({ message: "Name updated successfully", user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ error: "Server error: " + err.message });
+  }
+});
+
+// Update user password
+app.put('/api/users/update-password', authMiddleware, async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+
+    console.log(req.body);
+
+    if (!oldPassword || !newPassword) {
+      return res.status(400).json({ error: "Current and new passwords are required" });
+    }
+
+    // Find user in the database
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if the current password is correct
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: "Current password is incorrect" });
+    }
+
+    // Update the password
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Server error: " + err.message });
+  }
+});
+
 
 
 

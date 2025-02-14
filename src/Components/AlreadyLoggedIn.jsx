@@ -15,15 +15,15 @@ export default function AlreadyLoggedIn({setIsLoggedIn, setUser, navigateTo}) {
     return (
         <div className="grid justify-center p-6 gap-6">
             <h3 className="text-fontSize28 text-custom-dark-blue font-bold text-center">Už ste prihlásený.</h3>
-            <div className="flex justify-center">
+            <div className="md:flex grid justify-center gap-6">
                 <button type="button" onClick={()=> navigateTo('/')}
-                        className="flex justify-center items-center w-1/4 px-6 py-2 ml-3 bg-custom-dark-blue text-white text-fontSize16 font-medium rounded-xl hover:bg-custom-dark-blue-hover focus:outline-none">Domovská stránka
+                        className="flex justify-center font-semibold items-center md:w-1/3 w-full px-6 py-2 ml-3 bg-custom-dark-blue text-white text-fontSize16 rounded-3xl hover:bg-custom-dark-blue-hover focus:outline-none">Domovská stránka
                 </button>
                 <button type="button" onClick={()=> navigateTo('/profile')}
-                        className="flex justify-center items-center w-1/4 px-6 py-2 ml-3 bg-custom-dark-blue text-white text-fontSize16 font-medium rounded-xl hover:bg-custom-dark-blue-hover focus:outline-none">Profil
+                        className="flex justify-center font-semibold items-center md:w-1/3 w-full px-6 py-2 ml-3 bg-custom-dark-blue text-white text-fontSize16 rounded-3xl hover:bg-custom-dark-blue-hover focus:outline-none">Profil
                 </button>
                 <button type="button" onClick={handleLogout}
-                        className="flex justify-center items-center w-1/4 px-6 py-2 ml-3 bg-custom-dark-blue text-white text-fontSize16 font-medium rounded-xl hover:bg-custom-dark-blue-hover focus:outline-none">Odhlásiť sa
+                        className="flex justify-center font-semibold items-center md:w-1/3 w-full px-6 py-2 ml-3 bg-custom-dark-blue text-white text-fontSize16 rounded-3xl hover:bg-custom-dark-blue-hover focus:outline-none">Odhlásiť sa
                 </button>
 
             </div>

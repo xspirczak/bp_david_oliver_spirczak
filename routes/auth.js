@@ -1,8 +1,9 @@
 import express from 'express';
 import User from '../models/User.js';
 import nodemailer from 'nodemailer';
-const router = express.Router();
+import authMiddleware from "../authMiddleware/authMiddleware.js";
 import dotenv from "dotenv";
+const router = express.Router();
 dotenv.config();
 
 // Temporary storage for email verification codes (You should use Redis/DB in production)
@@ -80,6 +81,35 @@ router.post('/verify-email', async (req, res) => {
         return res.json({ message: "Email bol verifikovaný! Registráciu bola úspešná." });
     } catch (err) {
         return res.status(500).json({ error: "Internal server error." });
+    }
+});
+
+// Update user name
+router.put("/update-name", authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id; // Extract user ID from the token (authMiddleware)
+        const { firstName, lastName } = req.body;
+
+        // Validate inputs
+        if (!firstName || !lastName) {
+            return res.status(400).json({ message: "First name and last name are required" });
+        }
+
+        // Update user in DB
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { firstName, lastName },
+            { new: true, select: "-password" } // Return updated user without password
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.error("Error updating name:", error);
+        res.status(500).json({ message: "Server error" });
     }
 });
 

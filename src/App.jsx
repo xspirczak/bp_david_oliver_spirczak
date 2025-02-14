@@ -13,7 +13,7 @@ import PrivateRoute from "./Components/PrivateRoute.jsx";
 
 export default function App() {
   // State to track if the user is logged in
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [user, setUser] = useState(null);
   const [validEmail, setValidEmail] = useState(false);
 
@@ -21,6 +21,8 @@ export default function App() {
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
   }, []);
 
@@ -39,6 +41,10 @@ export default function App() {
       input.classList.remove("border-custom-dark-blue");
       input.classList.add("border-red-400");
     }
+  }
+
+  if (isLoggedIn === null) {
+    return <div>Loading...</div>;
   }
 
   return (
