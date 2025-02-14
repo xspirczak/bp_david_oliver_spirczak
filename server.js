@@ -21,7 +21,9 @@ mongoose.connect('mongodb://localhost:27017/keys')
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
 
-const JWT_SECRET = process.env.JWT_SECRET || 'random'; // Use env variable
+const JWT_SECRET = process.env.JWT_SECRET || 'random';
+const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH || 'random1';
+
 
 // Create a simple route
 app.get('/', (req, res) => {
@@ -76,7 +78,6 @@ app.get('/api/keys', async (req, res) => {
 });
 
 // documents
-
 app.post('/api/documents', async (req, res) => {
   try {
     
@@ -126,11 +127,11 @@ app.post('/api/users', async (req, res) => {
     if (!isMatch) return res.status(400).json({ error: 'Email alebo heslo je nesprávne.' });
 
     // Generate JWT token
-    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+    const accessToken = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
-    console.log("TOKEN: ", token);
+    console.log("TOKEN: ", accessToken);
 
-    res.json({ message: 'Prihlásenie bolo úspešné', token, user});
+    res.json({ message: 'Prihlásenie bolo úspešné', token: accessToken, user});
   } catch (err) {
     console.log("login error: ", err);
 
@@ -151,7 +152,6 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-
 
 app.get('/api/protected', authMiddleware, (req, res) => {
   res.json({ message: `Hello, ${req.user.email}! You accessed a protected route.` });
@@ -191,30 +191,33 @@ app.put('/api/users/update-password', authMiddleware, async (req, res) => {
     console.log(req.body);
 
     if (!oldPassword || !newPassword) {
-      return res.status(400).json({ error: "Current and new passwords are required" });
+      return res.status(400).json({ error: "Staté a nové heslá jú požadované" });
     }
 
     // Find user in the database
     const user = await User.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "Používateľ sa nenašiel." });
     }
 
     // Check if the current password is correct
     const isMatch = await bcrypt.compare(oldPassword, user.password);
     if (!isMatch) {
-      return res.status(400).json({ error: "Current password is incorrect" });
+      return res.status(400).json({ error: "Staré heslo je nesprávne." });
     }
 
     // Update the password
     user.password = newPassword;
     await user.save();
 
-    res.json({ message: "Password updated successfully" });
+    res.json({ message: "Heslo bolo zmenené." });
   } catch (err) {
     res.status(500).json({ error: "Server error: " + err.message });
   }
 });
+
+
+
 
 
 

@@ -26,6 +26,24 @@ export default function App() {
     }
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      const decoded = decodeJWT(token);
+
+      // Check if token has expired
+      if (decoded.exp * 1000 < Date.now()) {
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+        setUser(null);
+      } else {
+        setIsLoggedIn(true);
+        setUser(decoded.email);
+      }
+    }
+  }, []);
+
   const validateEmail = (email, id) => {
     const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     const input = document.getElementById(id);
@@ -43,9 +61,40 @@ export default function App() {
     }
   }
 
+  const decodeJWT = (token) => {
+    // Check if the token is defined and is a string
+    if (!token || typeof token !== 'string') {
+      throw new Error('Token is missing or invalid');
+    }
+
+    // Split the token into three parts: header, payload, and signature
+    const parts = token.split('.');
+
+    // Validate the token structure (it should have 3 parts)
+    if (parts.length !== 3) {
+      throw new Error('Invalid JWT format');
+    }
+
+    try {
+      // Decode the payload from base64Url to a regular base64 string
+      const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+
+      // Decode the base64 string into a UTF-8 string, then parse it as JSON
+      return JSON.parse(atob(payload));
+    } catch (error) {
+      console.error('Error decoding JWT token:', error);
+      throw new Error('Error decoding JWT token');
+    }
+  };
+
   if (isLoggedIn === null) {
-    return <div>Loading...</div>;
+      return (
+          <div className="flex justify-center items-center h-32">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+          </div>
+      );
   }
+
 
   return (
     
@@ -59,7 +108,7 @@ export default function App() {
           <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
             <Route path="/mapping" element={<MappingPage />} />
           </Route>
-          <Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUser={setUser} validateEmail={validateEmail}/>}/>
+          <Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUser={setUser} validateEmail={validateEmail} decodeJWT={decodeJWT}/>}/>
           <Route path="/register" element={<RegisterPage validateEmail={validateEmail} validEmail={validEmail}/>}/>
           <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
             <Route path="/profile" element={<ProfilePage />} />

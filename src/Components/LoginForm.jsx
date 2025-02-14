@@ -3,7 +3,7 @@ import {useRef, useState} from "react";
 import LoginSuccess from "./LoginSuccess.jsx";
 import AlreadyLoggedIn from "./AlreadyLoggedIn.jsx";
 
-export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validateEmail }) {
+export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validateEmail, decodeJWT }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
@@ -69,11 +69,12 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
 
             setIsLoginSuccessful(true);
-
+/*
             relocateRef.current = setTimeout(() => {
                 setIsLoginSuccessful(false);
                 navigate('/');
             }, 3000);
+            */
 
         } catch (err) {
             setError(err.message);
@@ -86,34 +87,6 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
         }
         navigate(route);
     };
-
-    const decodeJWT = (token) => {
-        // Check if the token is defined and is a string
-        if (!token || typeof token !== 'string') {
-            throw new Error('Token is missing or invalid');
-        }
-
-        // Split the token into three parts: header, payload, and signature
-        const parts = token.split('.');
-
-        // Validate the token structure (it should have 3 parts)
-        if (parts.length !== 3) {
-            throw new Error('Invalid JWT format');
-        }
-
-        try {
-            // Decode the payload from base64Url to a regular base64 string
-            const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-
-            // Decode the base64 string into a UTF-8 string, then parse it as JSON
-            return JSON.parse(atob(payload));
-        } catch (error) {
-            console.error('Error decoding JWT token:', error);
-            throw new Error('Error decoding JWT token');
-        }
-    };
-
-
 
 
     return (

@@ -3,6 +3,7 @@ import User from '../models/User.js';
 import nodemailer from 'nodemailer';
 import authMiddleware from "../authMiddleware/authMiddleware.js";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 const router = express.Router();
 dotenv.config();
 
@@ -112,5 +113,98 @@ router.put("/update-name", authMiddleware, async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
+
+// Temporary storage for email change verification codes
+const emailChangeVerificationCodes = new Map();
+
+/**
+ * 1️⃣ Request Email Change (Send Verification Code)
+ */
+router.post("/request-email-change", authMiddleware, async (req, res) => {
+    try {
+        const { newEmail } = req.body;
+        const userId = req.user.id; // Extract user ID from the token
+
+        // Check if the new email is already in use
+        const existingUser = await User.findOne({ email: newEmail });
+        if (existingUser) {
+            return res.status(400).json({ error: "Email už existuje." });
+        }
+
+        // Generate a verification code
+        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+        emailChangeVerificationCodes.set(userId, { newEmail, verificationCode, expiresAt: Date.now() + 10 * 60 * 1000 });
+
+        // Send email with verification code
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: newEmail,
+            subject: "Overenie zmeny emailu",
+            text: `Váš overovací kód: ${verificationCode}`
+        };
+
+        await transporter.sendMail(mailOptions);
+        return res.json({ message: "Overovací kód bol odoslaný na nový email." });
+
+    } catch (err) {
+        console.error("Chyba pri odosielaní overovacieho kódu:", err);
+        return res.status(500).json({ error: "Interná chyba servera." });
+    }
+});
+
+/**
+ * 2️⃣ Verify Code and Update Email
+ */
+router.post("/verify-email-change", authMiddleware, async (req, res) => {
+    try {
+        const { verificationCode } = req.body;
+        const userId = req.user.id;
+
+        // Get stored verification code
+        const storedData = emailChangeVerificationCodes.get(userId);
+        if (!storedData || storedData.expiresAt < Date.now()) {
+            return res.status(400).json({ error: "Overovací kód vypršal alebo neexistuje." });
+        }
+
+        if (storedData.verificationCode !== verificationCode) {
+            return res.status(400).json({ error: "Nesprávny overovací kód." });
+        }
+
+        // Update the user's email
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { email: storedData.newEmail },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: "Používateľ sa nenašiel." });
+        }
+
+        // Generate a new JWT token with the updated email
+        const newAccessToken = jwt.sign(
+            { id: updatedUser._id, email: updatedUser.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
+        // Remove the stored code after successful update
+        emailChangeVerificationCodes.delete(userId);
+
+        return res.json({
+            message: "Email bol úspešne zmenený.",
+            token: newAccessToken,  // Send the new token
+            user: updatedUser
+        });
+
+    } catch (err) {
+        console.error("Chyba pri overovaní emailu:", err);
+        return res.status(500).json({ error: "Interná chyba servera." });
+    }
+});
+
+
+
+
 
 export default router;
