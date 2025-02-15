@@ -11,6 +11,10 @@ import {ProfilePage} from "./Pages/profile.jsx";
 import {useEffect, useState} from "react";
 import PrivateRoute from "./Components/PrivateRoute.jsx";
 import NotFound from "./Components/NotFound.jsx";
+import {ForgotPasswordPage} from "./Pages/forgotPassword.jsx";
+import VerifyCodeForgottenPassword from "./Components/VefifyCodeForgottenPassword.jsx";
+import {VerifyCodeForgottenPasswordPage} from "./Pages/verifyCodeForgottenPassword.jsx";
+import {ResetPasswordPage} from "./Pages/resetPassword.jsx";
 
 export default function App() {
   // State to track if the user is logged in
@@ -105,6 +109,9 @@ export default function App() {
               element={<Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser}/>}>
             <Route path="*" element={<NotFound/>}/>
             <Route path="/" element={<HomePage/>}/>
+            <Route path="/forgotPassword" element={<ForgotPasswordPage/>}/>
+            <Route path="/verifyCodePassword" element={<VerifyCodeForgottenPasswordPage/>}/>
+            <Route path="/resetPassword" element={<ResetPasswordPage/>}/>
             <Route path="/keys" element={<KeysPage/>}/>
             <Route path="/documents" element={<DocumentsPage/>}/>
             <Route path="/search" element={<SearchPage/>}/>

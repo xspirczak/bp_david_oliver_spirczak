@@ -169,9 +169,9 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                                 </div>
 
                                 <div className="flex items-center justify-end">
-                                    <a href="#"
+                                    <NavLink to={'/forgotPassword'}
                                        className="text-fontSize16 text-custom-dark-blue hover:underline">Zabudol som
-                                        heslo</a>
+                                        heslo</NavLink>
                                 </div>
                             </div>
                             <button type="submit"

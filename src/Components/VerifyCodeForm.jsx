@@ -69,7 +69,7 @@ export default function VerifyCodeForm({ email, firstName, lastName, password, r
                     </div>
                 </div>
                 <p className="text-center text-custom-dark-blue text-fontSize20 mb-6">Úspešne ste overili svoju emailovú
-                    adresu.</p>
+                    adresu. Teraz sa môžete prihlásiť.</p>
                 <div className="flex justify-center">
                     <button
                         className="w-full lg:w-1/3 text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl py-1.5 text-center"><NavLink to="/login" className="text-white text-fontSize16 ">

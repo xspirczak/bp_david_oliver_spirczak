@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 import authMiddleware from "../authMiddleware/authMiddleware.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import {isStrongPassword} from "../src/functions.js";
 const router = express.Router();
 dotenv.config();
 
@@ -26,6 +27,12 @@ const transporter = nodemailer.createTransport({
 router.post('/register', async (req, res) => {
     try {
         const { firstName, lastName, email, password, role } = req.body;
+
+        const passwordError = isStrongPassword(password);
+
+        if (!passwordError.strong) {
+            return res.status(400).json({ error: passwordError.error });
+        }
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -61,10 +68,6 @@ router.post('/verify-email', async (req, res) => {
     try {
         //console.log(req.body)
         const { email, verificationCode, firstName, lastName, password, role } = req.body;
-
-        //console.log("Email:", email);
-        //console.log("Verification Code:", verificationCode);
-        //console.log("Verification Code:", verificationCodes.get(email));
 
         // Check if the code matches
 
@@ -117,9 +120,8 @@ router.put("/update-name", authMiddleware, async (req, res) => {
 // Temporary storage for email change verification codes
 const emailChangeVerificationCodes = new Map();
 
-/**
- * 1️⃣ Request Email Change (Send Verification Code)
- */
+
+//Request Email Change (Send Verification Code)
 router.post("/request-email-change", authMiddleware, async (req, res) => {
     try {
         const { newEmail } = req.body;
@@ -152,9 +154,8 @@ router.post("/request-email-change", authMiddleware, async (req, res) => {
     }
 });
 
-/**
- * 2️⃣ Verify Code and Update Email
- */
+
+// Verify Code and Update Email
 router.post("/verify-email-change", authMiddleware, async (req, res) => {
     try {
         const { verificationCode } = req.body;
@@ -203,8 +204,102 @@ router.post("/verify-email-change", authMiddleware, async (req, res) => {
     }
 });
 
+// Forgot password request verification code
+router.post("/forgot-password",  async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        // Check if the email is used
+        const existingUser = await User.findOne({ email });
+        if (!existingUser) {
+            return res.status(400).json({ error: "Používateľ s týmto emailom neexistuje." });
+        }
+
+        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Store the code in memory (or database) with an expiration time
+        emailChangeVerificationCodes.set(email, {
+            verificationCode,
+            expiresAt: Date.now() + 10 * 60 * 1000, // Code valid for 10 minutes
+        });
+
+        // Send email with verification code
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Obnova hesla",
+            text: `Váš overovací kód na obnovanie hesla: ${verificationCode}`
+        };
+
+        await transporter.sendMail(mailOptions);
+        return res.json({ message: "Overovací kód bol odoslaný na nový email." });
+
+    } catch (err) {
+        console.error("Chyba pri odosielaní overovacieho kódu:", err);
+        return res.status(500).json({ error: "Interná chyba servera." });
+    }
+});
+
+// Verify the password reset code
+router.post("/forgot-password-verify-code", async (req, res) => {
+    try {
+        const { email, verificationCode } = req.body;
+
+        // Check if a verification code exists for this email
+        const storedData = emailChangeVerificationCodes.get(email);
+        if (!storedData) {
+            return res.status(400).json({ error: "Nebolo nájdené overenie pre tento email." });
+        }
+
+        // Check if the code has expired
+        if (Date.now() > storedData.expiresAt) {
+            emailChangeVerificationCodes.delete(email); // Remove expired code
+            return res.status(400).json({ error: "Overovací kód expiroval. Skúste to znovu." });
+        }
+
+        // Check if the entered code matches the stored one
+        if (storedData.verificationCode !== verificationCode) {
+            return res.status(400).json({ error: "Nesprávny overovací kód." });
+        }
+
+        // If the code is valid, delete it from memory and allow password reset
+        emailChangeVerificationCodes.delete(email);
+        return res.json({ message: "Overovací kód je správny. Môžete obnoviť heslo." });
+
+    } catch (err) {
+        console.error("Chyba pri overovaní kódu:", err);
+        return res.status(500).json({ error: "Interná chyba servera." });
+    }
+});
 
 
+// Reset Password Endpoint
+router.post("/reset-password", async (req, res) => {
+    try {
+        const { email, newPassword } = req.body;
 
+        const passwordError = isStrongPassword(newPassword);
+
+        if (!passwordError.strong) {
+            return res.status(400).json({ error: passwordError.error });
+        }
+
+        // Find the user in the database
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ error: "Používateľ s týmto emailom neexistuje." });
+        }
+
+        // Update the user's password in the database
+        user.password = newPassword;
+        await user.save();
+
+        return res.json({ message: "Heslo bolo úspešne zmenené." });
+
+    } catch (err) {
+        console.error("Chyba pri zmene hesla:", err);
+        return res.status(500).json({ error: "Interná chyba servera." });
+    }
+});
 
 export default router;

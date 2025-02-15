@@ -9,6 +9,7 @@ import User from './models/User.js';
 import Key from './models/Keys.js';
 import Document from './models/Documents.js';
 import authRoutes from './routes/auth.js';
+import {isStrongPassword} from './src/functions.js'
 
 // Initialize app
 dotenv.config();
@@ -188,10 +189,16 @@ app.put('/api/users/update-password', authMiddleware, async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
 
-    console.log(req.body);
+    //console.log(req.body);
 
     if (!oldPassword || !newPassword) {
       return res.status(400).json({ error: "Staté a nové heslá jú požadované" });
+    }
+
+    const passwordError = isStrongPassword(newPassword);
+
+    if (!passwordError.strong) {
+      return res.status(400).json({ error: passwordError.error });
     }
 
     // Find user in the database
