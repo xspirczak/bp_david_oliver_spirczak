@@ -79,7 +79,7 @@ export default function Profile() {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${localStorage.getItem("token")}`,
                 },
-                body: JSON.stringify({ firstName: updatedFirstName , lastName: updatedLastName }),
+                body: JSON.stringify({ firstName: updatedFirstName.trim() , lastName: updatedLastName.trim() }),
             });
 
             if (!response.ok) throw new Error("Failed to update name");
@@ -243,7 +243,7 @@ export default function Profile() {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-32">
+            <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-500 to-cyan-200">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
             </div>
         );
@@ -259,7 +259,7 @@ export default function Profile() {
                              className="rounded-3xl md:w-[200px] md:h-[200px] w-[100px] h-[100px]"/>
                         <div className="mt-4" id="titleInfo">
                             <p className="md:text-fontSize28 text-fontSize20 font-bold text-custom-dark-blue break-after-all">
-                                {profileData.firstName} {profileData.lastName}
+                                {profileData.firstName + " "} {profileData.lastName}
                             </p>
                             <p className="md:text-fontSize20 text-fontSize16 font-semibold text-custom-dark-blue break-all">
                                 {profileData.email}

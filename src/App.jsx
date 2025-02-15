@@ -10,6 +10,7 @@ import {SearchPage} from "./Pages/search.jsx";
 import {ProfilePage} from "./Pages/profile.jsx";
 import {useEffect, useState} from "react";
 import PrivateRoute from "./Components/PrivateRoute.jsx";
+import NotFound from "./Components/NotFound.jsx";
 
 export default function App() {
   // State to track if the user is logged in
@@ -97,19 +98,23 @@ export default function App() {
 
 
   return (
-    
-    <Router>
-      <Routes>
-        <Route element={<Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser} />}>
-          <Route path="/" element={<HomePage/>}/>
-          <Route path="/keys" element={<KeysPage/>}/>
-          <Route path="/documents" element={<DocumentsPage/>}/>
-          <Route path="/search" element={<SearchPage/>}/>
-          <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
-            <Route path="/mapping" element={<MappingPage />} />
-          </Route>
-          <Route path="/login" element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUser={setUser} validateEmail={validateEmail} decodeJWT={decodeJWT}/>}/>
-          <Route path="/register" element={<RegisterPage validateEmail={validateEmail} validEmail={validEmail}/>}/>
+
+      <Router>
+        <Routes>
+          <Route
+              element={<Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser}/>}>
+            <Route path="*" element={<NotFound/>}/>
+            <Route path="/" element={<HomePage/>}/>
+            <Route path="/keys" element={<KeysPage/>}/>
+            <Route path="/documents" element={<DocumentsPage/>}/>
+            <Route path="/search" element={<SearchPage/>}/>
+            <Route element={<PrivateRoute isLoggedIn={isLoggedIn}/>}>
+              <Route path="/mapping" element={<MappingPage/>}/>
+            </Route>
+            <Route path="/login"
+                   element={<LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} setUser={setUser}
+                                       validateEmail={validateEmail} decodeJWT={decodeJWT}/>}/>
+            <Route path="/register" element={<RegisterPage validateEmail={validateEmail} validEmail={validEmail}/>}/>
           <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
