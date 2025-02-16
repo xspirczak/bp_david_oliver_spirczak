@@ -69,12 +69,7 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
 
             setIsLoginSuccessful(true);
-/*
-            relocateRef.current = setTimeout(() => {
-                setIsLoginSuccessful(false);
-                navigate('/');
-            }, 3000);
-            */
+
 
         } catch (err) {
             setError(err.message);
@@ -90,10 +85,12 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
 
     return (
-        <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
+        <>
+        {!isLoginSuccessful && !isLoggedIn ? (
+        <section className="bg-gradient-to-r from-blue-500 to-cyan-200 py-10">
+            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-auto lg:py-0">
                 <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center">
-                    {!isLoginSuccessful && !isLoggedIn ? (
+
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-28 py-10">
                         <h1 className="lg:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
                             Prihlásiť sa
@@ -184,13 +181,16 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                             }
                         </form>
                     </div>
-                    ) : isLoginSuccessful ? (
-                        <LoginSuccess navigateTo={navigateTo} fullName={fullName}></LoginSuccess>
-                    ) : isLoggedIn ? (
-                        <AlreadyLoggedIn navigateTo={navigateTo} setIsLoggedIn={setIsLoggedIn} setUser={setUser}></AlreadyLoggedIn>
-                    ) : (<></>)}
+
                 </div>
             </div>
         </section>
+        ) : isLoginSuccessful ? (
+            <LoginSuccess navigateTo={navigateTo} fullName={fullName}></LoginSuccess>
+        ) : isLoggedIn ? (
+            <AlreadyLoggedIn navigateTo={navigateTo} setIsLoggedIn={setIsLoggedIn} setUser={setUser}></AlreadyLoggedIn>
+        ) : (<></>)}
+    </>
     )
+
 }

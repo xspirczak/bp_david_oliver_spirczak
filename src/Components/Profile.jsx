@@ -251,8 +251,8 @@ export default function Profile() {
    return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
 
-            <div className="flex items-center justify-center h-screen">
-                <div className="bg-white lg:rounded-91 rounded-3xl shadow lg:w-3/5 w-5/6 lg:px-20 px-6 lg:py-10 py-6">
+            <div className="flex items-center justify-center">
+                <div className="bg-white lg:rounded-91 rounded-3xl shadow lg:w-3/5 w-5/6 lg:px-20 px-6 lg:py-10 py-6 my-10">
                     <div className="sm:flex grid sm:gap-10 gap-2 border border-gray-200 rounded-3xl sm:p-6 p-3">
                         <img src={"https://picsum.photos/200/200"}
                              alt="profilePhoto"
