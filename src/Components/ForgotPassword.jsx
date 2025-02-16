@@ -1,8 +1,8 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { IoSendOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
-export default function ForgotPassword() {
+export default function ForgotPassword({forgotPassword, setForgotPassword}) {
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
@@ -28,7 +28,8 @@ export default function ForgotPassword() {
             setMessage("Overovací kód bol odoslaný na váš email.");
 
             setTimeout(() => {
-                navigate("/verifyCodePassword", { state: { email } });
+                setForgotPassword("codeSent");
+                navigate("/verifyCode", { state: { email } });
             }, 2000);
 
         } catch (err) {

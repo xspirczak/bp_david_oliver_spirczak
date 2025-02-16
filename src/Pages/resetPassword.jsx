@@ -1,7 +1,7 @@
 import ResetPassword from "../Components/ResetPassword.jsx";
 
-export function ResetPasswordPage() {
+export function ResetPasswordPage({ forgotPassword, setForgotPassword}) {
     return (
-        <ResetPassword></ResetPassword>
+        <ResetPassword forgotPassword={forgotPassword} setForgotPassword={setForgotPassword}></ResetPassword>
     )
 }

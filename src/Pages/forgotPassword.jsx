@@ -1,7 +1,7 @@
 import ForgotPassword from "../Components/ForgotPassword.jsx";
 
-export function ForgotPasswordPage() {
+export function ForgotPasswordPage({forgotPassword, setForgotPassword}) {
     return (
-        <ForgotPassword></ForgotPassword>
+        <ForgotPassword setForgotPassword={setForgotPassword} forgotPassword={forgotPassword}></ForgotPassword>
     )
 }

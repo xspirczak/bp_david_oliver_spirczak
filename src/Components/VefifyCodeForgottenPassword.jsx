@@ -1,8 +1,8 @@
 import { IoSendOutline } from "react-icons/io5";
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useNavigate, useLocation, Navigate} from "react-router-dom";
 
-export default function VerifyCodeForgottenPassword() {
+export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPassword}) {
     const [verificationCode, setVerificationCode] = useState("");
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
@@ -29,15 +29,22 @@ export default function VerifyCodeForgottenPassword() {
 
             setMessage("Overenie verifikačného kódu bolo úspešné!");
 
-            // Redirect to reset password page with email
             setTimeout(() => {
+                setForgotPassword("codeVerified");
                 navigate("/resetPassword", { state: { email } });
             }, 2000);
+
 
         } catch (err) {
             setError(err.message);
         }
     };
+
+    if (forgotPassword !== "codeSent") {
+        return <Navigate to={'/forgotPassword'} />;
+    }
+
+
 
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">

@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useNavigate, useLocation, Navigate} from "react-router-dom";
 
-export default function ResetPassword() {
+export default function ResetPassword({forgotPassword, setForgotPassword}) {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
@@ -34,14 +34,22 @@ export default function ResetPassword() {
             }
 
             setMessage("Heslo bolo úspešne zmenené!");
+
             setTimeout(() => {
+                setForgotPassword(null);
                 navigate("/login");
             }, 2000);
+
+
 
         } catch (err) {
             setError(err.message);
         }
     };
+
+    if (forgotPassword !== "codeVerified") {
+        return <Navigate to={'/forgotPassword'} />;
+    }
 
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
@@ -58,6 +66,7 @@ export default function ResetPassword() {
                                 type="password"
                                 name="newPassword"
                                 id="newPassword"
+                                autoComplete="new-password"
                                 className="border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:outline-custom-dark-blue focus:ring-custom-dark-blue-hover focus:border-custom-dark-blue block w-full md:w-1/2 lg:w-1/3 p-2.5"
                                 placeholder="Nové heslo"
                                 value={newPassword}
@@ -68,6 +77,7 @@ export default function ResetPassword() {
                                 type="password"
                                 name="confirmPassword"
                                 id="confirmPassword"
+                                autoComplete="new-password"
                                 className="border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:outline-custom-dark-blue focus:ring-custom-dark-blue-hover focus:border-custom-dark-blue block w-full md:w-1/2 lg:w-1/3 p-2.5"
                                 placeholder="Potvrďte nové heslo"
                                 value={confirmPassword}

@@ -12,7 +12,6 @@ import {useEffect, useState} from "react";
 import PrivateRoute from "./Components/PrivateRoute.jsx";
 import NotFound from "./Components/NotFound.jsx";
 import {ForgotPasswordPage} from "./Pages/forgotPassword.jsx";
-import VerifyCodeForgottenPassword from "./Components/VefifyCodeForgottenPassword.jsx";
 import {VerifyCodeForgottenPasswordPage} from "./Pages/verifyCodeForgottenPassword.jsx";
 import {ResetPasswordPage} from "./Pages/resetPassword.jsx";
 
@@ -21,6 +20,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [user, setUser] = useState(null);
   const [validEmail, setValidEmail] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -109,9 +109,9 @@ export default function App() {
               element={<Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser}/>}>
             <Route path="*" element={<NotFound/>}/>
             <Route path="/" element={<HomePage/>}/>
-            <Route path="/forgotPassword" element={<ForgotPasswordPage/>}/>
-            <Route path="/verifyCodePassword" element={<VerifyCodeForgottenPasswordPage/>}/>
-            <Route path="/resetPassword" element={<ResetPasswordPage/>}/>
+            <Route path="/forgotPassword" element={<ForgotPasswordPage forgotPassword={forgotPassword} setForgotPassword={setForgotPassword}/>}/>
+            <Route path="/verifyCode" element={<VerifyCodeForgottenPasswordPage forgotPassword={forgotPassword} setForgotPassword={setForgotPassword}/>}/>
+            <Route path="/resetPassword" element={<ResetPasswordPage forgotPassword={forgotPassword} setForgotPassword={setForgotPassword}/>}/>
             <Route path="/keys" element={<KeysPage/>}/>
             <Route path="/documents" element={<DocumentsPage/>}/>
             <Route path="/search" element={<SearchPage/>}/>
