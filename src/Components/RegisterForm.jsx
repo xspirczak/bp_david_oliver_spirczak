@@ -49,8 +49,13 @@ export default function RegisterForm({ validateEmail, validEmail }) {
         setSuccess(null);
 
 
+        if (!formData.firstName || !formData.lastName) {
+            setError('Vstup pre meno je prázdny.');
+            return;
+        }
+
         if (!passwordMatch) {
-            setError('Heslá sa musia zhodovať');
+            setError('Heslá sa musia zhodovať.');
             return;
         }
 
