@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState} from 'react'
+import { useState} from 'react'
 import {
   Dialog,
   DialogPanel,
@@ -13,10 +13,12 @@ import {
 } from '@heroicons/react/24/outline'
 
 import {NavLink, useNavigate} from 'react-router-dom'
+import LogOutAlert from "./LogOutAlert.jsx";
 
 export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navigate = useNavigate();
+  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
 
   const getActiveStyles = ({isActive}) => {
     return {
@@ -25,13 +27,25 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
     }
   }
 
-  // Handle logout by clearing the user state and token
-  const handleLogout = () => {
+  // Trigger the alert instead of logging out immediately.
+  const handleLogoutClick = () => {
+    setShowLogoutAlert(true);
+  };
+
+  // Called when the user confirms logout in the alert.
+  const confirmLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
     setIsLoggedIn(false);
-    navigate('/login')
+    setShowLogoutAlert(false);
+    navigate('/login');
   };
+
+  // Called when the user cancels the logout.
+  const dismissLogout = () => {
+    setShowLogoutAlert(false);
+  };
+
 
 
   return (
@@ -81,7 +95,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 hover:bg-custom-dark-blue-hover hover:border-custom-dark-blue-hover">
             {isLoggedIn ? (
-                <button onClick={handleLogout} className="text-fontSize16 font-semibold leading-6 text-white">Odhlásiť sa</button>
+                <button onClick={handleLogoutClick} className="text-fontSize16 font-semibold leading-6 text-white">Odhlásiť sa</button>
               ) : (
               <NavLink to="/login" className="text-fontSize16 font-semibold leading-6 text-white">
                   Prihlásiť sa
@@ -114,23 +128,23 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <NavLink to="/" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                <NavLink to="/" onClick={() => setMobileMenuOpen(false)} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                   Domov
                 </NavLink>
-                <NavLink to="/mapping" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                <NavLink to="/mapping" onClick={() => setMobileMenuOpen(false)} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                   Mapovanie
                 </NavLink>
-                <NavLink to="/keys" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                <NavLink to="/keys" onClick={() => setMobileMenuOpen(false)} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                   Kľúče
                 </NavLink>
-                <NavLink to="/documents" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                <NavLink to="/documents" onClick={() => setMobileMenuOpen(false)} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                   Dokumenty
                 </NavLink>
-                <NavLink to="/search" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                <NavLink to="/search" onClick={() => setMobileMenuOpen(false)} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                   Vyhľadávať
                 </NavLink>
                 {isLoggedIn ? (
-                    <NavLink to="/profile" className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
+                    <NavLink to="/profile" onClick={() => setMobileMenuOpen(false)} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                       Profil
                     </NavLink>
                 ) : (<></>)}
@@ -138,7 +152,10 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
               <div className="py-6">
                  <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 w-32 flex justify-center">
                    {isLoggedIn ? (
-                       <button onClick={handleLogout} className="text-fontSize16 font-semibold leading-6 text-white">Odhlásiť sa</button>
+                       <button onClick={() => {
+                         setMobileMenuOpen(false);
+                         handleLogoutClick();
+                       }} className="text-fontSize16 font-semibold leading-6 text-white">Odhlásiť sa</button>
                    ) : (
                        <NavLink to="/login" className="text-fontSize16 font-semibold leading-6 text-white">
                          Prihlásiť sa
@@ -150,6 +167,11 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
             </div>
         </DialogPanel>
       </Dialog>
+      {showLogoutAlert && (
+          <LogOutAlert onConfirm={confirmLogout} onDismiss={dismissLogout} />
+      )}
     </header>
+
+
   )
 }
