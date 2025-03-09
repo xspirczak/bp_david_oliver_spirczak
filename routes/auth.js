@@ -34,8 +34,6 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: passwordError.error });
         }
 
-
-
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -180,13 +178,16 @@ router.post("/verify-email-change", authMiddleware, async (req, res) => {
             { new: true }
         );
 
+
+        const userFullName = updatedUser.firstName + " "  + updatedUser.lastName;
+
         if (!updatedUser) {
             return res.status(404).json({ error: "Používateľ sa nenašiel." });
         }
 
         // Generate a new JWT token with the updated email
         const newAccessToken = jwt.sign(
-            { id: updatedUser._id, email: updatedUser.email },
+            { id: updatedUser._id, email: updatedUser.email, fullName: userFullName },
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );

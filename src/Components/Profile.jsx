@@ -5,7 +5,7 @@ import { IoSendOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 
 
-export default function Profile() {
+export default function Profile({setUser}) {
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -84,8 +84,12 @@ export default function Profile() {
 
             if (!response.ok) throw new Error("Failed to update name");
 
+
             const updatedUser = await response.json();
             setProfileData(updatedUser.user);
+
+            localStorage.setItem("token", updatedUser.token);
+
             setEditingField(null);
         } catch (error) {
             console.error(error.message);
@@ -103,7 +107,7 @@ export default function Profile() {
         if (successPassword) {
             const timer = setTimeout(() => {
                 setSuccessPassword(null);
-            }, 2000); // 2 seconds
+            }, 2000);
 
             return () => clearTimeout(timer);
         }
@@ -113,7 +117,7 @@ export default function Profile() {
         if (successEmail && successEmail === "Email bol úspešne zmenený.") {
             const timer = setTimeout(() => {
                 setSuccessEmail(null);
-            }, 2000); // 2 seconds
+            }, 2000);
 
             return () => clearTimeout(timer);
         }
@@ -176,7 +180,7 @@ export default function Profile() {
             return;
         }
 
-        console.log(newEmail)
+        //console.log(newEmail)
         try {
             const response = await fetch("http://localhost:3000/api/auth/request-email-change", {
                 method: "POST",
@@ -191,7 +195,7 @@ export default function Profile() {
             if (!response.ok) {
                 setError(data.error);
             } else {
-                setSuccessEmail("Overovací kód bol odoslaný na váš nový email.");
+                setSuccessEmail(data.message);
                 setShowVerificationInput(true);
             }
         } catch (error) {
@@ -223,12 +227,13 @@ export default function Profile() {
                 setError(data.error);
             } else {
                 setSuccessEmail("Email bol úspešne zmenený.");
-                console.log(data.token)
+                //console.log(data.token)
 
                 // Change the token
                 localStorage.setItem("token", data.token);
                 setEditingField(null);
                 setShowVerificationInput(false);
+                setUser(newEmail);
 
                 // Update profileData with the new email
                 setProfileData((prevData) => ({
@@ -249,7 +254,7 @@ export default function Profile() {
         );
     }
    return (
-        <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
+        <section className="bg-gradient-to-r from-blue-500 to-cyan-200 min-h-screen">
 
             <div className="flex items-center justify-center">
                 <div className="bg-white lg:rounded-91 rounded-3xl shadow lg:w-3/5 w-5/6 lg:px-20 px-6 lg:py-10 py-6 my-10">

@@ -14,6 +14,7 @@ export default function AlreadyLoggedIn({setIsLoggedIn, setUser, navigateTo}) {
     // Called when the user confirms logout in the alert.
     const confirmLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('fullName');
         setUser(null);
         setIsLoggedIn(false);
         setShowLogoutAlert(false);

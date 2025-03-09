@@ -1,9 +1,9 @@
 import Profile from "../Components/Profile.jsx";
 
-export function ProfilePage() {
+export function ProfilePage({setUser}) {
     return (
         <>
-            <Profile></Profile>
+            <Profile setUser={setUser}></Profile>
         </>
     )
 }

@@ -19,7 +19,7 @@ export default function LoginSuccess({ navigateTo, fullName}) {
                             prihlásili.</p>
                         <div className="flex justify-center">
                             <button type="button" onClick={() => navigateTo('/')}
-                                    className="w-full lg:w-1/3 text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl py-1.5 text-center">Pokračovať
+                                    className="w-full lg:w-1/2 text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl py-1.5 text-center">Pokračovať
                             </button>
                         </div>
                     </div>

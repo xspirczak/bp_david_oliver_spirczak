@@ -126,8 +126,9 @@ app.post('/api/users', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: 'Email alebo heslo je nesprávne.' });
 
+    const userFullName = user.firstName + " " + user.lastName;
     // Generate JWT token
-    const accessToken = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+    const accessToken = jwt.sign({ id: user._id, email: user.email, fullName: userFullName }, JWT_SECRET, { expiresIn: '1h' });
 
     console.log("TOKEN: ", accessToken);
 
@@ -177,7 +178,14 @@ app.put('/api/users/update-name', authMiddleware, async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    res.json({ message: "Name updated successfully", user: updatedUser });
+    // Generovanie nového JWT tokenu s aktualizovaným menom
+    const newToken = jwt.sign(
+        { id: updatedUser._id, email: updatedUser.email, fullName: `${updatedUser.firstName} ${updatedUser.lastName}` },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+    );
+
+    res.json({ message: "Name updated successfully", user: updatedUser, token: newToken});
   } catch (err) {
     res.status(500).json({ error: "Server error: " + err.message });
   }

@@ -53,6 +53,7 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
             const decoded = decodeJWT(data.token)
 
             setFullName(data.user.firstName + ' ' + data.user.lastName);
+            //localStorage.setItem('fullName',data.user.firstName + ' ' + data.user.lastName);
 
             setUser(decoded.email);
 

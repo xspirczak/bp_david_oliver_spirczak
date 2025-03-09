@@ -18,6 +18,7 @@ import {ResetPasswordPage} from "./Pages/resetPassword.jsx";
 export default function App() {
   // State to track if the user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(null);
+  // Email address
   const [user, setUser] = useState(null);
   const [validEmail, setValidEmail] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(null);
@@ -123,7 +124,7 @@ export default function App() {
                                        validateEmail={validateEmail} decodeJWT={decodeJWT}/>}/>
             <Route path="/register" element={<RegisterPage validateEmail={validateEmail} validEmail={validEmail}/>}/>
           <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile" element={<ProfilePage setUser={setUser} />} />
           </Route>
         </Route>
       </Routes>
