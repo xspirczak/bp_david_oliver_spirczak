@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
-import authMiddleware from './authMiddleware/authMiddleware.js';
+import authMiddleware from './middleware/authMiddleware.js';
+import tokenExistsMiddleware from './middleware/tokenExistsMiddleware.js';
 import jwt from 'jsonwebtoken';
 import User from './models/User.js';
 import Key from './models/Keys.js';
@@ -36,22 +37,24 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 //keys
-app.post('/api/keys', async (req, res) => {
+app.post('/api/keys', tokenExistsMiddleware,async (req, res) => {
   try {
     const { key, name, description, country, year } =  req.body;
 
-    console.log("SERVER: ", key, name, description, country, year);
+    //console.log("SERVER: ", key, name, description, country, year);
 
     // Check if 'key' exists and is an array
 
-    console.log(key)
+    //console.log(key)
     if (!key) {
       console.log('Invalid data format:', key); // Log invalid format
       return res.status(400).json({ error: 'Invalid key format. Expecting an array of strings.' });
     }
 
+    const uploadedBy = req.user ? req.user.id : null;
+
     // Save the key to the database
-    const newKey = new Key({ key, name, description, country, year  });
+    const newKey = new Key({ key, name, description, country, year, uploadedBy });
 
     const savedKey = await newKey.save(); // Await saving the document
     console.log('New key saved to MongoDB:', savedKey); // Log saved document
@@ -70,6 +73,8 @@ app.use((err, req, res, next) => {
 app.get('/api/keys', async (req, res) => {
   try {
     const keys = await Key.find();  // Fetch all documents in the 'keys' collection
+    //const userId = req.user.id;
+
     res.json(keys);  // Send the result as JSON
     //console.log("KEYS", keys)
   } catch (err) {
@@ -78,9 +83,9 @@ app.get('/api/keys', async (req, res) => {
 });
 
 // documents
-app.post('/api/documents', async (req, res) => {
+app.post('/api/documents', tokenExistsMiddleware, async (req, res) => {
   try {
-    
+
     const { document, name, description, language, country, year } = req.body;
 
     // Check if 'key' exists and is an array
@@ -89,8 +94,10 @@ app.post('/api/documents', async (req, res) => {
       return res.status(400).json({ error: 'Invalid key format. Expecting an array of strings.' });
     }
 
+    const uploadedBy = req.user ? req.user.id : null;
+
     // Save the key to the database
-    const newDocument = new Document({ document, name, description, language, country, year });
+    const newDocument = new Document({ document, name, description, language, country, year, uploadedBy });
 
     const savedDocument = await newDocument.save(); // Await saving the document
     console.log('New document saved to MongoDB:', savedDocument); // Log saved document
@@ -102,10 +109,12 @@ app.post('/api/documents', async (req, res) => {
 });
 
 
-app.get('/api/documents', async (req, res) => {
+app.get('/api/documents', tokenExistsMiddleware, async (req, res) => {
   try {
     const documents = await Document.find();
-    res.json(documents); 
+    const userId = req.user ? req.user.id : null;
+
+    res.json({userId, documents});
   } catch (err) {
     res.status(500).send('Server error');
   }
@@ -167,7 +176,7 @@ app.put('/api/users/update-name', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: "First name and last name are required" });
     }
 
-    // Find the user by ID (from authMiddleware)
+    // Find the user by ID (from middleware)
     const updatedUser = await User.findByIdAndUpdate(
         req.user.id,
         { firstName, lastName },

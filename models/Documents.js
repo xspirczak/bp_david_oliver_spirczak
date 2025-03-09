@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-// Schema for 'documents' collection
 const DocumentSchema = new mongoose.Schema({
     document: {
         type: String,
@@ -20,7 +19,8 @@ const DocumentSchema = new mongoose.Schema({
     },
     year: {
         type: Number,
-    }
+    },
+    uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
 });
 
 // Create and export the model

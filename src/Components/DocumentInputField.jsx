@@ -75,6 +75,7 @@ export default function DocumentInputField() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : ""
                 },
                 body: JSON.stringify(jsonData)  // Convert the object to a JSON string
             });

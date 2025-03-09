@@ -16,16 +16,23 @@ export default function DisplayAllDocuments() {
         document: true,
         yearRange: { start: '', end: '' },
     });
+    const [userId, setUserId] = useState(null);
 
     // Fetch keys and documents
     useEffect(() => {
         Promise.all([
             axios.get("http://localhost:3000/api/keys"),
-            axios.get("http://localhost:3000/api/documents"),
+            axios.get("http://localhost:3000/api/documents", {
+                headers: {
+                    'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : ""
+                },
+            }),
+
         ])
             .then(([keysResponse, docsResponse]) => {
                 setKeys(keysResponse.data);
-                setDocuments(docsResponse.data);
+                setDocuments(docsResponse.data.documents); // Ulož iba dokumenty
+                setUserId(docsResponse.data.userId); // Ulož ID používateľa do stavu
                 setLoading(false);
             })
             .catch(error => {
@@ -106,8 +113,8 @@ export default function DisplayAllDocuments() {
             <SearchBar filters={filters} onFilterChange={handleSearchChange}/>
 
 
-            {filteredKeys.length > 0 && <DisplayKey keys={filteredKeys} />}
-            {filteredDocuments.length > 0 && <DisplayDocument docs={filteredDocuments} />}
+            {filteredKeys.length > 0 && <DisplayKey userId={userId} keys={filteredKeys} />}
+            {filteredDocuments.length > 0 && <DisplayDocument userId={userId} docs={filteredDocuments} />}
         </div>
     );
 }

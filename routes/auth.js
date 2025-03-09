@@ -1,7 +1,7 @@
 import express from 'express';
 import User from '../models/User.js';
 import nodemailer from 'nodemailer';
-import authMiddleware from "../authMiddleware/authMiddleware.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import {isStrongPassword} from "../src/functions.js";
@@ -91,7 +91,7 @@ router.post('/verify-email', async (req, res) => {
 // Update user name
 router.put("/update-name", authMiddleware, async (req, res) => {
     try {
-        const userId = req.user.id; // Extract user ID from the token (authMiddleware)
+        const userId = req.user.id; // Extract user ID from the token (middleware)
         const { firstName, lastName } = req.body;
 
         // Validate inputs

@@ -62,7 +62,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
         navigate("/login");
       }
     }
-  }, [isLoggedIn]); // Aktualizuje meno po prihlásení/odhlásení
+  }, [isLoggedIn]);
 
 
   return (

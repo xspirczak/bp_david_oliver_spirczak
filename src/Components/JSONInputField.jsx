@@ -148,6 +148,7 @@ export default function JSONInputField() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : ""
                     },
 
                     body: JSON.stringify(jsonData), // Send the JSON data as a string
