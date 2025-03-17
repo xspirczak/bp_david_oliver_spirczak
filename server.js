@@ -11,6 +11,9 @@ import Key from './models/Keys.js';
 import Document from './models/Documents.js';
 import authRoutes from './routes/auth.js';
 import {isStrongPassword} from './src/functions.js'
+import documentRoutes from './routes/documents.js';
+import keyRoutes from './routes/keys.js';
+
 
 // Initialize app
 dotenv.config();
@@ -162,6 +165,10 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use("/api/documents", documentRoutes);
+app.use("/api/keys", keyRoutes);
+
+
 
 app.get('/api/protected', authMiddleware, (req, res) => {
   res.json({ message: `Hello, ${req.user.email}! You accessed a protected route.` });

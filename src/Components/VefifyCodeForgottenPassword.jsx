@@ -29,6 +29,9 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
 
             setMessage("Overenie verifikačného kódu bolo úspešné!");
 
+
+            localStorage.setItem("token", data.token);
+
             setTimeout(() => {
                 setForgotPassword("codeVerified");
                 navigate("/resetPassword", { state: { email } });

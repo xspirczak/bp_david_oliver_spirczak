@@ -50,6 +50,8 @@ export default function DisplayAllDocuments() {
         let filteredKeys = keys;
         let filteredDocuments = documents;
 
+        console.log(filteredKeys)
+
         const normalizedSearchText = normalizeString(filters.searchText.toLowerCase());
 
         // Filter by search text (if provided)
@@ -113,8 +115,8 @@ export default function DisplayAllDocuments() {
             <SearchBar filters={filters} onFilterChange={handleSearchChange}/>
 
 
-            {filteredKeys.length > 0 && <DisplayKey userId={userId} keys={filteredKeys} />}
-            {filteredDocuments.length > 0 && <DisplayDocument userId={userId} docs={filteredDocuments} />}
+            {filteredKeys.length > 0 && <DisplayKey userId={userId} keys={filteredKeys} setKeys={setFilteredKeys} />}
+            {filteredDocuments.length > 0 && <DisplayDocument userId={userId} docs={filteredDocuments} setDocs={setFilteredDocuments}/>}
         </div>
     );
 }

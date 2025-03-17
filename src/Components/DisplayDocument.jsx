@@ -2,11 +2,17 @@ import React, {useEffect, useState} from "react";
 import {FaRegCalendarAlt} from "react-icons/fa";
 import {BiWorld} from "react-icons/bi";
 import { IoLanguage } from "react-icons/io5";
+import DeleteAlert from "./DeleteAlert.jsx";
+import EditDocumentForm from "./EditDocumentForm.jsx";
 
 
-export default function DisplayDocument({docs, userId}) {
+export default function DisplayDocument({docs, setDocs, userId}) {
     const [isClient, setIsClient] = useState(false);
     const [copiedDocId, setCopiedDocId] = useState(null);
+    const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [currentDoc, setCurrentDoc] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         setIsClient(true);
@@ -35,6 +41,76 @@ export default function DisplayDocument({docs, userId}) {
         document.body.removeChild(element);
     };
 
+    const handleDeleteClick = () => {
+        setShowDeleteAlert(true);
+    };
+
+    // Called when the user cancels the logout.
+    const dismissDelete = () => {
+        setShowDeleteAlert(false);
+    };
+
+    const handleDelete = async (docId) => {
+
+        try {
+
+            const response = await fetch(`http://localhost:3000/api/documents/${docId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                },
+            });
+
+            if (!response.ok) throw new Error("Chyba pri odstraňovaní súboru");
+
+            const updatedDocs = docs.filter(doc => doc._id !== docId);
+            setDocs(updatedDocs);
+            setShowDeleteAlert(false);
+
+        } catch (error) {
+            console.error("Chyba:", error);
+        }
+    };
+
+    const handleEditClick = (doc) => {
+        setCurrentDoc(doc);
+        setIsEditing(true);
+    };
+
+    const handleEditSubmit = async (formData, id) => {
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/documents/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setError(errorData.message);
+                return;
+            }
+
+            setDocs(prevDocs =>
+                prevDocs.map(doc => (doc._id === id ? { ...doc, ...formData } : doc))
+            );
+
+            setError(null);
+
+            setIsEditing(false);
+        } catch (error) {
+            console.error("Chyba:", error);
+        }
+    };
+
+    const handleCancel = () => {
+        setIsEditing(false);
+    };
 
 
     return (
@@ -87,6 +163,7 @@ export default function DisplayDocument({docs, userId}) {
                                         <>
                                             <div className="relative flex items-center">
                                                 <button
+                                                    onClick={handleDeleteClick}
                                                     type="button"
                                                     className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -105,6 +182,7 @@ export default function DisplayDocument({docs, userId}) {
 
                                             <div className="relative flex items-center">
                                                 <button
+                                                    onClick={() => handleEditClick(doc)}
                                                     type="button"
                                                     className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -179,6 +257,20 @@ export default function DisplayDocument({docs, userId}) {
                                 <p className="break-all text-white">{doc.document}</p>
                             </li>
                         </div>
+
+                        {showDeleteAlert && (
+                            <DeleteAlert onConfirm={() => handleDelete(doc._id)} onDismiss={dismissDelete} docType={"dokument"}></DeleteAlert>
+                        )}
+
+                        {isEditing && (
+                            <EditDocumentForm
+                                doc={currentDoc}
+                                onSave={handleEditSubmit}
+                                onCancel={handleCancel}
+                                error={error}
+                                setError={setError}
+                            />
+                        )}
                     </React.Fragment>
                 ))}
             </ul>

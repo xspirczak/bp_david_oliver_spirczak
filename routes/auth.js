@@ -5,6 +5,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import {isStrongPassword} from "../src/functions.js";
+import resetPasswordMiddleware from "../middleware/resetPasswordMiddleware.js";
 const router = express.Router();
 dotenv.config();
 
@@ -266,8 +267,18 @@ router.post("/forgot-password-verify-code", async (req, res) => {
         }
 
         // If the code is valid, delete it from memory and allow password reset
+
+        const newResetToken = jwt.sign(
+            { email: email,verificationCode: verificationCode },
+            process.env.JWT_SECRET,
+            { expiresIn: "5m" }
+        );
+
+
         emailChangeVerificationCodes.delete(email);
-        return res.json({ message: "Overovací kód je správny. Môžete obnoviť heslo." });
+
+
+        return res.json({ message: "Overovací kód je správny. Môžete obnoviť heslo.", token:newResetToken});
 
     } catch (err) {
         console.error("Chyba pri overovaní kódu:", err);
@@ -277,7 +288,7 @@ router.post("/forgot-password-verify-code", async (req, res) => {
 
 
 // Reset Password Endpoint
-router.post("/reset-password", async (req, res) => {
+router.post("/reset-password", resetPasswordMiddleware, async (req, res) => {
     try {
         const { email, newPassword } = req.body;
 
@@ -304,5 +315,7 @@ router.post("/reset-password", async (req, res) => {
         return res.status(500).json({ error: "Interná chyba servera." });
     }
 });
+
+
 
 export default router;

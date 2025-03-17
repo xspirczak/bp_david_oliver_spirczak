@@ -1,10 +1,17 @@
 import React, {useEffect, useState} from "react";
 import { BiWorld } from "react-icons/bi";
 import { FaRegCalendarAlt } from "react-icons/fa";
+import DeleteAlert from "./DeleteAlert.jsx";
+import EditKeyForm from "./EditKeyForm.jsx";
 
-export default function DisplayKey({ keys, userId }) {
+export default function DisplayKey({ keys, setKeys, userId }) {
     const [isClient, setIsClient] = useState(false);
     const [copiedKeyId, setCopiedKeyId] = useState(null);
+    const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [currentKey, setCurrentKey] = useState(null);
+    const [error, setError] = useState(null);
+
 
     useEffect(() => {
         setIsClient(true);
@@ -44,10 +51,84 @@ export default function DisplayKey({ keys, userId }) {
         document.body.removeChild(element);
     };
 
+    const handleDelete = async (keyId) => {
+
+        try {
+
+            const response = await fetch(`http://localhost:3000/api/keys/${keyId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                },
+            });
+
+            if (!response.ok) throw new Error("Chyba pri odstraňovaní súboru");
+
+            const updatedKeys = keys.filter(key => key._id !== keyId);
+            setKeys(updatedKeys);
+        } catch (error) {
+            console.error("Chyba:", error);
+        }
+    };
+
+    const handleDeleteClick = () => {
+        setShowDeleteAlert(true);
+    };
+
+    // Called when the user cancels the logout.
+    const dismissDelete = () => {
+        setShowDeleteAlert(false);
+    };
+
+    const handleEditClick = (key) => {
+        setCurrentKey(key);
+        setIsEditing(true);
+    };
+
+    const handleEditSubmit = async (formData, id) => {
+
+        try {
+
+/*            if (typeof formData.key === "string") {
+                formData.key = JSON.parse(formData.key);
+            }*/
+
+            const response = await fetch(`http://localhost:3000/api/keys/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setError(errorData.message);
+                return;
+            }
+
+            setKeys(prevKeys =>
+                prevKeys.map(key => (key._id === id ? { ...key, ...formData } : key))
+            );
+
+            setError(null);
+            setIsEditing(false);
+        } catch (error) {
+            console.error("Chyba:", error);
+        }
+    };
+
+    const handleCancel = () => {
+        setIsEditing(false);
+    };
+
+
     return (
         <div className="flex flex-col justify-center items-center w-full max-w-xl mx-auto mb-6">
             <ul className='flex flex-col justify-center items-center w-full gap-5'>
-                {keys.map(keyData => (
+                {keys.map((keyData) => (
                     <React.Fragment key={keyData._id}>
                         <div className="sm:w-full w-5/6 max-w-3xl rounded-3xl px-6 py-5 bg-custom-dark-blue shadow-lg">
                             <div className="flex gap-3 mb-3">
@@ -81,6 +162,7 @@ export default function DisplayKey({ keys, userId }) {
                                     <>
                                     <div className="relative flex items-center">
                                         <button
+                                            onClick={handleDeleteClick}
                                             type="button"
                                             className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -99,6 +181,7 @@ export default function DisplayKey({ keys, userId }) {
 
                                     <div className="relative flex items-center">
                                         <button
+                                            onClick={() => handleEditClick(keyData)}
                                             type="button"
                                             className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -174,14 +257,32 @@ export default function DisplayKey({ keys, userId }) {
                             </div>
 
                             <li className='mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover'>
-                                {Object.entries(keyData.key).map(([keyName, values]) => (
-                                    <div key={keyName} className="my-2">
-                                        <span className="text-blue-400 font-bold">{keyName.toUpperCase()}:</span>
-                                        <span className="ml-2 text-gray-200">{values.join(", ")}</span>
-                                    </div>
-                                ))}
+                                {Object.entries(typeof keyData.key === "string" ? JSON.parse(keyData.key) : keyData.key)
+                                    .map(([keyName, values]) => (
+                                        <div key={keyName} className="my-2">
+                                            <span className="text-blue-400 font-bold">{keyName.toUpperCase()}:</span>
+                                            <span className="ml-2 text-gray-200">
+                {Array.isArray(values) ? values.join(", ") : Object.values(values).join(", ")}
+            </span>
+                                        </div>
+                                    ))}
                             </li>
                         </div>
+
+                        {showDeleteAlert && (
+                            <DeleteAlert onConfirm={() => handleDelete(keyData._id)} onDismiss={dismissDelete} docType={"kľúč"}></DeleteAlert>
+                        )}
+
+                        {isEditing && (
+
+                            <EditKeyForm
+                                currentKey={currentKey}
+                                onSave={handleEditSubmit}
+                                onCancel={handleCancel}
+                                error={error}
+                                setError={setError}
+                            />
+                        )}
                     </React.Fragment>
                 ))}
             </ul>

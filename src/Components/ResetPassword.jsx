@@ -21,10 +21,15 @@ export default function ResetPassword({forgotPassword, setForgotPassword}) {
             return;
         }
 
+
         try {
+
             const response = await fetch("http://localhost:3000/api/auth/reset-password", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                },
                 body: JSON.stringify({ email, newPassword }),
             });
 
