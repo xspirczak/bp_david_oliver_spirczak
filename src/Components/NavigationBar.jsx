@@ -91,8 +91,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                     <p className="text-xs text-gray-400">{user || "-"}</p>
                   </div>
 
-                  <div className="py-2">
-                    <NavLink to="/profile" className="block w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover hover:text-white">
+                  <div className="py-2 hover:bg-custom-dark-blue-hover hover:text-white">
+                    <NavLink to="/profile" className="block w-full text-left px-4 py-2 text-sm">
                       Profil
                     </NavLink>
                   </div>
@@ -159,8 +159,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                              <p className="text-xs text-gray-400">{user || "-"}</p>
                            </div>
 
-                           <div className="py-2">
-                             <NavLink to="/profile" className="block w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover hover:text-white">
+                           <div className="py-2 hover:bg-custom-dark-blue-hover hover:text-white">
+                             <NavLink to="/profile" className="block w-full text-left px-4 py-2 text-sm">
                                Profil
                              </NavLink>
                            </div>

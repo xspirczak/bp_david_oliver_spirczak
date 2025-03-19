@@ -11,6 +11,7 @@ export default function DisplayKey({ keys, setKeys, userId }) {
     const [isEditing, setIsEditing] = useState(false);
     const [currentKey, setCurrentKey] = useState(null);
     const [error, setError] = useState(null);
+    const [keyId, setKeyId] = useState(null);
 
 
     useEffect(() => {
@@ -67,17 +68,21 @@ export default function DisplayKey({ keys, setKeys, userId }) {
 
             const updatedKeys = keys.filter(key => key._id !== keyId);
             setKeys(updatedKeys);
+            setShowDeleteAlert(false);
+            setKeyId(null);
         } catch (error) {
             console.error("Chyba:", error);
         }
     };
 
-    const handleDeleteClick = () => {
+    const handleDeleteClick = (id) => {
+        setKeyId(id);
         setShowDeleteAlert(true);
     };
 
     // Called when the user cancels the logout.
     const dismissDelete = () => {
+        setKeyId(null);
         setShowDeleteAlert(false);
     };
 
@@ -89,10 +94,6 @@ export default function DisplayKey({ keys, setKeys, userId }) {
     const handleEditSubmit = async (formData, id) => {
 
         try {
-
-/*            if (typeof formData.key === "string") {
-                formData.key = JSON.parse(formData.key);
-            }*/
 
             const response = await fetch(`http://localhost:3000/api/keys/${id}`, {
                 method: "PUT",
@@ -162,7 +163,7 @@ export default function DisplayKey({ keys, setKeys, userId }) {
                                     <>
                                     <div className="relative flex items-center">
                                         <button
-                                            onClick={handleDeleteClick}
+                                            onClick={() => handleDeleteClick(keyData._id)}
                                             type="button"
                                             className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -268,23 +269,22 @@ export default function DisplayKey({ keys, setKeys, userId }) {
                                     ))}
                             </li>
                         </div>
-
-                        {showDeleteAlert && (
-                            <DeleteAlert onConfirm={() => handleDelete(keyData._id)} onDismiss={dismissDelete} docType={"kľúč"}></DeleteAlert>
-                        )}
-
-                        {isEditing && (
-
-                            <EditKeyForm
-                                currentKey={currentKey}
-                                onSave={handleEditSubmit}
-                                onCancel={handleCancel}
-                                error={error}
-                                setError={setError}
-                            />
-                        )}
                     </React.Fragment>
                 ))}
+                {showDeleteAlert && (
+                    <DeleteAlert onConfirm={() => handleDelete(keyId)} onDismiss={dismissDelete} docType={"kľúč"}></DeleteAlert>
+                )}
+
+                {isEditing && (
+
+                    <EditKeyForm
+                        currentKey={currentKey}
+                        onSave={handleEditSubmit}
+                        onCancel={handleCancel}
+                        error={error}
+                        setError={setError}
+                    />
+                )}
             </ul>
         </div>
     );

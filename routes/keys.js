@@ -3,6 +3,7 @@ const router = express.Router();
 import Key from '../models/Keys.js';
 import authMiddleware from "../middleware/authMiddleware.js";
 
+// Delete key based on the id (keyID)
 router.delete("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
@@ -19,6 +20,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     }
 });
 
+// Update key
 router.put("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
@@ -48,7 +50,6 @@ router.put("/:id", authMiddleware, async (req, res) => {
         if (codes.size !== cnt) {
             return res.status(400).json({ message: "Kľúč sa nesmie vyskytovať viackrát." });
         }
-        // Update user in DB
         const updatedKey = await Key.findByIdAndUpdate(
             id,
             {  name: name, description: description, language: language, country: country, year: year,key: parsed },

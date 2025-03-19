@@ -6,12 +6,12 @@ export default function AlreadyLoggedIn({setIsLoggedIn, setUser, navigateTo}) {
     const navigate = useNavigate();
     const [showLogoutAlert, setShowLogoutAlert] = useState(false);
 
-    // Trigger the alert instead of logging out immediately.
+    // Trigger the alert instead of logging out immediately
     const handleLogoutClick = () => {
         setShowLogoutAlert(true);
     };
 
-    // Called when the user confirms logout in the alert.
+    // Called when the user confirms logout in the alert
     const confirmLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('fullName');
@@ -21,7 +21,7 @@ export default function AlreadyLoggedIn({setIsLoggedIn, setUser, navigateTo}) {
         navigate('/login');
     };
 
-    // Called when the user cancels the logout.
+    // Called when the user cancels the logout
     const dismissLogout = () => {
         setShowLogoutAlert(false);
     };

@@ -113,12 +113,12 @@ export default function EditDocumentForm({ doc, onSave, onCancel, error, setErro
 
                     ) : (
                         <div className="mb-4 text-red-500 text-center font-semibold invisible">Error Placeholder
-            </div>
+                        </div>
 
-            )}
+                    )}
 
 
-            <div className="flex justify-between mt-4">
+                    <div className="flex justify-between mt-4">
                         <button
                             type="button"
                             onClick={onCancel}

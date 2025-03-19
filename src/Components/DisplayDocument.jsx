@@ -13,6 +13,7 @@ export default function DisplayDocument({docs, setDocs, userId}) {
     const [isEditing, setIsEditing] = useState(false);
     const [currentDoc, setCurrentDoc] = useState(null);
     const [error, setError] = useState(null);
+    const [docId, setDocId] = useState(null);
 
     useEffect(() => {
         setIsClient(true);
@@ -41,12 +42,14 @@ export default function DisplayDocument({docs, setDocs, userId}) {
         document.body.removeChild(element);
     };
 
-    const handleDeleteClick = () => {
+    const handleDeleteClick = (id) => {
+        setDocId(id);
         setShowDeleteAlert(true);
     };
 
     // Called when the user cancels the logout.
     const dismissDelete = () => {
+        setDocId(null);
         setShowDeleteAlert(false);
     };
 
@@ -67,6 +70,7 @@ export default function DisplayDocument({docs, setDocs, userId}) {
             const updatedDocs = docs.filter(doc => doc._id !== docId);
             setDocs(updatedDocs);
             setShowDeleteAlert(false);
+            setDocId(null);
 
         } catch (error) {
             console.error("Chyba:", error);
@@ -163,7 +167,7 @@ export default function DisplayDocument({docs, setDocs, userId}) {
                                         <>
                                             <div className="relative flex items-center">
                                                 <button
-                                                    onClick={handleDeleteClick}
+                                                    onClick={() => handleDeleteClick(doc._id)}
                                                     type="button"
                                                     className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
                                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -258,21 +262,21 @@ export default function DisplayDocument({docs, setDocs, userId}) {
                             </li>
                         </div>
 
-                        {showDeleteAlert && (
-                            <DeleteAlert onConfirm={() => handleDelete(doc._id)} onDismiss={dismissDelete} docType={"dokument"}></DeleteAlert>
-                        )}
-
-                        {isEditing && (
-                            <EditDocumentForm
-                                doc={currentDoc}
-                                onSave={handleEditSubmit}
-                                onCancel={handleCancel}
-                                error={error}
-                                setError={setError}
-                            />
-                        )}
                     </React.Fragment>
                 ))}
+                {showDeleteAlert && (
+                    <DeleteAlert onConfirm={() => handleDelete(docId)} onDismiss={dismissDelete} docType={"dokument"}></DeleteAlert>
+                )}
+
+                {isEditing && (
+                    <EditDocumentForm
+                        doc={currentDoc}
+                        onSave={handleEditSubmit}
+                        onCancel={handleCancel}
+                        error={error}
+                        setError={setError}
+                    />
+                )}
             </ul>
         </div>
     )

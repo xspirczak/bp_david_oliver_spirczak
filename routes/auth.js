@@ -9,7 +9,7 @@ import resetPasswordMiddleware from "../middleware/resetPasswordMiddleware.js";
 const router = express.Router();
 dotenv.config();
 
-// Temporary storage for email verification codes (You should use Redis/DB in production)
+// Temporary storage for email verification codes
 const verificationCodes = new Map();
 
 // Configure Nodemailer for sending emails
@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false,  // false for port 587
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -44,9 +44,10 @@ router.post('/register', async (req, res) => {
         // Generate a random 6-digit verification code
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // Store the verification code temporarily (e.g., in memory)
+        // Store the verification code temporarily
         verificationCodes.set(email, verificationCode);
         //console.log("Email user:", process.env.EMAIL_USER, email);
+
         // Send verification email
         const mailOptions = {
             from: 'oliverspirczak@gmail.com',
@@ -71,7 +72,6 @@ router.post('/verify-email', async (req, res) => {
         const { email, verificationCode, firstName, lastName, password, role } = req.body;
 
         // Check if the code matches
-
         if (verificationCodes.get(email) !== verificationCode) {
             return res.status(400).json({ error: "Zlý verifikačný kód." });
         }
@@ -121,12 +121,11 @@ router.put("/update-name", authMiddleware, async (req, res) => {
 // Temporary storage for email change verification codes
 const emailChangeVerificationCodes = new Map();
 
-
-//Request Email Change (Send Verification Code)
+//Request Email Change
 router.post("/request-email-change", authMiddleware, async (req, res) => {
     try {
         const { newEmail } = req.body;
-        const userId = req.user.id; // Extract user ID from the token
+        const userId = req.user.id;
 
         // Check if the new email is already in use
         const existingUser = await User.findOne({ email: newEmail });
@@ -198,7 +197,7 @@ router.post("/verify-email-change", authMiddleware, async (req, res) => {
 
         return res.json({
             message: "Email bol úspešne zmenený.",
-            token: newAccessToken,  // Send the new token
+            token: newAccessToken,
             user: updatedUser
         });
 
@@ -224,7 +223,7 @@ router.post("/forgot-password",  async (req, res) => {
         // Store the code in memory (or database) with an expiration time
         emailChangeVerificationCodes.set(email, {
             verificationCode,
-            expiresAt: Date.now() + 10 * 60 * 1000, // Code valid for 10 minutes
+            expiresAt: Date.now() + 10 * 60 * 1000, // 10 m
         });
 
         // Send email with verification code
@@ -267,7 +266,6 @@ router.post("/forgot-password-verify-code", async (req, res) => {
         }
 
         // If the code is valid, delete it from memory and allow password reset
-
         const newResetToken = jwt.sign(
             { email: email,verificationCode: verificationCode },
             process.env.JWT_SECRET,
@@ -276,7 +274,6 @@ router.post("/forgot-password-verify-code", async (req, res) => {
 
 
         emailChangeVerificationCodes.delete(email);
-
 
         return res.json({ message: "Overovací kód je správny. Môžete obnoviť heslo.", token:newResetToken});
 

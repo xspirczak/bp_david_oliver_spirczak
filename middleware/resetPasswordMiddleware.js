@@ -4,6 +4,7 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'random';
 
+// Check whether token is set and if it contains the verification code
 const resetPasswordMiddleware = (req, res, next) => {
     const token = req.header("Authorization")?.split(" ")[1];
 
