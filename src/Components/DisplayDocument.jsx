@@ -114,15 +114,19 @@ export default function DisplayDocument({docs, setDocs, userId}) {
 
     const handleCancel = () => {
         setIsEditing(false);
+        setError(null);
     };
 
 
     return (
         <div className="flex flex-col justify-center items-center w-full max-w-xl mx-auto mb-6">
             <ul className='flex flex-col justify-center items-center w-full gap-5'>
-                {docs.map((doc) => (
+                {docs.map((doc, index) => (
                     <React.Fragment key={doc._id}>
-                        <div className="sm:w-full w-5/6 max-w-3xl rounded-3xl px-6 py-5 bg-custom-dark-blue shadow-lg">
+                        <div 
+                            className="sm:w-full w-5/6 max-w-3xl rounded-3xl px-6 py-5 bg-custom-dark-blue shadow-lg transform transition-all duration-500 ease-in-out opacity-0 animate-fadeIn"
+                            style={{ animationDelay: `${index * 150}ms` }}
+                        >
                             <div className="flex gap-3 mb-3">
                                 <svg width="41" height="44" viewBox="0 0 41 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12.1979 31.5334H10.5715C10.1224 31.5334 9.7583 31.8618 9.7583 32.2668C9.7583 32.6718 10.1224 33.0001 10.5715 33.0001H12.1979C12.647 33.0001 13.0111 32.6718 13.0111 32.2668C13.0111 31.8618 12.647 31.5334 12.1979 31.5334Z" fill="white"/>
@@ -258,7 +262,7 @@ export default function DisplayDocument({docs, setDocs, userId}) {
                             </div>
 
                             <li className='mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover'>
-                                <p className="break-all text-white">{doc.document}</p>
+                                <p className="break-all text-gray-50">{doc.document}</p>
                             </li>
                         </div>
 

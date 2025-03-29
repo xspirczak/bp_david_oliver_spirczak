@@ -21,6 +21,11 @@ export default function DisplayAllDocuments() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
+    // Pridaný useEffect pre scrollovanie na vrch pri zmene stránky
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [currentPage]);
+
     useEffect(() => {
         Promise.all([
             axios.get("http://localhost:3000/api/keys"),
@@ -86,7 +91,7 @@ export default function DisplayAllDocuments() {
             ...newFilters,
         }));
     };
-
+/*
     // All keys + documents together
     const together = [...filteredKeys,   ...filteredDocuments];
 
@@ -107,9 +112,22 @@ export default function DisplayAllDocuments() {
 
     //const paginatedKeys = filteredKeys.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); // pre 1. stranu 0-5
     //const paginatedDocuments = filteredDocuments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+*/
+
+    // Zlúčenie filtrovaných dát pred stránkovaním
+    const filteredTogether = [...filteredKeys, ...filteredDocuments];
+
+
+    // Aplikovanie stránkovania na zlúčené dáta
+    const paginatedTogether = filteredTogether.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    // Rozdelenie na keys a documents po stránkovaní
+    const paginatedKeys = paginatedTogether.filter(item => Object.hasOwn(item, 'key'));
+    const paginatedDocuments = paginatedTogether.filter(item => Object.hasOwn(item, 'document'));
+
 
     // Calculates how many pages are needed
-    const totalPages = Math.ceil((filteredKeys.length + filteredDocuments.length) / itemsPerPage);
+    const totalPages = Math.ceil(filteredTogether.length / itemsPerPage);
 
     const renderPagination = () => {
         if (totalPages <= 1) return null;

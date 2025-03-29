@@ -14,6 +14,7 @@ import NotFound from "./Components/NotFound.jsx";
 import {ForgotPasswordPage} from "./Pages/forgotPassword.jsx";
 import {VerifyCodeForgottenPasswordPage} from "./Pages/verifyCodeForgottenPassword.jsx";
 import {ResetPasswordPage} from "./Pages/resetPassword.jsx";
+import './styles/animations.css';
 
 export default function App() {
   // State to track if the user is logged in

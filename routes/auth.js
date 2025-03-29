@@ -31,6 +31,10 @@ router.post('/register', async (req, res) => {
 
         const passwordError = isStrongPassword(password);
 
+        if (!(firstName && lastName && role)) {
+            return res.status(400).json({ error: "Zadajte všetky povinné polia" });
+        }
+
         if (!passwordError.strong) {
             return res.status(400).json({ error: passwordError.error });
         }
