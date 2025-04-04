@@ -92,7 +92,7 @@ export default function RegisterForm({ validateEmail, validEmail }) {
     return (
 
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200 py-10">
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0 my-6">
+            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto min-h-screen lg:py-0 my-6">
                 <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center">
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-28 py-10">
                         { !registrationDone ? (

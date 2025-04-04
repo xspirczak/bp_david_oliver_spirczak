@@ -23,6 +23,5 @@ const DocumentSchema = new mongoose.Schema({
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
 });
 
-// Create and export the model
 const Document = mongoose.model('Document', DocumentSchema);
 export default Document;

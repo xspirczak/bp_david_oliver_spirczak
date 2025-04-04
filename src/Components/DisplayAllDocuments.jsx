@@ -21,7 +21,6 @@ export default function DisplayAllDocuments() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    // Pridaný useEffect pre scrollovanie na vrch pri zmene stránky
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [currentPage]);
@@ -82,7 +81,7 @@ export default function DisplayAllDocuments() {
 
         setFilteredKeys(filteredKeys);
         setFilteredDocuments(filteredDocuments);
-        setCurrentPage(1); // Reset to first page when filters change
+        setCurrentPage(1);
     }, [filters, keys, documents]);
 
     const handleSearchChange = (newFilters) => {
@@ -91,28 +90,32 @@ export default function DisplayAllDocuments() {
             ...newFilters,
         }));
     };
-/*
-    // All keys + documents together
-    const together = [...filteredKeys,   ...filteredDocuments];
-
-    // Select only 'itemsPerPage' pages
-    const paginatedTogether = together.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
 
-    //console.log("TOGETHER: ",paginatedTogether)
+    const deleteKey = (keyId) => {
+        const updatedKeys = filteredKeys.filter(key => key._id !== keyId);
+        setFilteredKeys(updatedKeys);
+        setKeys(prevKeys => prevKeys.filter(key => key._id !== keyId)); // Aktualizuj aj hlavný zoznam
+        adjustCurrentPage([...updatedKeys, ...filteredDocuments]);
+    };
 
-    // Keys that have been selected
-    const paginatedKeys = paginatedTogether.filter((o) => (Object.hasOwn(o, 'key')));
+    const deleteDoc = (docId) => {
+        const updatedDocs = filteredDocuments.filter(doc => doc._id !== docId);
+        setFilteredDocuments(updatedDocs);
+        setDocuments(prevDocs => prevDocs.filter(doc => doc._id !== docId)); // Aktualizuj aj hlavný zoznam
+        adjustCurrentPage([...filteredKeys, ...updatedDocs]);
+    };
 
-    // Documents that have been selected
-    const paginatedDocuments = paginatedTogether.filter((o) => (Object.hasOwn(o, 'document')));
+    // Funkcia na úpravu currentPage po odstránení
+    const adjustCurrentPage = (updatedItems) => {
+        const newTotalPages = Math.ceil(updatedItems.length / itemsPerPage);
+        if (currentPage > newTotalPages && newTotalPages > 0) {
+            setCurrentPage(newTotalPages);
+        } else if (newTotalPages === 0) {
+            setCurrentPage(1); // Ak nie sú žiadne položky, vráť sa na stranu 1
+        }
+    };
 
-    //console.log("KEYS ",paginatedKeys);
-    //console.log("DOCUMENTS", paginatedDocuments);
-
-    //const paginatedKeys = filteredKeys.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); // pre 1. stranu 0-5
-    //const paginatedDocuments = filteredDocuments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-*/
 
     // Zlúčenie filtrovaných dát pred stránkovaním
     const filteredTogether = [...filteredKeys, ...filteredDocuments];
@@ -175,8 +178,8 @@ export default function DisplayAllDocuments() {
                     <div className="text-center text-fontSize28 text-custom-dark-blue font-bold">Žiadne dokumenty na zobrazenie.</div>
                 )}
 
-                {paginatedKeys.length > 0 && <DisplayKey userId={userId} keys={paginatedKeys} setKeys={setKeys}/>}
-                {paginatedDocuments.length > 0 && <DisplayDocument userId={userId} docs={paginatedDocuments} setDocs={setDocuments}/>}
+                {paginatedKeys.length > 0 && <DisplayKey userId={userId} keys={paginatedKeys} setKeys={setKeys} deleteKey={deleteKey}/>}
+                {paginatedDocuments.length > 0 && <DisplayDocument userId={userId} docs={paginatedDocuments} setDocs={setDocuments} deleteDoc={deleteDoc}/>}
             </div>
 
             <div className="mt-auto">{renderPagination()}</div>

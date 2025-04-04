@@ -6,7 +6,7 @@ import DeleteAlert from "./DeleteAlert.jsx";
 import EditDocumentForm from "./EditDocumentForm.jsx";
 
 
-export default function DisplayDocument({docs, setDocs, userId}) {
+export default function DisplayDocument({docs, setDocs, userId, deleteDoc}) {
     const [isClient, setIsClient] = useState(false);
     const [copiedDocId, setCopiedDocId] = useState(null);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
@@ -31,12 +31,12 @@ export default function DisplayDocument({docs, setDocs, userId}) {
     };
 
 
-    const handleDownload = (name, text) => {
+    const handleDownload = (text) => {
         if (!isClient) return;
         const element = document.createElement("a");
         const file = new Blob([text], { type: "text/plain" });
         element.href = URL.createObjectURL(file);
-        element.download = `${name || "document"}.txt`;
+        element.download = `text.txt`;
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
@@ -67,15 +67,16 @@ export default function DisplayDocument({docs, setDocs, userId}) {
 
             if (!response.ok) throw new Error("Chyba pri odstraňovaní súboru");
 
-            const updatedDocs = docs.filter(doc => doc._id !== docId);
-            setDocs(updatedDocs);
+            deleteDoc(docId);
+
             setShowDeleteAlert(false);
             setDocId(null);
 
         } catch (error) {
             console.error("Chyba:", error);
         }
-    };
+    }
+
 
     const handleEditClick = (doc) => {
         setCurrentDoc(doc);
@@ -212,7 +213,7 @@ export default function DisplayDocument({docs, setDocs, userId}) {
                                     <div className="relative flex items-center">
                                         <button
                                             type="button"
-                                            onClick={() => handleDownload(doc.name, doc.document)}
+                                            onClick={() => handleDownload(doc.document)}
                                             disabled={!isClient}
                                             className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -261,7 +262,7 @@ export default function DisplayDocument({docs, setDocs, userId}) {
                                 </div>
                             </div>
 
-                            <li className='mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover'>
+                            <li className='mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto'>
                                 <p className="break-all text-gray-50">{doc.document}</p>
                             </li>
                         </div>

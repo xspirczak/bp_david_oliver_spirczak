@@ -10,12 +10,32 @@ router.delete("/:id", authMiddleware, async (req, res) => {
         const deletedKey = await Key.findByIdAndDelete(id);
 
         if (!deletedKey) {
-            return res.status(404).json({ message: "Kľúč nenájdený." });
+            return res.status(404).json({ message: "Kľúč nebol nájdený." });
         }
 
         res.json({ message: "Klúč bol úspešne vymazaný." });
     } catch (error) {
         console.error("Chyba pri mazaní kľúča:", error);
+        res.status(500).json({ message: "Chyba servera." });
+    }
+});
+
+// Get key based on id
+router.get("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log(id);
+
+        const foundKey = await Key.findById(id);
+
+        console.log(foundKey);
+        if (!foundKey) {
+            return res.status(404).json({ message: "Kľúč nebol nájdený." });
+        }
+
+        res.json({ key: foundKey });
+    } catch (error) {
+        console.error("Chyba pri získavaní kľúča:", error);
         res.status(500).json({ message: "Chyba servera." });
     }
 });
@@ -58,10 +78,10 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
 
         if (!updatedKey) {
-            return res.status(404).json({ message: "Kľúč nenájdený." });
+            return res.status(404).json({ message: "Kľúč nebol nájdený." });
         }
 
-        res.json({ message: "Kľúč bol úspešne zmenený." });
+        res.json({ message: "Kľúč bol úspešne zmenený.", key:updatedKey });
     } catch (error) {
         console.error("Chyba pri upravovaní kľúča:", error);
         res.status(500).json({ message: "Chyba servera." });

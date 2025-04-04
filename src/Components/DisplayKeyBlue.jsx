@@ -21,9 +21,7 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
     let counter = 1;
 
     const handleCopy = (key, keyId) => {
-        // Vždy skonvertuj kľúč na JSON reťazec, aj keď je už objekt
-        const jsonKey = typeof key === "string" ? key : JSON.stringify(key);
-        navigator.clipboard.writeText(jsonKey)
+        navigator.clipboard.writeText(key)
             .then(() => {
                 setCopiedKeyId(keyId);
                 setTimeout(() => setCopiedKeyId(null), 2000);
@@ -32,67 +30,26 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
     };
 
 
-    const handleDownload = (doc) => {
+    const handleDownload = (name, doc) => {
         if (typeof window === "undefined") return;
 
         const jsonData = {
-            key: doc.key, // Tu môže byť objekt alebo reťazec
+            key: doc.key,
             name: doc.name || "Neznámy dokument",
             description: doc.description || "Bez popisu",
             country: doc.country || "Neznáma krajina",
-            year: doc.year !== -1 ? doc.year : "Neznámy rok"
+            year: doc.year !== undefined ? doc.year : -1
         };
 
         const jsonString = JSON.stringify(jsonData, null, 2);
+
         const element = document.createElement("a");
         const file = new Blob([jsonString], { type: "application/json" });
         element.href = URL.createObjectURL(file);
-        element.download = `kluc.json`;
+        element.download = `${name || "document"}.json`;
         document.body.appendChild(element);
         element.click();
         document.body.removeChild(element);
-    };
-
-
-    const handleEditSubmit = async (formData, id) => {
-
-        try {
-
-            const response = await fetch(`http://localhost:3000/api/keys/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                setError(errorData.message);
-                return;
-            }
-
-            const updatedKey = await response.json();
-
-            setKeys(prevKeys =>
-                prevKeys.map(key =>
-                    key._id === id
-                        ? { ...key, ...updatedKey.key }
-                        : key
-                )
-            );
-
-            setError(null);
-            setIsEditing(false);
-        } catch (error) {
-            console.error("Chyba:", error);
-        }
-    };
-
-    const handleCancel = () => {
-        setIsEditing(false);
-        setError(null);
     };
 
     const handleDelete = async (keyId) => {
@@ -134,13 +91,50 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
         setIsEditing(true);
     };
 
+    const handleEditSubmit = async (formData, id) => {
+
+        try {
+
+            const response = await fetch(`http://localhost:3000/api/keys/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setError(errorData.message);
+                return;
+            }
+
+
+            setKeys(prevKeys =>
+                prevKeys.map(key => (key._id === id ? { ...key, ...formData } : key))
+            );
+
+            setError(null);
+            setIsEditing(false);
+        } catch (error) {
+            console.error("Chyba:", error);
+        }
+    };
+
+    const handleCancel = () => {
+        setIsEditing(false);
+        setError(null);
+    };
+
+
     return (
         <div className="flex flex-col justify-center items-center w-full max-w-xl mx-auto mb-6">
             <ul className='flex flex-col justify-center items-center w-full gap-5'>
                 {keys.map((keyData, index) => (
                     <React.Fragment key={keyData._id}>
                         <div
-                            className="sm:w-full w-5/6 max-w-3xl rounded-3xl px-6 py-5 bg-custom-dark-blue shadow-lg transform transition-all duration-500 ease-in-out opacity-0 animate-fadeIn"
+                            className="sm:w-full w-5/6 max-w-3xl rounded-3xl px-6 py-5 bg-custom-light-blue shadow-lg transform transition-all duration-500 ease-in-out opacity-0 animate-fadeIn"
                             style={{ animationDelay: `${index * 150}ms` }}
                         >
                             <div className="flex gap-3 mb-3">
@@ -171,59 +165,59 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
 
                                 <div className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 gap-1">
                                     {keyData.uploadedBy === userId && userId !== null ? (
-                                    <>
-                                    <div className="relative flex items-center">
-                                        <button
-                                            onClick={() => handleDeleteClick(keyData._id)}
-                                            type="button"
-                                            className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM17 6H7V19H17V6ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"
-                                                    fill="#FEF7FF"/>
-                                            </svg>
-                                            <span
-                                                className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <>
+                                            <div className="relative flex items-center">
+                                                <button
+                                                    onClick={() => handleDeleteClick(keyData._id)}
+                                                    type="button"
+                                                    className="p-1 px-3 bg-gray-50 hover:bg-gray-200 text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#5EC9FF"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM17 6H7V19H17V6ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"
+                                                            fill="#5EC9FF"/>
+                                                    </svg>
+                                                    <span
+                                                        className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     Vymaž kľúč
                                             </span>
 
-                                        </button>
-                                    </div>
+                                                </button>
+                                            </div>
 
-                                    <div className="relative flex items-center">
-                                        <button
-                                            onClick={() => handleEditClick(keyData)}
-                                            type="button"
-                                            className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M5 19H6.425L16.2 9.225L14.775 7.8L5 17.575V19ZM3 21V16.75L16.2 3.575C16.4 3.39167 16.6208 3.25 16.8625 3.15C17.1042 3.05 17.3583 3 17.625 3C17.8917 3 18.15 3.05 18.4 3.15C18.65 3.25 18.8667 3.4 19.05 3.6L20.425 5C20.625 5.18333 20.7708 5.4 20.8625 5.65C20.9542 5.9 21 6.15 21 6.4C21 6.66667 20.9542 6.92083 20.8625 7.1625C20.7708 7.40417 20.625 7.625 20.425 7.825L7.25 21H3ZM15.475 8.525L14.775 7.8L16.2 9.225L15.475 8.525Z"
-                                                    fill="#FEF7FF"/>
-                                            </svg>
-                                            <span
-                                                className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="relative flex items-center">
+                                                <button
+                                                    onClick={() => handleEditClick(keyData)}
+                                                    type="button"
+                                                    className="p-1 px-3 bg-gray-50 hover:bg-gray-200 text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#5EC9FF"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M5 19H6.425L16.2 9.225L14.775 7.8L5 17.575V19ZM3 21V16.75L16.2 3.575C16.4 3.39167 16.6208 3.25 16.8625 3.15C17.1042 3.05 17.3583 3 17.625 3C17.8917 3 18.15 3.05 18.4 3.15C18.65 3.25 18.8667 3.4 19.05 3.6L20.425 5C20.625 5.18333 20.7708 5.4 20.8625 5.65C20.9542 5.9 21 6.15 21 6.4C21 6.66667 20.9542 6.92083 20.8625 7.1625C20.7708 7.40417 20.625 7.625 20.425 7.825L7.25 21H3ZM15.475 8.525L14.775 7.8L16.2 9.225L15.475 8.525Z"
+                                                            fill="#5EC9FF"/>
+                                                    </svg>
+                                                    <span
+                                                        className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     Uprav kľúč
                                             </span>
 
-                                        </button>
-                                    </div>
-                                    </>
+                                                </button>
+                                            </div>
+                                        </>
                                     ) : null}
 
 
                                     <div className="relative flex items-center">
                                         <button
                                             type="button"
-                                            onClick={() => handleDownload(keyData)}
+                                            onClick={() => handleDownload(keyData.name, keyData)}
                                             disabled={!isClient}
-                                            className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                            className="p-1 px-3 bg-gray-50 hover:bg-gray-200 text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="#5EC9FF"
                                                  xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="M12 16L7 11L8.4 9.55L11 12.15V4H13V12.15L15.6 9.55L17 11L12 16ZM6 20C5.45 20 4.97917 19.8042 4.5875 19.4125C4.19583 19.0208 4 18.55 4 18V15H6V18H18V15H20V18C20 18.55 19.8042 19.0208 19.4125 19.4125C19.0208 19.8042 18.55 20 18 20H6Z"
-                                                    fill="#FEF7FF"/>
+                                                    fill="#5EC9FF"/>
                                             </svg>
                                             <span
                                                 className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -236,18 +230,14 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
                                     <div className="relative flex items-center">
                                         <button
                                             type="button"
-                                            onClick={() => handleCopy(keyData.key, keyData._id)}
-                                            className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <g clipPath="url(#clip0_118_80)">
-                                                    <path
-                                                        d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z"
-                                                        stroke="#D9D9D9" strokeWidth="4" strokeLinecap="round"
-                                                        strokeLinejoin="round"/>
+                                            onClick={() => handleCopy(JSON.stringify(keyData.key), keyData._id)}
+                                            className="p-1 px-3 bg-gray-50 hover:bg-gray-200 text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <g clipPath="url(#clip0_141_17)">
+                                                    <path d="M5 15H4C3.46957 15 2.96086 14.7893 2.58579 14.4142C2.21071 14.0391 2 13.5304 2 13V4C2 3.46957 2.21071 2.96086 2.58579 2.58579C2.96086 2.21071 3.46957 2 4 2H13C13.5304 2 14.0391 2.21071 14.4142 2.58579C14.7893 2.96086 15 3.46957 15 4V5M11 9H20C21.1046 9 22 9.89543 22 11V20C22 21.1046 21.1046 22 20 22H11C9.89543 22 9 21.1046 9 20V11C9 9.89543 9.89543 9 11 9Z" stroke="#5EC9FF" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                                                 </g>
                                                 <defs>
-                                                    <clipPath id="clip0_118_80">
+                                                    <clipPath id="clip0_141_17">
                                                         <rect width="24" height="24" fill="white"/>
                                                     </clipPath>
                                                 </defs>
@@ -268,12 +258,12 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
                                 </div>
                             </div>
 
-                            <li className='mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto'>
+                            <li className='mb-2 p-4 rounded-lg shadow-sm bg-gray-50'>
                                 {Object.entries(typeof keyData.key === "string" ? JSON.parse(keyData.key) : keyData.key)
                                     .map(([keyName, values]) => (
                                         <div key={keyName} className="my-2">
-                                            <span className="text-white font-bold">{keyName.toUpperCase()}:</span>
-                                            <span className="text-white ml-2">
+                                            <span className="text-custom-light-blue-hover font-bold">{keyName.toUpperCase()}:</span>
+                                            <span className="text-custom-light-blue ml-2">
                 {Array.isArray(values) ? values.join(", ") : Object.values(values).join(", ")}
             </span>
                                         </div>
