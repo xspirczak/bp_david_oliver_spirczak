@@ -16,7 +16,7 @@ router.put('/update-name', authMiddleware, async (req, res) => {
         const { firstName, lastName } = req.body;
 
         if (!firstName || !lastName) {
-            return res.status(400).json({ error: "First name and last name are required" });
+            return res.status(400).json({ error: "Krstné meno a priezvisko sú povinné." });
         }
 
         // Find the user by ID (from middleware)
@@ -27,7 +27,7 @@ router.put('/update-name', authMiddleware, async (req, res) => {
         );
 
         if (!updatedUser) {
-            return res.status(404).json({ error: "User not found" });
+            return res.status(404).json({ error: "Používateľ sa nenašiel." });
         }
 
         // Generovanie nového JWT tokenu s aktualizovaným menom
@@ -50,7 +50,7 @@ router.put('/update-password', authMiddleware, async (req, res) => {
         //console.log(req.body);
 
         if (!oldPassword || !newPassword) {
-            return res.status(400).json({ error: "Staté a nové heslá jú požadované" });
+            return res.status(400).json({ error: "Staré a nové heslá sú požadované" });
         }
 
         const passwordError = isStrongPassword(newPassword);
@@ -85,7 +85,11 @@ router.post('/', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        console.log(req.body);
+        //console.log(req.body);
+        if (!email || !password) {
+            return res.status(400).json({error: "Zadajte povinné údaje."})
+        }
+
         // Check if user exists
         const user = await User.findOne({ email });
 
@@ -99,7 +103,7 @@ router.post('/', async (req, res) => {
         // Generate JWT token
         const accessToken = jwt.sign({ id: user._id, email: user.email, fullName: userFullName }, JWT_SECRET, { expiresIn: '1h' });
 
-        console.log("TOKEN: ", accessToken);
+        //console.log("TOKEN: ", accessToken);
 
         res.json({ message: 'Prihlásenie bolo úspešné', token: accessToken, user});
     } catch (err) {

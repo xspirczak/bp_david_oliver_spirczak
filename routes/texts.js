@@ -3,11 +3,21 @@ const router = express.Router();
 import Text from '../models/Text.js';
 import authMiddleware from "../middleware/authMiddleware.js";
 import tokenExistsMiddleware from "../middleware/tokenExistsMiddleware.js";
+import mongoose from "mongoose";
 
 // Delete document based on the id (documentID)
 router.delete("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ message: "ID textu musí byť zadané." });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Neplatné ID textu." });
+        }
+
         const deletedDoc = await Text.findByIdAndDelete(id);
 
         if (!deletedDoc) {
@@ -26,6 +36,14 @@ router.put("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description, language, country, year, document } = req.body;
+
+        if (!id) {
+            return res.status(400).json({ message: "ID kľúča musí byť zadané." });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Neplatné ID kľúča." });
+        }
 
         if (!document) {
             return res.status(400).json({ message: "Dokument nesmie byť prázdny." });
@@ -66,7 +84,7 @@ router.post('/', tokenExistsMiddleware, async (req, res) => {
         const newDocument = new Text({ document, name, description, language, country, year, uploadedBy });
 
         const savedDocument = await newDocument.save(); // Await saving the document
-        console.log('New document saved to MongoDB:', savedDocument); // Log saved document
+        //console.log('New document saved to MongoDB:', savedDocument); // Log saved document
         res.status(201).json(savedDocument); // Send a response with the created document
     } catch (err) {
         console.error('Error during document creation:', err.message); // Log the error message

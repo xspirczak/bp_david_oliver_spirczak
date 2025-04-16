@@ -174,7 +174,7 @@ export default function Profile({setUser}) {
             return;
         }
 
-        const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+        const isValidEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
         if (!newEmail.match(isValidEmail)) {
             setError("Email je v zlom formáte (meno@doména.sk).");
             return;

@@ -39,7 +39,7 @@ export default function TitlePageBoxSection() {
                 <p className="text-fontSize28 text-custom-dark-blue mt-6">Kľúče</p>
             </Link>
 
-            <Link to="/documents"
+            <Link to="/texts"
                   className="px-6 border border-custom-light-blue rounded-54 text-center w-284 h-284 flex flex-col items-center justify-center hover:bg-blue-100">
                 <svg width="116" height="116" viewBox="0 0 116 116" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path

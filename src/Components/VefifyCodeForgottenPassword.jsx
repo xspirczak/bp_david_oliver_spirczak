@@ -1,5 +1,5 @@
 import { IoSendOutline } from "react-icons/io5";
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import {useNavigate, useLocation, Navigate} from "react-router-dom";
 
 export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPassword}) {
@@ -14,6 +14,15 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
         e.preventDefault();
         setError("");
         setMessage("");
+
+        if (!email) {
+            setError("Email nie je zadaný.");
+            return;
+        }
+
+        if (!verificationCode) {
+            setError("Verifikačný kód nie je zadaný.")
+        }
 
         try {
             const response = await fetch("http://localhost:3000/api/auth/forgot-password-verify-code", {
@@ -32,11 +41,12 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
 
             localStorage.setItem("token", data.token);
 
+            setError(null);
+
             setTimeout(() => {
                 setForgotPassword("codeVerified");
                 navigate("/resetPassword", { state: { email } });
             }, 2000);
-
 
         } catch (err) {
             setError(err.message);

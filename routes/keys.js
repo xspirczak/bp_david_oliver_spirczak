@@ -3,11 +3,21 @@ const router = express.Router();
 import Key from '../models/Keys.js';
 import authMiddleware from "../middleware/authMiddleware.js";
 import tokenExistsMiddleware from "../middleware/tokenExistsMiddleware.js";
+import mongoose from "mongoose";
 
 // Delete key based on the id (keyID)
 router.delete("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({ message: "ID kľúča musí byť zadané." });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Neplatné ID kľúča." });
+        }
+
         const deletedKey = await Key.findByIdAndDelete(id);
 
         if (!deletedKey) {
@@ -25,7 +35,14 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 router.get("/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(id);
+
+        if (!id) {
+            return res.status(400).json({ message: "ID kľúča musí byť zadané." });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Neplatné ID kľúča." });
+        }
 
         const foundKey = await Key.findById(id);
 
@@ -47,10 +64,17 @@ router.put("/:id", authMiddleware, async (req, res) => {
         const { id } = req.params;
         const { name, description, language, country, year, key } = req.body;
 
+        if (!id) {
+            return res.status(400).json({ message: "ID kľúča musí byť zadané." });
+        }
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Neplatné ID kľúča." });
+        }
+
         if (!key) {
             return res.status(400).json({ message: "Kľúč nesmie byť prázdny." });
         }
-
 
         if (!JSON.parse(key)) {
             return res.status(400).json({ message: "Kľúč musí byť vo formáte JSON." });
@@ -99,8 +123,8 @@ router.post('/', tokenExistsMiddleware,async (req, res) => {
 
         //console.log(key)
         if (!key) {
-            console.log('Invalid data format:', key); // Log invalid format
-            return res.status(400).json({ error: 'Invalid key format. Expecting an array of strings.' });
+            //console.log('Invalid data format:', key); // Log invalid format
+            return res.status(400).json({ error: 'Kľúč nesmie byť prázdny.' });
         }
 
         const uploadedBy = req.user ? req.user.id : null;
@@ -109,7 +133,7 @@ router.post('/', tokenExistsMiddleware,async (req, res) => {
         const newKey = new Key({ key, name, description, country, year, uploadedBy });
 
         const savedKey = await newKey.save(); // Await saving the document
-        console.log('New key saved to MongoDB:', savedKey); // Log saved document
+        //console.log('New key saved to MongoDB:', savedKey); // Log saved document
         res.status(201).json(savedKey); // Send a response with the created document
     } catch (err) {
         console.error('Error during key creation:', err.message); // Log the error message

@@ -41,10 +41,9 @@ export default function TextInputField() {
 
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Handle:" + inputText);
+        //console.log("Handle:" + inputText);
 
         const trimmedInput = inputText.trim();
 
@@ -53,12 +52,11 @@ export default function TextInputField() {
             setIsValid(false);  // Update your state to reflect invalid input
             setSubmissionSuccess(false);
             setError('Vstupné pole nesmie byť prazdne!');  // Set an error message
-            console.error('Error: Input cannot be empty.'); // Log the error
+            //console.error('Error: Input cannot be empty.'); // Log the error
             return;  // Stop the function from executing further
         }
 
-
-        console.log("PRINT" ,name, description, language, country);
+        //console.log("PRINT" ,name, description, language, country);
         const jsonData = {
             document: inputText,  // This is the plain text to be sent as JSON
             name,

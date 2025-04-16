@@ -15,13 +15,16 @@ export default function ResetPassword({forgotPassword, setForgotPassword}) {
         setError("");
         setMessage("");
 
+        if (!email) {
+            setError("Zadajte email.");
+            return;
+        }
+
         console.log(newPassword, confirmPassword)
         if (newPassword !== confirmPassword) {
             setError("Heslá sa nezhodujú.");
             return;
         }
-
-
         try {
 
             const response = await fetch("http://localhost:3000/api/auth/reset-password", {

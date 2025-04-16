@@ -10,6 +10,11 @@ export default function VerifyCodeForm({ email, firstName, lastName, password, r
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!code ) {
+            setError("Verifikačný kód nie je zadaný.");
+            return;
+        }
+
         try {
             const response = await fetch("http://localhost:3000/api/auth/verify-email", {
                 method: "POST",
@@ -22,6 +27,8 @@ export default function VerifyCodeForm({ email, firstName, lastName, password, r
                 setError(data.error);
                 return;
             }
+
+            setError(null);
             setRegistrationDone(true);
             setVerificationSuccess("Email bol verifikovaný! Registrácia je úspešná.");
         } catch (err) {

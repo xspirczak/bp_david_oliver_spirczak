@@ -131,6 +131,10 @@ router.post("/request-email-change", authMiddleware, async (req, res) => {
         const { newEmail } = req.body;
         const userId = req.user.id;
 
+        if (!userId) {
+            return res.status(400).json({ message: "Chýba ID používateľa." });
+        }
+
         // Check if the new email is already in use
         const existingUser = await User.findOne({ email: newEmail });
         if (existingUser) {
@@ -165,6 +169,9 @@ router.post("/verify-email-change", authMiddleware, async (req, res) => {
         const { verificationCode } = req.body;
         const userId = req.user.id;
 
+        if (!userId) {
+            return res.status(400).json({ message: "Chýba ID používateľa." });
+        }
         // Get stored verification code
         const storedData = emailChangeVerificationCodes.get(userId);
         if (!storedData || storedData.expiresAt < Date.now()) {
@@ -181,7 +188,6 @@ router.post("/verify-email-change", authMiddleware, async (req, res) => {
             { email: storedData.newEmail },
             { new: true }
         );
-
 
         const userFullName = updatedUser.firstName + " "  + updatedUser.lastName;
 
@@ -216,6 +222,9 @@ router.post("/forgot-password",  async (req, res) => {
     try {
         const { email } = req.body;
 
+        if(!email) {
+            return res.status(400).json({ error: "Email je povinný." });
+        }
         // Check if the email is used
         const existingUser = await User.findOne({ email });
         if (!existingUser) {
@@ -292,6 +301,10 @@ router.post("/forgot-password-verify-code", async (req, res) => {
 router.post("/reset-password", resetPasswordMiddleware, async (req, res) => {
     try {
         const { email, newPassword } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ error: "Zadajte email." });
+        }
 
         const passwordError = isStrongPassword(newPassword);
 

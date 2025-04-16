@@ -53,6 +53,9 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
     };
 
     const handleDelete = async (docId) => {
+        if (!docId) {
+            setError("Zadajte ID textu.")
+        }
 
         try {
 
@@ -70,6 +73,7 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
 
             setShowDeleteAlert(false);
             setDocId(null);
+            setError(null);
 
         } catch (error) {
             console.error("Chyba:", error);
@@ -83,6 +87,10 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
     };
 
     const handleEditSubmit = async (formData, id) => {
+
+        if (!id) {
+            setError("Zadajte ID textu.")
+        }
 
         try {
             const response = await fetch(`http://localhost:3000/api/texts/${id}`, {
@@ -105,8 +113,8 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
             );
 
             setError(null);
-
             setIsEditing(false);
+            setError(null)
         } catch (error) {
             console.error("Chyba:", error);
         }

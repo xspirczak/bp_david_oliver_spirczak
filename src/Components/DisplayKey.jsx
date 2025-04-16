@@ -56,6 +56,10 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
 
     const handleEditSubmit = async (formData, id) => {
 
+        if (!keyId) {
+            setError("Zadajte ID kľúča.");
+        }
+
         try {
 
             const response = await fetch(`http://localhost:3000/api/keys/${id}`, {
@@ -85,6 +89,8 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
 
             setError(null);
             setIsEditing(false);
+            setError(null);
+
         } catch (error) {
             console.error("Chyba:", error);
         }
@@ -96,6 +102,10 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
     };
 
     const handleDelete = async (keyId) => {
+
+        if (!keyId) {
+            setError("Zadajte ID kľúča.");
+        }
 
         try {
 
@@ -113,6 +123,7 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
 
             setShowDeleteAlert(false);
             setKeyId(null);
+            setError(null);
         } catch (error) {
             console.error("Chyba:", error);
         }
