@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import DisplayKey from "../Components/DisplayKey.jsx";
 import DisplayText from "./DisplayText.jsx";
-import SearchBar from "../Components/Filters.jsx"; // Import SearchBar component
+import SearchBar from "../Components/Filters.jsx";
+import {GrFormNext, GrFormPrevious} from "react-icons/gr"; // Import SearchBar component
 
 export default function DisplayAllDocuments() {
     const [keys, setKeys] = useState([]);
@@ -17,7 +18,7 @@ export default function DisplayAllDocuments() {
         yearRange: { start: '', end: '' },
     });
     const [userId, setUserId] = useState(null);
-
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
@@ -132,42 +133,144 @@ export default function DisplayAllDocuments() {
     // Calculates how many pages are needed
     const totalPages = Math.ceil(filteredTogether.length / itemsPerPage);
 
+
+
+    useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+
     const renderPagination = () => {
         if (totalPages <= 1) return null;
 
-        const pageNumbers = [];
-        for (let i = 1; i <= totalPages; i++) {
-            pageNumbers.push(
+        const isSmallScreen = windowWidth < 500;
+        const buttons = [];
+
+        // Predchádzajúca
+        buttons.push(
+            <button
+                key="prev"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-2 py-2 border rounded disabled:opacity-50"
+            >
+                <GrFormPrevious />
+            </button>
+        );
+
+        if (isSmallScreen) {
+            // Prvá strana
+            buttons.push(
                 <button
-                    key={i}
-                    onClick={() => setCurrentPage(i)}
-                    className={`px-3 py-1 border rounded ${currentPage === i ? "bg-custom-dark-blue text-white" : "bg-white text-black"}`}
+                    key={1}
+                    onClick={() => setCurrentPage(1)}
+                    className={`px-3 py-1 border rounded ${currentPage === 1 ? "bg-custom-dark-blue text-white" : "bg-white text-black"}`}
                 >
-                    {i}
+                    1
                 </button>
             );
+
+            // Ellipsis pred currentPage
+            if (currentPage > 2 && currentPage < totalPages) {
+                buttons.push(<span key="start-ellipsis" className="px-2">...</span>);
+            }
+
+            // Aktuálna strana
+            if (currentPage !== 1 && currentPage !== totalPages) {
+                buttons.push(
+                    <button
+                        key={currentPage}
+                        onClick={() => setCurrentPage(currentPage)}
+                        className="px-3 py-1 border rounded bg-custom-dark-blue text-white"
+                    >
+                        {currentPage}
+                    </button>
+                );
+            }
+
+            // Ellipsis za currentPage
+            if (currentPage < totalPages - 1 && currentPage > 1) {
+                buttons.push(<span key="end-ellipsis" className="px-2">...</span>);
+            }
+
+            // Posledná strana
+            if (totalPages > 1) {
+                buttons.push(
+                    <button
+                        key={totalPages}
+                        onClick={() => setCurrentPage(totalPages)}
+                        className={`px-3 py-1 border rounded ${currentPage === totalPages ? "bg-custom-dark-blue text-white" : "bg-white text-black"}`}
+                    >
+                        {totalPages}
+                    </button>
+                );
+            }
+        } else {
+            // Pôvodná logika pre väčšie obrazovky
+            const maxVisible = 2;
+            const startPage = Math.max(2, currentPage - maxVisible);
+            const endPage = Math.min(totalPages - 1, currentPage + maxVisible);
+
+            buttons.push(
+                <button
+                    key={1}
+                    onClick={() => setCurrentPage(1)}
+                    className={`px-3 py-1 border rounded ${currentPage === 1 ? "bg-custom-dark-blue text-white" : "bg-white text-black"}`}
+                >
+                    1
+                </button>
+            );
+
+            if (startPage > 2) buttons.push(<span key="start-ellipsis" className="px-2">...</span>);
+
+            for (let i = startPage; i <= endPage; i++) {
+                buttons.push(
+                    <button
+                        key={i}
+                        onClick={() => setCurrentPage(i)}
+                        className={`px-3 py-1 border rounded ${currentPage === i ? "bg-custom-dark-blue text-white" : "bg-white text-black"}`}
+                    >
+                        {i}
+                    </button>
+                );
+            }
+
+            if (endPage < totalPages - 1) buttons.push(<span key="end-ellipsis" className="px-2">...</span>);
+
+            if (totalPages > 1) {
+                buttons.push(
+                    <button
+                        key={totalPages}
+                        onClick={() => setCurrentPage(totalPages)}
+                        className={`px-3 py-1 border rounded ${currentPage === totalPages ? "bg-custom-dark-blue text-white" : "bg-white text-black"}`}
+                    >
+                        {totalPages}
+                    </button>
+                );
+            }
         }
 
+        buttons.push(
+            <button
+                key="next"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="px-2 py-2 border rounded disabled:opacity-50"
+            >
+                <GrFormNext />
+            </button>
+        );
+
         return (
-            <div className="flex justify-center space-x-2 mt-4">
-                <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 border rounded disabled:opacity-50"
-                >
-                    Predchadzajúca
-                </button>
-                {pageNumbers}
-                <button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                    className="px-4 py-2 border rounded disabled:opacity-50"
-                >
-                    Ďalšia
-                </button>
+            <div className="flex justify-center space-x-2 mt-4 flex-wrap">
+                {buttons}
             </div>
         );
     };
+
 
     return (
         <div className="flex flex-col min-h-screen p-4">

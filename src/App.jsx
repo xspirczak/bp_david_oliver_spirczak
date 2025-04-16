@@ -15,6 +15,9 @@ import {ForgotPasswordPage} from "./Pages/forgotPassword.jsx";
 import {VerifyCodeForgottenPasswordPage} from "./Pages/verifyCodeForgottenPassword.jsx";
 import {ResetPasswordPage} from "./Pages/resetPassword.jsx";
 import './styles/animations.css';
+import {ContactPage} from "./Pages/contact.jsx";
+import {AboutPage} from "./Pages/about.jsx";
+import {TutorialPage} from "./Pages/tutorial.jsx";
 
 export default function App() {
   // State to track if the user is logged in
@@ -52,7 +55,7 @@ export default function App() {
   }, []);
 
   const validateEmail = (email, id) => {
-    const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    const isValidEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     const input = document.getElementById(id);
 
     if (email && email.match(isValidEmail)) {
@@ -117,6 +120,9 @@ export default function App() {
             <Route path="/keys" element={<KeysPage/>}/>
             <Route path="/texts" element={<TextsPage/>}/>
             <Route path="/search" element={<SearchPage/>}/>
+            <Route path="/contact" element={<ContactPage/>}/>
+            <Route path="/about" element={<AboutPage/>}/>
+            <Route path="/tutorial" element={<TutorialPage/>}/>
             <Route element={<PrivateRoute isLoggedIn={isLoggedIn}/>}>
               <Route path="/mapping" element={<MappingPage/>}/>
             </Route>

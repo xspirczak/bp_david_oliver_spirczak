@@ -69,8 +69,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
     <header className="bg-gradient-to-r from-blue-500 to-cyan-200">
       <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
         <div className="flex lg:flex-1">
-          <NavLink to="/" className="text-white font-extrabold text-fontSize32">
-            Lorem
+          <NavLink to="/" className="text-white font-extrabold md:text-fontSize32 sm:text-fontSize28 text-fontSize24">
+            CipherMatcher
           </NavLink>
         </div>
         <div className="flex lg:hidden gap-3">
