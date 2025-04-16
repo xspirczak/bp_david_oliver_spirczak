@@ -1,13 +1,13 @@
 import express from 'express';
 const router = express.Router();
-import Document from '../models/Documents.js';
+import Text from '../models/Text.js';
 import authMiddleware from "../middleware/authMiddleware.js";
 
 // Delete document based on the id (documentID)
 router.delete("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedDoc = await Document.findByIdAndDelete(id);
+        const deletedDoc = await Text.findByIdAndDelete(id);
 
         if (!deletedDoc) {
             return res.status(404).json({ message: "Dokument nenájdený." });
@@ -30,7 +30,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
             return res.status(400).json({ message: "Dokument nesmie byť prázdny." });
         }
 
-        const updatedDoc = await Document.findByIdAndUpdate(
+        const updatedDoc = await Text.findByIdAndUpdate(
             id,
             {  name: name, description: description, language: language, country: country, year: year,document: document },
         { new: true}

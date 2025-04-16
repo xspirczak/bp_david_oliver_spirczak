@@ -1,22 +1,17 @@
 import express from 'express';
 const router = express.Router();
 import Key from '../models/Keys.js';
-import Document from '../models/Documents.js';
+import Text from '../models/Text.js';
 import authMiddleware from "../middleware/authMiddleware.js";
-
-/* Načitanie dát na frekvenčnú analýzu */
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Nutné pre správne zistenie __dirname v ES moduloch
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Cesta k JSON súboru
 const frequenciesPath = path.join(__dirname, '../src/data/letterFrenquency.json');
 
-// Načítať JSON asynchrónne pri štarte servera
 let frequencies = null;
 
 try {
@@ -89,7 +84,6 @@ function calculateCodebookMatches(ciphertext, key) {
     return totalCodes > 0 ? matches / totalCodes : 0; // Normalizované skóre (0-1)
 }
 
-// Frekvenčná analýza
 function calculateFrequencyScore(plaintext, language = null) {
     const freq = {};
     for (const char of plaintext.toLowerCase()) {
@@ -97,27 +91,27 @@ function calculateFrequencyScore(plaintext, language = null) {
     }
     const total = Object.values(freq).reduce((a, b) => a + b, 0) || 1;
 
-
     let expected;
-
     if (language && frequencies.languages[language]) {
         expected = frequencies.languages[language];
     } else {
         expected = frequencies.languages.english;
     }
 
-
     let score = 0;
     for (const [letter, expFreq] of Object.entries(expected)) {
         const obsFreq = (freq[letter] || 0) / total;
         score += Math.abs(expFreq - obsFreq);
     }
-    return 1 - score; // Normalizované skóre (vyššie je lepšie)
-}
 
+    const normalizedScore = Math.max(0, 1 - Math.min(score, 1));
+    return normalizedScore;
+}
 
 //  Mapovanie šifrovaného textu na kľúč (počet zhôd (vyberie top 5) následne na top 5 frekvečná analýza)
 router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
+    console.time('serial-ciphertext-to-key'); // Začni meranie času
+
     try {
         const { ciphertext, language } = req.body;
         if (!ciphertext) return res.status(400).json({ message: 'Šifrovaný text je povinný' });
@@ -134,7 +128,6 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
 
         //console.log("Results after first step:", JSON.stringify(results));
 
-        // Top 5 Code Matches
         const top5Matches = results
             .sort((a, b) => b.score - a.score)
             .slice(0, 5);
@@ -150,15 +143,17 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
             return {keyId: key.keyId, plaintext: key.plaintext, score: totalScore};
         }));
 
-        // Final results after frequency analysis
         const final = finalResults
             .sort((a, b) => b.score - a.score)
             .slice(0, 3);
 
         //console.log("Top 3 final results after second step:", JSON.stringify(final));
+        console.timeEnd('serial-ciphertext-to-key'); // Ukonči meranie času
 
         res.json(final);
     } catch (error) {
+        console.timeEnd('serial-ciphertext-to-key'); // Ukonči meranie aj pri chybe
+
         res.status(500).json({ message: 'Chyba pri mapovaní', error: error.message });
     }
 });
@@ -167,6 +162,8 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
 
 // Key to text mapping (steps separated)
 router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
+    console.time('serial-key-to-ciphertexts');
+
     try {
         let { key } = req.body;
         if (!key) return res.status(400).json({ message: 'Kľúč je povinný' });
@@ -186,7 +183,7 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
         }
 
         // Načítaj všetky šifrované texty
-        const documents = await Document.find();
+        const documents = await Text.find();
         if (!documents.length) return res.status(404).json({ message: 'Žiadne dokumenty nenájdené' });
 
         // Pre každý dokument vypočítaj skóre
@@ -196,10 +193,9 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
             return { docId: doc._id, plaintext, score: codebookScore, language: doc.language };
         }));
 
-        // Top 5 keys using first step - code matches
         const top5Matches = results
             .sort((a, b) => b.score - a.score)
-            .slice(0, 5); // Vráti prvé 3 výsledky (alebo menej, ak ich je menej)
+            .slice(0, 5);
 
 
         const finalResults = await Promise.all(top5Matches.map(async (doc, idx) => {
@@ -211,22 +207,24 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
             return {docId: doc.docId, plaintext: doc.plaintext, score: totalScore};
         }));
 
-        // Final results after frequency analysis
         const final = finalResults
             .sort((a, b) => b.score - a.score)
             .slice(0, 3);
-
+        console.timeEnd('serial-key-to-ciphertexts');
         res.json(final);
     } catch (error) {
+        console.timeEnd('serial-key-to-ciphertexts');
         res.status(500).json({ message: 'Chyba pri mapovaní', error: error.message });
     }
 });
 
 
-
-// Mapovanie šifrovaného textu na kľúč (počet zhôd a frekvečná analýza pre všetky kľúče)
 /*
+// Mapovanie šifrovaného textu na kľúč (počet zhôd a frekvečná analýza pre všetky kľúče)
+
 router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
+        console.time('combined-ciphertext-to-keys');
+
     try {
         const { ciphertext } = req.body;
         if (!ciphertext) return res.status(400).json({ message: 'Šifrovaný text je povinný' });
@@ -247,17 +245,22 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
         const topMatches = results
             .sort((a, b) => b.score - a.score)
             .slice(0, 3);
+        console.timeEnd('combined-ciphertext-to-keys');
 
         res.json(topMatches);
     } catch (error) {
+        console.timeEnd('combined-ciphertext-to-keys');
+
         res.status(500).json({ message: 'Chyba pri mapovaní', error: error.message });
     }
 });
-*/
+
 
 // Key to text mapping (both methods together)
-/*
+
 router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
+    console.time('combined-key-to-ciphertexts');
+
     try {
         let { key } = req.body;
         if (!key) return res.status(400).json({ message: 'Kľúč je povinný' });
@@ -277,7 +280,7 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
         }
 
         // Načítaj všetky šifrované texty
-        const documents = await Document.find();
+        const documents = await Text.find();
         if (!documents.length) return res.status(404).json({ message: 'Žiadne dokumenty nenájdené' });
 
         // Pre každý dokument vypočítaj skóre
@@ -286,20 +289,24 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
             const codebookScore = calculateCodebookMatches(doc.document, key);
             const freqScore = calculateFrequencyScore(plaintext);
             const totalScore = 0.5 * codebookScore + 0.5 * freqScore;
-            return { docId: doc._id, plaintext, score: codebookScore };
+            return { docId: doc._id, plaintext, score: totalScore };
         }));
 
         // final results
         const topMatches = results
             .sort((a, b) => b.score - a.score)
-            .slice(0, 5); // Vráti prvé 3 výsledky (alebo menej, ak ich je menej)
+            .slice(0, 3); // Vráti prvé 3 výsledky (alebo menej, ak ich je menej)
 
         res.json(topMatches);
+        console.timeEnd('combined-key-to-ciphertexts');
+
     } catch (error) {
+        console.timeEnd('combined-key-to-ciphertexts');
+
         res.status(500).json({ message: 'Chyba pri mapovaní', error: error.message });
     }
 });
-*/
 
+*/
 
 export default router;

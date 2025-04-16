@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import DisplayKey from "../Components/DisplayKey.jsx";
-import DisplayDocument from "../Components/DisplayDocument.jsx";
+import DisplayText from "./DisplayText.jsx";
 import SearchBar from "../Components/Filters.jsx"; // Import SearchBar component
 
 export default function DisplayAllDocuments() {
@@ -28,7 +28,7 @@ export default function DisplayAllDocuments() {
     useEffect(() => {
         Promise.all([
             axios.get("http://localhost:3000/api/keys"),
-            axios.get("http://localhost:3000/api/documents", {
+            axios.get("http://localhost:3000/api/texts", {
                 headers: {
                     'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : ""
                 },
@@ -179,7 +179,7 @@ export default function DisplayAllDocuments() {
                 )}
 
                 {paginatedKeys.length > 0 && <DisplayKey userId={userId} keys={paginatedKeys} setKeys={setKeys} deleteKey={deleteKey}/>}
-                {paginatedDocuments.length > 0 && <DisplayDocument userId={userId} docs={paginatedDocuments} setDocs={setDocuments} deleteDoc={deleteDoc}/>}
+                {paginatedDocuments.length > 0 && <DisplayText userId={userId} docs={paginatedDocuments} setDocs={setDocuments} deleteDoc={deleteDoc}/>}
             </div>
 
             <div className="mt-auto">{renderPagination()}</div>

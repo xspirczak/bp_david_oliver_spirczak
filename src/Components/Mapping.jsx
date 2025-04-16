@@ -12,6 +12,7 @@ const Mapping = () => {
     const [language, setLanguage] = useState('');
     const [copiedTextId, setCopiedTextId] = useState('');
     const [isClient, setIsClient] = useState(false);
+    const [parsedKey, setParsedKey] = useState('');
 
     useEffect(() => {
         setIsClient(true);
@@ -91,6 +92,8 @@ const Mapping = () => {
         try {
             let keyToSend = key;
 
+            console.log(key);
+
             if (typeof key === 'string') {
                 try {
                     keyToSend = JSON.parse(key);
@@ -122,20 +125,14 @@ const Mapping = () => {
             const data = await response.json();
             setResult(data);
             setViewDecrypted(data.map(() => true)); // Initialize view states for this mode too
+            setParsedKey(keyToSend);
+
 
             console.log('Výsledok:', data);
         } catch (error) {
             setError('Chyba pri mapovaní: ' + error.message);
             console.error('Chyba pri mapovaní:', error);
         }
-    };
-
-    const toggleView = (index) => {
-        setViewDecrypted((prev) => {
-            const newViewDecrypted = [...prev];
-            newViewDecrypted[index] = !newViewDecrypted[index]; // Toggle only the clicked result
-            return newViewDecrypted;
-        });
     };
 
     const handleCopy = (plaintext, id) => {
@@ -271,8 +268,8 @@ const Mapping = () => {
 
                 {/* Results */}
                 {result && (
-                    <div className="mt-6 w-full">
-                        <h3 className="text-custom-dark-blue text-fontSize16 font-medium text-center">
+                    <div className="w-full">
+                        <h3 className="text-custom-dark-blue text-fontSize48 font-bold mb-6 text-center">
                             Výsledky (Top 3):
                         </h3>
                         {result.length === 0 ? (
@@ -291,32 +288,10 @@ const Mapping = () => {
                                                 className="text-fontSize28 font-bold">#{index + 1}</span> Skóre: {(item.score * 100).toFixed(2)} /
                                             100
                                         </p>
-                                        <div className="flex justify-center mb-2">
-                                            <label className="inline-flex items-center cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    className="sr-only peer"
-                                                    checked={viewDecrypted[index]}
-                                                    onChange={() => toggleView(index)}
-                                                />
-                                                <div
-                                                    className="relative w-11 h-6 bg-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-white rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-custom-dark-blue after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-                                                <span className="ms-3 text-fontSize16 font-medium text-white">
-                                                    {mappingMode ? (
-                                                            viewDecrypted[index] ? 'Zobraziť klúč' : 'Zobraziť namapovaný text'
-
-                                                        ) :
-                                                        viewDecrypted[index] ? 'Zobraziť ???' : 'Zobraziť namapovaný text'
-                                                    }
-                                                </span>
-                                            </label>
-                                        </div>
-
-
                                         {mappingMode ? (
                                             viewDecrypted[index] ? (
                                                 <div>
-                                                    <div className="flex mb-2 justify-end">
+                                                    <div className="flex mb-2 sm:justify-start justify-center">
                                                         <div className="relative flex items-center">
                                                             <button
                                                                 type="button"
@@ -339,7 +314,7 @@ const Mapping = () => {
                                                                     </defs>
                                                                 </svg>
                                                                 <span
-                                                                    className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    className="absolute left-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     Kopírovať text
                                                 </span>
                                                             </button>
@@ -364,37 +339,44 @@ const Mapping = () => {
                                                                         fill="#FEF7FF"/>
                                                                 </svg>
                                                                 <span
-                                                                    className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    className="absolute left-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     Stiahni .txt subor
                                             </span>
 
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <div
-                                                        className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto">
-                                                        <p className="break-all text-gray-50">{item.plaintext}</p>
+                                                    <div className="justify-center sm:flex gap-6">
+                                                        <div
+                                                            className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
+                                                            <p className="text-white font-semibold mb-2 text-fontSize17">Dešifrovaný
+                                                                text:</p>
+                                                            <p className="break-all text-gray-50">{item.plaintext}</p>
+                                                        </div>
+                                                        <div
+                                                            className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
+                                                            <p className="text-white font-semibold mb-2 text-fontSize17">Použitý
+                                                                kľúč:</p>
+
+                                                            {(resultData[index] &&
+                                                                Object.entries(typeof resultData[index].key.key === "string" ? JSON.parse(resultData[index].key.key) : resultData[index].key.key)
+                                                                    .map(([keyName, values]) => (
+                                                                        <div key={keyName} className="my-2">
+                                                                <span
+                                                                    className="text-white font-bold">{keyName.toUpperCase()}:</span>
+                                                                            <span className="text-white ml-2">
+                                                                        {Array.isArray(values) ? values.join(", ") : Object.values(values).join(", ")}
+                                                                    </span>
+                                                                        </div>
+                                                                    )))}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            ) : (
-                                                <div
-                                                    className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto">
-                                                    {Object.entries(typeof resultData[index].key.key === "string" ? JSON.parse(resultData[index].key.key) : resultData[index].key.key)
-                                                        .map(([keyName, values]) => (
-                                                            <div key={keyName} className="my-2">
-                                                            <span
-                                                                className="text-white font-bold">{keyName.toUpperCase()}:</span>
-                                                                <span className="text-white ml-2">
-                                                                    {Array.isArray(values) ? values.join(", ") : Object.values(values).join(", ")}
-                                                                </span>
-                                                            </div>
-                                                        ))}
-                                                </div>
-                                            )
+                                            ) : null
                                         ) : (
                                             viewDecrypted[index] ? (
                                                 <div>
-                                                    <div className="flex mb-2 justify-end">
+                                                    <div className="flex mb-2 justify-start">
                                                         <div className="relative flex items-center">
                                                             <button
                                                                 type="button"
@@ -449,10 +431,36 @@ const Mapping = () => {
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <div
-                                                        className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto">
-                                                        <p className="break-all text-gray-50">{item.plaintext}</p>
+                                                    <div className="justify-center sm:flex gap-6">
+                                                        <div
+                                                            className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
+                                                            <p className="text-white font-semibold mb-2 text-fontSize17">Dešifrovaný
+                                                                text:</p>
+                                                            <p className="break-all text-gray-50">{item.plaintext}</p>
+                                                        </div>
+                                                        <div
+                                                            className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
+                                                            <p className="text-white font-semibold mb-2 text-fontSize17">Použitý
+                                                                kľúč:</p>
+
+                                                            {parsedKey && Object.entries(
+                                                                typeof parsedKey === "string" ? JSON.parse(parsedKey) : parsedKey
+                                                            ).map(([keyName, values]) => (
+                                                                <div key={keyName} className="my-2">
+                                                                    <span className="text-white font-bold">{keyName.toUpperCase()}:</span>
+                                                                    <span className="text-white ml-2">
+                                                                  {Array.isArray(values)
+                                                                      ? values.join(", ")
+                                                                      : typeof values === "object"
+                                                                          ? Object.values(values).join(", ")
+                                                                          : values.toString()}
+                                                                </span>
+                                                                </div>
+                                                            ))}
+
+                                                        </div>
                                                     </div>
+
                                                 </div>
                                             ) : null
                                         )}

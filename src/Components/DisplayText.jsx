@@ -3,10 +3,9 @@ import {FaRegCalendarAlt} from "react-icons/fa";
 import {BiWorld} from "react-icons/bi";
 import { IoLanguage } from "react-icons/io5";
 import DeleteAlert from "./DeleteAlert.jsx";
-import EditDocumentForm from "./EditDocumentForm.jsx";
+import EditTextForm from "./EditTextForm.jsx";
 
-
-export default function DisplayDocument({docs, setDocs, userId, deleteDoc}) {
+export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
     const [isClient, setIsClient] = useState(false);
     const [copiedDocId, setCopiedDocId] = useState(null);
     const [showDeleteAlert, setShowDeleteAlert] = useState(false);
@@ -57,7 +56,7 @@ export default function DisplayDocument({docs, setDocs, userId, deleteDoc}) {
 
         try {
 
-            const response = await fetch(`http://localhost:3000/api/documents/${docId}`, {
+            const response = await fetch(`http://localhost:3000/api/texts/${docId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -86,7 +85,7 @@ export default function DisplayDocument({docs, setDocs, userId, deleteDoc}) {
     const handleEditSubmit = async (formData, id) => {
 
         try {
-            const response = await fetch(`http://localhost:3000/api/documents/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/texts/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -145,7 +144,7 @@ export default function DisplayDocument({docs, setDocs, userId, deleteDoc}) {
                                 </svg>
 
 
-                                <h2 className="text-fontSize24 font-bold text-white">{doc.name ? doc.name : "Šifrovaný dokument č. " + counter++}</h2>
+                                <h2 className="text-fontSize24 font-bold text-white">{doc.name ? doc.name : "Šifrovaný text č. " + counter++}</h2>
                             </div>
                             <p className="text-fontSize12 font-light text-white">{doc.description ? doc.description : "Bez popisu"}</p>
 
@@ -163,7 +162,7 @@ export default function DisplayDocument({docs, setDocs, userId, deleteDoc}) {
                                     </div>
                                     <div className="flex items-center">
                                         <FaRegCalendarAlt/>
-                                        <span className="ml-1">{doc.year !== -1 ? doc.year : "-"}</span>
+                                        <span className="ml-1">{doc.year !== -1 && doc.year !== undefined ? doc.year : "-"}</span>
                                     </div>
                                 </div>
 
@@ -183,7 +182,7 @@ export default function DisplayDocument({docs, setDocs, userId, deleteDoc}) {
                                                     </svg>
                                                     <span
                                                         className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    Vymaž dokument
+                                                    Vymaž text
                                             </span>
 
                                                 </button>
@@ -202,7 +201,7 @@ export default function DisplayDocument({docs, setDocs, userId, deleteDoc}) {
                                                     </svg>
                                                     <span
                                                         className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    Uprav dokument
+                                                    Uprav text
                                             </span>
 
                                                 </button>
@@ -274,7 +273,7 @@ export default function DisplayDocument({docs, setDocs, userId, deleteDoc}) {
                 )}
 
                 {isEditing && (
-                    <EditDocumentForm
+                    <EditTextForm
                         doc={currentDoc}
                         onSave={handleEditSubmit}
                         onCancel={handleCancel}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-export default function EditDocumentForm({ doc, onSave, onCancel, error, setError}) {
+export default function EditTextForm({ doc, onSave, onCancel, error, setError}) {
     const [formData, setFormData] = useState({
         name: doc.name || "",
         description: doc.description || "",
@@ -40,9 +40,9 @@ export default function EditDocumentForm({ doc, onSave, onCancel, error, setErro
     };
 
     return (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 overflow-hidden" onClick={onCancel}>
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50 overflow-hidden" onClick={onCancel}>
             <div className="bg-white bg-opacity-90 backdrop-blur-sm p-8 rounded-xl w-1/2 max-h-[90vh] overflow-y-auto shadow-2xl animate-fadeIn relative" onClick={e => e.stopPropagation()}>
-                <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">Upraviť dokument</h2>
+                <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">Upraviť text</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-5">
                         <label htmlFor="name" className="block font-semibold text-gray-700 mb-2">Názov</label>
@@ -52,7 +52,7 @@ export default function EditDocumentForm({ doc, onSave, onCancel, error, setErro
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                            className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
                         />
                     </div>
                     <div className="mb-5">
@@ -62,7 +62,7 @@ export default function EditDocumentForm({ doc, onSave, onCancel, error, setErro
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 min-h-[100px]"
+                            className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover min-h-[100px]"
                         />
                     </div>
                     <div className="mb-5">
@@ -73,7 +73,7 @@ export default function EditDocumentForm({ doc, onSave, onCancel, error, setErro
                             name="country"
                             value={formData.country}
                             onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                            className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
                         />
                     </div>
                     <div className="mb-5">
@@ -84,7 +84,7 @@ export default function EditDocumentForm({ doc, onSave, onCancel, error, setErro
                             name="language"
                             value={formData.language}
                             onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                            className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
                         />
                     </div>
                     <div className="mb-5">
@@ -95,17 +95,17 @@ export default function EditDocumentForm({ doc, onSave, onCancel, error, setErro
                             name="year"
                             value={formData.year}
                             onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                            className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
                         />
                     </div>
                     <div className="mb-5">
-                        <label htmlFor="document" className="block font-semibold text-gray-700 mb-2">Dokument</label>
+                        <label htmlFor="document" className="block font-semibold text-gray-700 mb-2">Text</label>
                         <textarea
                             id="document"
                             name="document"
                             value={formData.document}
                             onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 min-h-[150px] font-mono"
+                            className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover min-h-[150px]"
                         />
                     </div>
                     {error ? (
@@ -118,7 +118,7 @@ export default function EditDocumentForm({ doc, onSave, onCancel, error, setErro
                         <button
                             type="button"
                             onClick={onCancel}
-                            className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition duration-200"
+                            className="px-6 py-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-lg transition duration-200"
                         >
                             Zrušiť
                         </button>

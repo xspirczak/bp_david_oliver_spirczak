@@ -130,8 +130,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
           <NavLink to="/keys" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
             Kľúče
           </NavLink>
-          <NavLink to="/documents" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
-            Dokumenty
+          <NavLink to="/texts" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
+            Texty
           </NavLink>
           <NavLink to="/search" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
             Vyhľadávať
@@ -228,9 +228,9 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                          className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                   Kľúče
                 </NavLink>
-                <NavLink to="/documents" onClick={() => setMobileMenuOpen(false)}
+                <NavLink to="/texts" onClick={() => setMobileMenuOpen(false)}
                          className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                  Dokumenty
+                  Texty
                 </NavLink>
                 <NavLink to="/search" onClick={() => setMobileMenuOpen(false)}
                          className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">

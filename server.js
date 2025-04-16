@@ -8,10 +8,10 @@ import tokenExistsMiddleware from './middleware/tokenExistsMiddleware.js';
 import jwt from 'jsonwebtoken';
 import User from './models/User.js';
 import Key from './models/Keys.js';
-import Document from './models/Documents.js';
+import Text from './models/Text.js';
 import authRoutes from './routes/auth.js';
 import {isStrongPassword} from './src/functions.js'
-import documentRoutes from './routes/documents.js';
+import textRoutes from './routes/texts.js';
 import keyRoutes from './routes/keys.js';
 import mappingRoutes from './routes/mapping.js';
 
@@ -87,7 +87,7 @@ app.get('/api/keys', async (req, res) => {
 });
 
 // documents
-app.post('/api/documents', tokenExistsMiddleware, async (req, res) => {
+app.post('/api/texts', tokenExistsMiddleware, async (req, res) => {
   try {
 
     const { document, name, description, language, country, year } = req.body;
@@ -101,7 +101,7 @@ app.post('/api/documents', tokenExistsMiddleware, async (req, res) => {
     const uploadedBy = req.user ? req.user.id : null;
 
     // Save the key to the database
-    const newDocument = new Document({ document, name, description, language, country, year, uploadedBy });
+    const newDocument = new Text({ document, name, description, language, country, year, uploadedBy });
 
     const savedDocument = await newDocument.save(); // Await saving the document
     console.log('New document saved to MongoDB:', savedDocument); // Log saved document
@@ -113,9 +113,9 @@ app.post('/api/documents', tokenExistsMiddleware, async (req, res) => {
 });
 
 
-app.get('/api/documents', tokenExistsMiddleware, async (req, res) => {
+app.get('/api/texts', tokenExistsMiddleware, async (req, res) => {
   try {
-    const documents = await Document.find();
+    const documents = await Text.find();
     const userId = req.user ? req.user.id : null;
 
     res.json({userId, documents});
@@ -166,7 +166,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use("/api/documents", documentRoutes);
+app.use("/api/texts", textRoutes);
 app.use("/api/keys", keyRoutes);
 app.use("/api/mapping", mappingRoutes);
 

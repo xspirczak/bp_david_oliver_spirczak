@@ -1,6 +1,6 @@
 import  { useState } from 'react'
 
-export default function DocumentInputField() {
+export default function TextInputField() {
     const [error, setError] = useState(''); // State to store the error message
     const [isValid, setIsValid] = useState(false); // State to store the JSON validation status
     const [submissionSuccess, setSubmissionSuccess] = useState(false);
@@ -71,7 +71,7 @@ export default function DocumentInputField() {
 
         try {
             // Use fetch with proper configuration
-            const response = await fetch('http://localhost:3000/api/documents', {
+            const response = await fetch('http://localhost:3000/api/texts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,8 +109,8 @@ export default function DocumentInputField() {
 
     return (
         <div className="flex flex-col items-center justify-center mb-6">
-            <h1 className="text-custom-dark-blue lg:text-fontSize61 md:text-fontSize48 text-fontSize32 font-bold mb-6 text-center mt-6 px-2">Vložte šifrovaný dokument</h1>
-            <p className="text-custom-dark-blue font-light md:text-fontSize16 text-fontSize12 text-center px-4 mb-6">Nahrať dokumenty je možné v digitálnom
+            <h1 className="text-custom-dark-blue lg:text-fontSize61 md:text-fontSize48 text-fontSize32 font-bold mb-6 text-center mt-6 px-2">Vložte šifrovaný text</h1>
+            <p className="text-custom-dark-blue font-light md:text-fontSize16 text-fontSize12 text-center px-4 mb-6">Nahrať texty je možné v digitálnom
                 formáte <span className="font-semibold">(.txt)</span> alebo samotným vložením textu do vstupného poľa
                 nižšie.</p>
             <div className="bg-white shadow-lg rounded-lg sm:p-6 p-2 w-11/12 max-w-4xl">
@@ -190,7 +190,7 @@ export default function DocumentInputField() {
                         {error ? (
                             <p className="text-red-500 text-center">{error}</p>
                         ) : isValid ? (
-                            <p className="text-green-500 text-center">Dokument v správnom formáte.</p>
+                            <p className="text-green-500 text-center">Text v správnom formáte.</p>
                         ) : (
                             <p className="text-custom-dark-blue text-center">Zadajte šifrovaný text v digitálnom
                                 formáte.</p>
@@ -206,7 +206,7 @@ export default function DocumentInputField() {
                     </div>
                     {submissionSuccess && (
                         <div className="text-green-500 mt-4 text-center">
-                            Dokument bol úspešné vložený.
+                            Text bol úspešné vložený.
                         </div>
                     )}
                 </form>

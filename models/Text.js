@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const DocumentSchema = new mongoose.Schema({
+const TextSchema = new mongoose.Schema({
     document: {
         type: String,
         required: true,
@@ -23,5 +23,5 @@ const DocumentSchema = new mongoose.Schema({
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
 });
 
-const Document = mongoose.model('Document', DocumentSchema);
-export default Document;
+const Text = mongoose.model('Text', TextSchema);
+export default Text;

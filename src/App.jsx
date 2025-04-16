@@ -1,7 +1,7 @@
 import { HashRouter as Router, Routes, Route } from "react-router-dom"
 import {HomePage} from './Pages/home'
 import {KeysPage} from './Pages/keys'
-import {DocumentsPage} from './Pages/documents'
+import {TextsPage} from './Pages/texts.jsx'
 import {MappingPage} from './Pages/mapping'
 import {Layout} from './layout'
 import {LoginPage} from "./Pages/login";
@@ -115,7 +115,7 @@ export default function App() {
             <Route path="/verifyCode" element={<VerifyCodeForgottenPasswordPage forgotPassword={forgotPassword} setForgotPassword={setForgotPassword}/>}/>
             <Route path="/resetPassword" element={<ResetPasswordPage forgotPassword={forgotPassword} setForgotPassword={setForgotPassword}/>}/>
             <Route path="/keys" element={<KeysPage/>}/>
-            <Route path="/documents" element={<DocumentsPage/>}/>
+            <Route path="/texts" element={<TextsPage/>}/>
             <Route path="/search" element={<SearchPage/>}/>
             <Route element={<PrivateRoute isLoggedIn={isLoggedIn}/>}>
               <Route path="/mapping" element={<MappingPage/>}/>

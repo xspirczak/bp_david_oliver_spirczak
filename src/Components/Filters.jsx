@@ -27,10 +27,10 @@ const SearchBar = ({ filters, onFilterChange }) => {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 max-w-4xl mx-auto">
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 max-w-3xl sm:w-full w-5/6 mx-auto">
             <div className="space-y-6">
                 {/* Search Input */}
-                <div className="relative">
+                <div className="relative sm:w-2/3 w-full flex mx-auto">
                     <input
                         type="text"
                         placeholder="Vyhľadavať"
@@ -43,9 +43,10 @@ const SearchBar = ({ filters, onFilterChange }) => {
                     </svg>
                 </div>
 
+                <div className="grid sm:flex justify-center gap-6">
                 {/* Filter Options */}
-                <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
-                    <div className="relative group">
+                <div className="sm:flex sm:gap-6 gap-2 grid">
+                    <div className="relative group items-center justify-center flex">
                         <input type="checkbox" id="optionDocuments" className="hidden peer" name="document"
                                checked={filters.document}
                                onChange={(e) => {
@@ -55,7 +56,7 @@ const SearchBar = ({ filters, onFilterChange }) => {
                         />
                         <label
                             htmlFor="optionDocuments"
-                            className="flex flex-col items-center justify-center w-32 h-32 border-2 rounded-2xl text-white cursor-pointer peer-checked:text-white border-custom-dark-blue bg-custom-dark-blue hover:bg-custom-dark-blue-hover transition-all duration-200 peer-checked:opacity-100 opacity-90"
+                            className="flex flex-col items-center justify-center w-24 h-24 border-2 rounded-2xl text-white cursor-pointer peer-checked:text-white border-custom-dark-blue bg-custom-dark-blue hover:bg-custom-dark-blue-hover hover:border-custom-dark-blue-hover transition-all duration-200 peer-checked:opacity-100 opacity-90"
                         >
                             <svg width="41" height="44" viewBox="0 0 41 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -95,16 +96,16 @@ const SearchBar = ({ filters, onFilterChange }) => {
                                     d="M15.4507 6.59985H10.5715C10.1224 6.59985 9.7583 6.9282 9.7583 7.33319V11.7332C9.7583 12.1382 10.1224 12.4665 10.5715 12.4665H15.4507C15.8998 12.4665 16.2639 12.1382 16.2639 11.7332V7.33319C16.2639 6.9282 15.8998 6.59985 15.4507 6.59985ZM14.6375 10.9999H11.3847V8.06652H14.6375V10.9999Z"
                                     fill="white"/>
                             </svg>
-                            <span className="mt-2 text-sm font-medium">Dokumenty</span>
+                            <span className="mt-2 text-sm font-medium">Texty</span>
                         </label>
                         <span
                             className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-3 py-1 text-sm text-white bg-custom-dark-blue rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
                             id="tooltipDocuments">
-                            Skryť dokumenty
+                            Skryť texty
                         </span>
                     </div>
 
-                    <div className="relative group">
+                    <div className="relative group items-center justify-center flex">
                         <input type="checkbox" id="optionKeys" className="hidden peer" name="key"
                                checked={filters.key}
                                onChange={(e) => {
@@ -114,7 +115,7 @@ const SearchBar = ({ filters, onFilterChange }) => {
                         />
                         <label
                             htmlFor="optionKeys"
-                            className="flex flex-col items-center justify-center w-32 h-32 border-2 rounded-2xl text-white cursor-pointer peer-checked:text-white border-custom-dark-blue bg-custom-dark-blue hover:bg-custom-dark-blue-hover transition-all duration-200 peer-checked:opacity-100 opacity-90"
+                            className="flex flex-col items-center justify-center w-24 h-24 border-2 rounded-2xl text-white cursor-pointer peer-checked:text-white border-custom-dark-blue bg-custom-dark-blue hover:bg-custom-dark-blue-hover hover:border-custom-dark-blue-hover transition-all duration-200 peer-checked:opacity-100 opacity-90"
                         >
                             <svg width="44" height="42" viewBox="0 0 44 42" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -132,11 +133,12 @@ const SearchBar = ({ filters, onFilterChange }) => {
                     </div>
                 </div>
 
-                {/* Year Range Slider */}
-                <div className="mt-8 grid justify-center">
-                    <h3 className="text-lg font-medium text-gray-700 mb-4 ">Interval rokov</h3>
-                    <div className="px-4">
-                        <MultiRangeSlider min={1400} max={2000} onChange={handleRangeChange}/>
+                    {/* Year Range Slider */}
+                    <div className="mt-8 grid justify-center">
+                        <h3 className="text-lg font-medium text-gray-700 mb-4 ">Interval rokov</h3>
+                        <div className="px-4">
+                            <MultiRangeSlider min={1400} max={2000} onChange={handleRangeChange}/>
+                        </div>
                     </div>
                 </div>
             </div>
