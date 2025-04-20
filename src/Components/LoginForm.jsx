@@ -92,10 +92,10 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
         <>
         {!isLoginSuccessful && !isLoggedIn ? (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200 py-10">
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-auto lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center">
+            <div className="flex flex-col items-center px-4 py-6 mx-auto min-h-screen lg:py-0">
+                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12 flex justify-center">
 
-                    <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-28 py-10">
+                    <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-10 py-10">
                         <h1 className="lg:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
                             Prihlásiť sa
                         </h1>
@@ -171,16 +171,16 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
                                 <div className="flex items-center justify-end">
                                     <NavLink to={'/forgotPassword'}
-                                       className="text-fontSize16 text-custom-dark-blue hover:underline">Zabudol som
+                                       className="text-fontSize12 sm:text-fontSize16 text-custom-dark-blue hover:underline">Zabudol som
                                         heslo</NavLink>
                                 </div>
                             </div>
                             <button type="submit"
                                     className="w-full text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl px-5 py-1.5 text-center">Prihlásiť sa
                             </button>
-                            {error ? ( <p className="text-red-500 text-center text-fontSize20">{error}</p>
+                            {error ? ( <p className="text-red-500 text-center text-fontSize20 font-semibold">{error}</p>
                             ) : (
-                                <p className="text-center text-fontSize20 invisible">Error placeholder</p>
+                                <p className="text-center text-fontSize20 invisible font-semibold">Error placeholder</p>
                             )
                             }
                         </form>

@@ -274,6 +274,13 @@ export default function DisplayAllDocuments() {
         );
     };
 
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-500 to-cyan-200">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col min-h-screen p-4">

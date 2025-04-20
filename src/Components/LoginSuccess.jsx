@@ -4,8 +4,8 @@ export default function LoginSuccess({ navigateTo, fullName}) {
 
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center p-6">
+            <div className="flex flex-col items-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
+                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12 flex justify-center p-6 mt-15 md:mt-40">
 
                     <div className="grid justify-center p-6">
                         <div className="flex justify-center mb-3">

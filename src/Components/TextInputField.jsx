@@ -188,11 +188,11 @@ export default function TextInputField() {
                     </div>
                     <div className="flex justify-center">
                         {error ? (
-                            <p className="text-red-500 text-center">{error}</p>
+                            <p className="text-red-500 text-center font-semibold">{error}</p>
                         ) : isValid ? (
-                            <p className="text-green-500 text-center">Text v správnom formáte.</p>
+                            <p className="text-green-500 text-center font-semibold">Text v správnom formáte.</p>
                         ) : (
-                            <p className="text-custom-dark-blue text-center">Zadajte šifrovaný text v digitálnom
+                            <p className="text-custom-dark-blue text-center font-semibold">Zadajte šifrovaný text v digitálnom
                                 formáte.</p>
                         )}
                     </div>
@@ -205,7 +205,7 @@ export default function TextInputField() {
                         </button>
                     </div>
                     {submissionSuccess && (
-                        <div className="text-green-500 mt-4 text-center">
+                        <div className="text-green-500 mt-4 text-center font-semibold">
                             Text bol úspešné vložený.
                         </div>
                     )}

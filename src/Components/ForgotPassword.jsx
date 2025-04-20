@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
+import { useState} from "react";
 import { IoSendOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
-export default function ForgotPassword({forgotPassword, setForgotPassword}) {
+export default function ForgotPassword({ setForgotPassword}) {
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");

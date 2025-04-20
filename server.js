@@ -15,9 +15,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log("MongoDB connected"))
+  .then(() => console.log("MongoDB connected", process.env.MONGODB_URI))
   .catch(err => console.log(err));
 
 // Listen on a port

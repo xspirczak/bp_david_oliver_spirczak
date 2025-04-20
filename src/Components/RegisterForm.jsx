@@ -95,9 +95,10 @@ export default function RegisterForm({ validateEmail, validEmail }) {
     return (
 
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200 py-10">
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto min-h-screen lg:py-0 my-6">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center">
-                    <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-28 py-10">
+            <div className="flex flex-col items-center px-4 py-6 mx-auto min-h-screen lg:py-0">
+                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12 flex justify-center">
+                    <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-10 py-10">
+
                         { !registrationDone ? (
                             <>
                                 <h1 className="lg:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
@@ -258,28 +259,29 @@ export default function RegisterForm({ validateEmail, validEmail }) {
                                         <input type="password" name="newPasswordRepeat" id="newPasswordRepeat"
                                                autoComplete={"new-password"}
                                                placeholder="••••••••"
-                                               className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                               className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 mb-6"
                                                required="" onChange={handleChange}/>
                                     )}
                                 </div>
 
-                                {error || success ? (
-                                    <div className="flex justify-center mt-5 text-red-500">
-                                        {error && <p className="text-red-5+00 text-center text-fontSize20">{error}</p>}
-                                        {success && <p className="text-green-500 text-center text-fontSize20">{success}</p>}
-                                    </div>
 
-                                ) : (
-                                    <div className="flex justify-center mt-5 text-red-500 invisible">
-                                        <p className="text-red-500 text-center text-fontSize20">Final state placeholder</p>
-                                    </div>
-                                )}
                             </div>
 
                             <button type="submit"
                                     className="w-full text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl px-5 py-1.5 text-center">Registrovať sa
                             </button>
 
+                            {error || success ? (
+                                <div className="flex justify-center mt-5 text-red-500">
+                                    {error && <p className="text-red-5+00 font-semibold text-center text-fontSize20">{error}</p>}
+                                    {success && <p className="text-green-500 font-semibold text-center text-fontSize20">{success}</p>}
+                                </div>
+
+                            ) : (
+                                <div className="flex justify-center mt-5 text-red-500 invisible ">
+                                    <p className="text-red-500 text-center text-fontSize20 font-semibold">Final state placeholder</p>
+                                </div>
+                            )}
                         </form>
                         ) : (
                             <VerifyCodeForm setRegistrationDone={setRegistrationDone} formnData={formData} setShowVerification={setShowVerification} setPasswordMatch={setPasswordMatch} setSuccess={setSuccess} email={formData.email} firstName={formData.firstName} lastName={formData.lastName} password={formData.password} role={formData.role} />
