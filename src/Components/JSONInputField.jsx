@@ -144,7 +144,10 @@ export default function JSONInputField() {
             // Check if the structure matches what the server expects
             if (jsonData.key) {
                 // Send a POST request to your API
-                const response = await fetch('http://localhost:3000/api/keys', {
+
+
+                //  fetch('http://localhost:3000/api/keys',
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/keys`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

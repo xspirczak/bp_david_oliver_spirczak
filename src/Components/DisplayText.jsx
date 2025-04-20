@@ -59,7 +59,9 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
 
         try {
 
-            const response = await fetch(`http://localhost:3000/api/texts/${docId}`, {
+            // fetch(`http://localhost:3000/api/texts/${docId}`,
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/texts/${docId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -93,7 +95,8 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/api/texts/${id}`, {
+            // fetch(`http://localhost:3000/api/texts/${id}`,
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/texts/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

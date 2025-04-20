@@ -25,7 +25,9 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/auth/forgot-password-verify-code", {
+
+            // fetch("http://localhost:3000/api/auth/forgot-password-verify-code",
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password-verify-code`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, verificationCode }),

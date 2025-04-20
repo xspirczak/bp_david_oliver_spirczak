@@ -39,8 +39,9 @@ const Mapping = () => {
             setError('');
             setResultData([]); // Clear previous results
 
-            console.log(ciphertext, language);
-            const response = await fetch('http://localhost:3000/api/mapping/ciphertext-to-key', {
+            //console.log(ciphertext, language);
+            // fetch('http://localhost:3000/api/mapping/ciphertext-to-key',
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mapping/ciphertext-to-key`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -60,8 +61,10 @@ const Mapping = () => {
             // Initialize viewDecrypted for each result as true (showing plaintext by default)
             setViewDecrypted(data.map(() => true));
 
+
+            // fetch(`http://localhost:3000/api/keys/${item.keyId}`,
             const keyDataPromises = data.slice(0, 3).map(async (item) => {
-                const res = await fetch(`http://localhost:3000/api/keys/${item.keyId}`, {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/keys/${item.keyId}`,  {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
                 });
@@ -109,7 +112,9 @@ const Mapping = () => {
             }
 
             setError('');
-            const response = await fetch('http://localhost:3000/api/mapping/key-to-ciphertexts', {
+
+            // fetch('http://localhost:3000/api/mapping/key-to-ciphertexts',
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mapping/key-to-ciphertexts`,  {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

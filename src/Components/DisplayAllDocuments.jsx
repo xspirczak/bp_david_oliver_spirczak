@@ -26,10 +26,13 @@ export default function DisplayAllDocuments() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [currentPage]);
 
+    // axios.get("http://localhost:3000/api/keys"),
+    //             axios.get("http://localhost:3000/api/texts",
     useEffect(() => {
         Promise.all([
-            axios.get("http://localhost:3000/api/keys"),
-            axios.get("http://localhost:3000/api/texts", {
+
+            axios.get(`${import.meta.env.VITE_API_URL}/api/keys`),
+            axios.get(`${import.meta.env.VITE_API_URL}/api/texts`, {
                 headers: {
                     'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : ""
                 },

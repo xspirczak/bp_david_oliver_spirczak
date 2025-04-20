@@ -36,7 +36,9 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
         }
 
         try {
-            const response = await fetch('http://localhost:3000/api/users', {
+            //const response = await fetch('http://localhost:3000/api/users', {
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -57,7 +59,8 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
             setUser(decoded.email);
 
-            fetch('http://localhost:3000/api/protected', {
+            // fetch('http://localhost:3000/api/protected',
+            fetch(`${import.meta.env.VITE_API_URL}/api/protected`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

@@ -11,6 +11,7 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'random';
 const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH || 'random1';
+
 router.put('/update-name', authMiddleware, async (req, res) => {
     try {
         const { firstName, lastName } = req.body;

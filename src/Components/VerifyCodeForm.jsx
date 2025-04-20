@@ -16,7 +16,10 @@ export default function VerifyCodeForm({ email, firstName, lastName, password, r
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/auth/verify-email", {
+
+            //fetch("http://localhost:3000/api/auth/verify-email",
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/verify-email`,  {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, verificationCode: code, firstName, lastName, password, role }),

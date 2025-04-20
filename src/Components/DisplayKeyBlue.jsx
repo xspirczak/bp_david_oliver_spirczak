@@ -55,8 +55,9 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
     const handleDelete = async (keyId) => {
 
         try {
+            //fetch(`http://localhost:3000/api/keys/${keyId}`,
 
-            const response = await fetch(`http://localhost:3000/api/keys/${keyId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/keys/${keyId}`,  {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -95,7 +96,9 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
 
         try {
 
-            const response = await fetch(`http://localhost:3000/api/keys/${id}`, {
+            //fetch(`http://localhost:3000/api/keys/${id}`,
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/keys/${id}`,  {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

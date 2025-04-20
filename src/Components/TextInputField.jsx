@@ -68,8 +68,10 @@ export default function TextInputField() {
 
 
         try {
+
+            // fetch('http://localhost:3000/api/texts',
             // Use fetch with proper configuration
-            const response = await fetch('http://localhost:3000/api/texts', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/texts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

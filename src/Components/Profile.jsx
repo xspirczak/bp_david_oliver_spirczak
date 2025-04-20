@@ -32,8 +32,10 @@ export default function Profile({setUser}) {
                     throw new Error("User not logged in");
                 }
 
+                // fetch("http://localhost:3000/api/users",
+
                 // Fetch user data
-                const response = await fetch("http://localhost:3000/api/users", {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -73,7 +75,8 @@ export default function Profile({setUser}) {
 
         try {
 
-            const response = await fetch("http://localhost:3000/api/users/update-name", {
+            // fetch("http://localhost:3000/api/users/update-name",
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/update-name`,  {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -138,7 +141,9 @@ export default function Profile({setUser}) {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/users/update-password", {
+            // fetch("http://localhost:3000/api/users/update-password",
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/update-password`,  {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -182,7 +187,10 @@ export default function Profile({setUser}) {
 
         //console.log(newEmail)
         try {
-            const response = await fetch("http://localhost:3000/api/auth/request-email-change", {
+
+            //fetch("http://localhost:3000/api/auth/request-email-change",
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/request-email-change`,  {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -213,7 +221,10 @@ export default function Profile({setUser}) {
         }
 
         try {
-            const response = await fetch("http://localhost:3000/api/auth/verify-email-change", {
+
+            //fetch("http://localhost:3000/api/auth/verify-email-change",
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/verify-email-change`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
