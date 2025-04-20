@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 export default function TitlePageInfo () {
     return (
         <main className="bg-gradient-to-r from-blue-500 to-cyan-200 text-white text-center py-20">
-            <h1 className="text-fontSize61 font-bold">Odomkni minulosť s <span className="text-custom-dark-blue flex justify-center">CipherMatcher</span></h1>
+            <h1 className="text-fontSize48 md:text-fontSize61 font-bold">Odomkni minulosť s <span className="text-custom-dark-blue flex justify-center break-all">CipherMatcher</span></h1>
             <p className="mt-4 max-w-xl mx-auto text-fontSize17 p-4">
                 Webová aplikácia na mapovanie substitučných šifrovacích kľúčov na šifrované texty, navrhnutá na pomoc pri dešifrovaní historických dokumentov.
                 Vytvorená ako súčasť bakalárskej práce so zameraním na <span className="font-semibold">nomenklátoré šifry</span>.
