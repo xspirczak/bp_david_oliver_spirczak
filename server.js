@@ -10,7 +10,7 @@ import mappingRoutes from './routes/mapping.js';
 import userRoutes from './routes/user.js';
 
 const allowedOrigins = [
-  "https://bp-david-oliver-spirczak.vercel.app/",
+  "https://bp-david-oliver-spirczak.vercel.app",
   "http://localhost:5173"
 ];
 
