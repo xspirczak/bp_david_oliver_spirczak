@@ -9,12 +9,19 @@ import keyRoutes from './routes/keys.js';
 import mappingRoutes from './routes/mapping.js';
 import userRoutes from './routes/user.js';
 
+const allowedOrigins = [
+  "https://bp-david-oliver-spirczak.vercel.app/",
+  "http://localhost:5173"
+];
+
 // Initialize apps
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(cors());
-
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
 
 // Connect to MongoDB
