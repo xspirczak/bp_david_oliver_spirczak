@@ -12,8 +12,11 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+
         setError("");
         setMessage("");
+
 
         if (!email) {
             setError("Email nie je zadaný.");
@@ -41,7 +44,7 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
             setMessage("Overenie verifikačného kódu bolo úspešné!");
 
 
-            localStorage.setItem("token", data.token);
+            localStorage.setItem("resetToken", data.token);
 
             setError(null);
 
@@ -64,7 +67,7 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center p-6">
+                <div className="bg-white md:rounded-91 rounded-3xl shadow xl:w-5/12 w-5/6 flex justify-center p-6">
                     <div className="w-full">
                         <h1 className="lg:text-fontSize61 text-fontSize32 font-bold text-custom-dark-blue text-center">
                             Resetovanie hesla

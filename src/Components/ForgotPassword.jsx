@@ -7,12 +7,23 @@ export default function ForgotPassword({ setForgotPassword}) {
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (isSubmitting) return;
+
         setError("");
         setMessage("");
-        
+        setIsSubmitting(true);
+
+        if (!email) {
+            setError("Zadajte email.");
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
 
             // fetch("http://localhost:3000/api/auth/forgot-password",
@@ -24,6 +35,7 @@ export default function ForgotPassword({ setForgotPassword}) {
 
             const data = await response.json();
             if (!response.ok) {
+                setIsSubmitting(false);
                 throw new Error(data.error || "Chyba pri odosielaní e-mailu. Skúste to znovu.");
             }
 
@@ -42,7 +54,7 @@ export default function ForgotPassword({ setForgotPassword}) {
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center p-6">
+                <div className="bg-white md:rounded-91 rounded-3xl shadow xl:w-5/12 w-5/6 flex justify-center p-6">
                     <div className="w-full">
                         <h1 className="lg:text-fontSize61 text-fontSize32 font-bold text-custom-dark-blue text-center">
                             Resetovanie hesla
@@ -62,6 +74,7 @@ export default function ForgotPassword({ setForgotPassword}) {
                             <button
                                 type="submit"
                                 className="flex items-center gap-2 md:text-fontSize16 text-fontSize12 font-semibold border border-gray-200 rounded-3xl py-2 px-3"
+                                disabled={isSubmitting}
                             >
                                 <IoSendOutline />
                             </button>
@@ -70,7 +83,7 @@ export default function ForgotPassword({ setForgotPassword}) {
                             <p className="text-red-500 text-center text-fontSize16 font-bold">{error}</p>
                         ) : message ? (
                                 <p className="text-green-500 text-center text-fontSize16 font-bold">{message}</p>
-                        ) : (
+                        ) :  (
                             <p className="text-green-500 invisible text-center text-fontSize16 font-bold">Placeholder</p>
                         )}
                     </div>

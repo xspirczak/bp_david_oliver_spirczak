@@ -16,6 +16,7 @@ export default function RegisterForm({ validateEmail, validEmail }) {
     const [passwordMatch, setPasswordMatch] = useState(false);
     const [showVerification, setShowVerification] = useState(false);
     const [registrationDone, setRegistrationDone] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const togglePasswordVisibility = (inputId) => {
         let e = document.getElementById(inputId);
@@ -45,21 +46,28 @@ export default function RegisterForm({ validateEmail, validEmail }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (isSubmitting) return;
+
+
         setError(null);
         setSuccess(null);
-
+        setIsSubmitting(true);
 
         if (!formData.firstName || !formData.lastName) {
+            setIsSubmitting(false);
             setError('Vstup pre meno je prázdny.');
             return;
         }
 
         if (!passwordMatch) {
+            setIsSubmitting(false);
             setError('Heslá sa musia zhodovať.');
             return;
         }
 
         if (!validEmail) {
+            setIsSubmitting(false);
             setError('Zlý tvar emailu. (meno@domena.sk)');
             return;
         }
@@ -79,6 +87,7 @@ export default function RegisterForm({ validateEmail, validEmail }) {
 
             const data = await response.json();
             if (!response.ok) {
+                setIsSubmitting(false);
                 setError(data.error || "Neznáma chyba pri registrácii.");
                 return;
             }
@@ -88,6 +97,9 @@ export default function RegisterForm({ validateEmail, validEmail }) {
             //setFormData({ firstName: "", lastName: "", email: "", password: "",newPasswordRepeat: "", role: "user" });
         } catch (err) {
             setError(err.message);
+        }
+            finally {
+                setIsSubmitting(false);
         }
     };
 
@@ -259,7 +271,7 @@ export default function RegisterForm({ validateEmail, validEmail }) {
                                         <input type="password" name="newPasswordRepeat" id="newPasswordRepeat"
                                                autoComplete={"new-password"}
                                                placeholder="••••••••"
-                                               className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 mb-6"
+                                               className="border border-custom-dark-blue text-custom-dark-blue pl-11 pr-10 rounded-3xl focus:outline-custom-dark-blue focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                                                required="" onChange={handleChange}/>
                                     )}
                                 </div>
@@ -268,7 +280,9 @@ export default function RegisterForm({ validateEmail, validEmail }) {
                             </div>
 
                             <button type="submit"
-                                    className="w-full text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl px-5 py-1.5 text-center">Registrovať sa
+                                    className="w-full text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl px-5 py-1.5 text-center"
+                                    disabled={isSubmitting}
+                            >{isSubmitting ? "Odosielanie..." : "Zaregistrovať sa"}
                             </button>
 
                             {error || success ? (

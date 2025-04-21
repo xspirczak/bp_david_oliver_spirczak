@@ -20,6 +20,7 @@ export default function Profile({setUser}) {
     const [newEmail, setNewEmail] = useState("");
     const [verificationCode, setVerificationCode] = useState("");
     const [showVerificationInput, setShowVerificationInput] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
 
     useEffect(() => {
@@ -171,16 +172,22 @@ export default function Profile({setUser}) {
 
 
     const sendVerificationEmail = async () => {
+
+        if (isSubmitting) return;
+
         setError(null);
         setSuccessEmail(null);
+        setIsSubmitting(true);
 
         if (!newEmail) {
+            setIsSubmitting(false);
             setError("Zadajte nový email");
             return;
         }
 
         const isValidEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
         if (!newEmail.match(isValidEmail)) {
+            setIsSubmitting(false);
             setError("Email je v zlom formáte (meno@doména.sk).");
             return;
         }
@@ -201,8 +208,10 @@ export default function Profile({setUser}) {
 
             const data = await response.json();
             if (!response.ok) {
+                setIsSubmitting(false);
                 setError(data.error);
             } else {
+                setIsSubmitting(false);
                 setSuccessEmail(data.message);
                 setShowVerificationInput(true);
             }
@@ -446,8 +455,11 @@ export default function Profile({setUser}) {
                                             setError('');
                                             setNewEmail('');
                                             setSuccessEmail('');
+
                                         }}
-                                                className="flex items-center gap-2 md:text-fontSize16 text-fontSize12 font-semibold border border-gray-200 rounded-3xl py-2 px-3">
+                                                className="flex items-center gap-2 md:text-fontSize16 text-fontSize12 font-semibold border border-gray-200 rounded-3xl py-2 px-3"
+                                        disabled={isSubmitting}
+                                        >
                                             <IoMdClose/>
                                         </button>
                                         <span

@@ -274,7 +274,7 @@ const Mapping = () => {
                 {/* Results */}
                 {result && (
                     <div className="w-full">
-                        <h3 className="text-custom-dark-blue text-fontSize48 font-bold mb-6 text-center">
+                        <h3 className="text-custom-dark-blue text-fontSize28 md:text-fontSize48 font-bold mb-6 text-center">
                             Výsledky (Top 3):
                         </h3>
                         {result.length === 0 ? (

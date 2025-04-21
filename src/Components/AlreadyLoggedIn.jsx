@@ -30,7 +30,7 @@ export default function AlreadyLoggedIn({setIsLoggedIn, setUser, navigateTo}) {
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 sm:w-2/3 flex justify-center p-6">
+                <div className="bg-white md:rounded-91 rounded-3xl shadow xl:w-5/12 w-5/6 flex justify-center p-6">
 
 
                     <div className="grid justify-center p-6 gap-6">
