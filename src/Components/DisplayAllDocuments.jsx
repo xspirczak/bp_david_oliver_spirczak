@@ -4,6 +4,7 @@ import DisplayKey from "../Components/DisplayKey.jsx";
 import DisplayText from "./DisplayText.jsx";
 import SearchBar from "../Components/Filters.jsx";
 import {GrFormNext, GrFormPrevious} from "react-icons/gr"; // Import SearchBar component
+import {normalizeString} from "../utils/functions.js";
 
 export default function DisplayAllDocuments() {
     const [keys, setKeys] = useState([]);
@@ -27,7 +28,7 @@ export default function DisplayAllDocuments() {
     }, [currentPage]);
 
     // axios.get("http://localhost:3000/api/keys"),
-    //             axios.get("http://localhost:3000/api/texts",
+    // axios.get("http://localhost:3000/api/texts",
     useEffect(() => {
         Promise.all([
 
@@ -50,9 +51,7 @@ export default function DisplayAllDocuments() {
             });
     }, []);
 
-    function normalizeString(str) {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
+
 
     useEffect(() => {
         let filteredKeys = keys;

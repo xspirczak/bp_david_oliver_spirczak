@@ -13,6 +13,7 @@ const Mapping = () => {
     const [copiedTextId, setCopiedTextId] = useState('');
     const [isClient, setIsClient] = useState(false);
     const [parsedKey, setParsedKey] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setIsClient(true);
@@ -35,6 +36,8 @@ const Mapping = () => {
             return;
         }
 
+        setLoading(true);
+
         try {
             setError('');
             setResultData([]); // Clear previous results
@@ -51,13 +54,14 @@ const Mapping = () => {
             });
 
             if (!response.ok) {
+                setLoading(false)
                 throw new Error(`HTTP chyba: ${response.status} - ${await response.text()}`);
             }
 
             const data = await response.json();
-            console.log("Vysledok: ", data);
-            setResult(data);
+            //console.log("Vysledok: ", data);
 
+            setResult(data);
             // Initialize viewDecrypted for each result as true (showing plaintext by default)
             setViewDecrypted(data.map(() => true));
 
@@ -77,10 +81,13 @@ const Mapping = () => {
             });
 
             const keysData = await Promise.all(keyDataPromises);
+            setLoading(false);
+
             setResultData(keysData);
 
-            console.log(keysData);
+            //console.log(keysData);
         } catch (error) {
+            setLoading(false);
             setError('Chyba pri mapovaní: ' + error.message);
             console.error('Chyba pri mapovaní:', error);
         }
@@ -92,21 +99,25 @@ const Mapping = () => {
             return;
         }
 
+        setLoading(true);
+
         try {
             let keyToSend = key;
 
-            console.log(key);
+            //console.log(key);
 
             if (typeof key === 'string') {
                 try {
                     keyToSend = JSON.parse(key);
                 } catch (error) {
+                    setLoading(false);
                     setError('Zadajte kľúč vo formáte JSON.');
                     return;
                 }
             }
 
-            if (!keyToSend || typeof keyToSend !== 'object' || Array.isArray(keyToSend) || keyToSend === null) {
+            if (!keyToSend || typeof keyToSend !== 'object' || Array.isArray(keyToSend)) {
+                setLoading(false);
                 setError('Kľúč musí byť platný objekt.');
                 return;
             }
@@ -124,6 +135,7 @@ const Mapping = () => {
             });
 
             if (!response.ok) {
+                setLoading(false);
                 throw new Error(`HTTP chyba: ${response.status} - ${await response.text()}`);
             }
 
@@ -131,10 +143,11 @@ const Mapping = () => {
             setResult(data);
             setViewDecrypted(data.map(() => true)); // Initialize view states for this mode too
             setParsedKey(keyToSend);
+            setLoading(false);
 
-
-            console.log('Výsledok:', data);
+            //console.log('Výsledok:', data);
         } catch (error) {
+            setLoading()
             setError('Chyba pri mapovaní: ' + error.message);
             console.error('Chyba pri mapovaní:', error);
         }
@@ -272,7 +285,12 @@ const Mapping = () => {
                 )}
 
                 {/* Results */}
-                {result && (
+                {loading && (
+                    <div className="flex justify-center items-center h-screen">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+                    </div>
+                )}
+                {!loading && result && (
                     <div className="w-full">
                         <h3 className="text-custom-dark-blue text-fontSize28 md:text-fontSize48 font-bold mb-6 text-center">
                             Výsledky (Top 3):

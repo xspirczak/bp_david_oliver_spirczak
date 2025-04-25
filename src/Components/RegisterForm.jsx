@@ -1,6 +1,7 @@
 import {NavLink} from "react-router-dom";
 import {useEffect, useState} from "react";
 import VerifyCodeForm from "./VerifyCodeForm.jsx";
+import {togglePasswordVisibility} from "../utils/functions.js";
 
 export default function RegisterForm({ validateEmail, validEmail }) {
     const [error, setError] = useState(null);
@@ -17,18 +18,6 @@ export default function RegisterForm({ validateEmail, validEmail }) {
     const [showVerification, setShowVerification] = useState(false);
     const [registrationDone, setRegistrationDone] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    const togglePasswordVisibility = (inputId) => {
-        let e = document.getElementById(inputId);
-
-        if (e.type === "password") {
-            e.type = "text"
-            e.placeholder = "password"
-        } else {
-            e.type = "password"
-            e.placeholder = "••••••••"
-        }
-    };
 
     const handleChange = (e) => {
         console.log(`Name: ${e.target.name}, Value: ${e.target.value}`); // Debugging log
@@ -108,13 +97,13 @@ export default function RegisterForm({ validateEmail, validEmail }) {
 
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200 py-10">
             <div className="flex flex-col items-center px-4 py-6 mx-auto min-h-screen lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12 flex justify-center">
+                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12  flex justify-center">
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-10 py-10">
 
                         { !registrationDone ? (
                             <>
-                                <h1 className="lg:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
-                                    Registrovať sa
+                                <h1 className="lg:text-fontSize48 xl:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
+                                    Registrácia
                                 </h1>
                                 <p className="text-fontSize16 font-light text-gray-500 text-center mb-10">
                                     Máte účet? <NavLink to="/login" className="font-medium text-primary-600 hover:underline">

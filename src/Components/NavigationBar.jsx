@@ -37,6 +37,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
   // Called when the user confirms logout in the alert.
   const confirmLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('fullName');
     setUser(null);
     setIsLoggedIn(false);
     setShowLogoutAlert(false);

@@ -4,11 +4,13 @@ import Key from '../models/Keys.js';
 import authMiddleware from "../middleware/authMiddleware.js";
 import tokenExistsMiddleware from "../middleware/tokenExistsMiddleware.js";
 import mongoose from "mongoose";
+import {checkForDuplicates} from "../src/utils/functions.js";
 
 // Delete key based on the id (keyID)
 router.delete("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
+        const user = req.user;
 
         if (!id) {
             return res.status(400).json({ message: "ID kľúča musí byť zadané." });
@@ -18,11 +20,20 @@ router.delete("/:id", authMiddleware, async (req, res) => {
             return res.status(400).json({ message: "Neplatné ID kľúča." });
         }
 
-        const deletedKey = await Key.findByIdAndDelete(id);
+        const keyToBeDeleted = await Key.findById(id);
 
-        if (!deletedKey) {
+
+        if (keyToBeDeleted) {
+            if (!keyToBeDeleted.uploadedBy || keyToBeDeleted.uploadedBy.toString() !== user.id) {
+                return res.status(401).json({message: "Nemáte opravnenie vymazať tento kľúč."});
+            }
+        } else {
             return res.status(404).json({ message: "Kľúč nebol nájdený." });
         }
+
+        await Key.findByIdAndDelete(id);
+
+
 
         res.json({ message: "Klúč bol úspešne vymazaný." });
     } catch (error) {
@@ -46,7 +57,7 @@ router.get("/:id", async (req, res) => {
 
         const foundKey = await Key.findById(id);
 
-        console.log(foundKey);
+        //console.log(foundKey);
         if (!foundKey) {
             return res.status(404).json({ message: "Kľúč nebol nájdený." });
         }
@@ -117,14 +128,12 @@ router.post('/', tokenExistsMiddleware,async (req, res) => {
     try {
         const { key, name, description, country, year } =  req.body;
 
-        //console.log("SERVER: ", key, name, description, country, year);
-
-        // Check if 'key' exists and is an array
-
-        //console.log(key)
         if (!key) {
-            //console.log('Invalid data format:', key); // Log invalid format
             return res.status(400).json({ error: 'Kľúč nesmie byť prázdny.' });
+        }
+
+        if (checkForDuplicates(key)) {
+            return res.status(400).json({ error: 'Kľúč nesmie obsahovať duplicitné kódy.' });
         }
 
         const uploadedBy = req.user ? req.user.id : null;
@@ -133,7 +142,6 @@ router.post('/', tokenExistsMiddleware,async (req, res) => {
         const newKey = new Key({ key, name, description, country, year, uploadedBy });
 
         const savedKey = await newKey.save(); // Await saving the document
-        //console.log('New key saved to MongoDB:', savedKey); // Log saved document
         res.status(201).json(savedKey); // Send a response with the created document
     } catch (err) {
         console.error('Error during key creation:', err.message); // Log the error message

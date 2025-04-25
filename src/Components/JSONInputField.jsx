@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import {checkForDuplicates} from "../utils/functions.js";
 
 export default function JSONInputField() {
     const [error, setError] = useState(''); // State to store the error message
@@ -21,21 +22,6 @@ export default function JSONInputField() {
         setInputType((prev) => !prev);
     };
 
-    const checkForDuplicates = (fileContent) => { // checks if there are code duplicates in key @returns false is there are none
-        const obj = JSON.parse(fileContent);
-        const codes = new Set();
-        let cnt = 0;
-
-        Object.values(obj).forEach((val) => {
-            val.forEach((item) => {
-                codes.add(item);
-                cnt++;
-            })
-        })
-
-        return codes.size !== cnt;
-    }
-    
     const handleFileChange = (event) => {
         const file = event.target.files[0];  // Get the first selected file
         if (file) {
@@ -48,7 +34,7 @@ export default function JSONInputField() {
             const reader = new FileReader();  // Create a FileReader instance
 
             reader.onload = (e) => {
-                if (!checkForDuplicates(e.target.result)) { // Check whether the key has duplicate codes
+                if (!checkForDuplicates(JSON.parse(e.target.result))) { // Check whether the key has duplicate codes
                     setInputText(e.target.result);  // Set the file content to state
                     setError('');
                 } else {
@@ -121,6 +107,7 @@ export default function JSONInputField() {
 
             let jsonData;
 
+
             if (inputType) { // File input
                 const temp = JSON.parse(inputText);
                 jsonData = {
@@ -140,7 +127,10 @@ export default function JSONInputField() {
                 };
             }
 
-            console.log(JSON.stringify(jsonData));
+            if (checkForDuplicates(jsonData.key)) {
+                setError("Kľúč nesmie obsahovať duplicitné kódy.")
+                return;
+            }
             // Check if the structure matches what the server expects
             if (jsonData.key) {
                 // Send a POST request to your API

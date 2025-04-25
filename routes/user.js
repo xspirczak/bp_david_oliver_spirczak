@@ -2,15 +2,15 @@ import express from 'express';
 import authMiddleware from "../middleware/authMiddleware.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
-import {isStrongPassword} from "../src/functions.js";
+import {isStrongPassword} from "../src/utils/functions.js";
 import bcrypt from "bcrypt";
 const router = express.Router();
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'random';
-const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH || 'random1';
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
 
 router.put('/update-name', authMiddleware, async (req, res) => {
     try {
@@ -51,7 +51,7 @@ router.put('/update-password', authMiddleware, async (req, res) => {
         //console.log(req.body);
 
         if (!oldPassword || !newPassword) {
-            return res.status(400).json({ error: "Staré a nové heslá sú požadované" });
+            return res.status(400).json({ error: "Staré a nové heslá sú povinné" });
         }
 
         const passwordError = isStrongPassword(newPassword);

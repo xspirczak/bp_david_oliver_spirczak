@@ -8,7 +8,7 @@ export default function Footer() {
                 <div className="sm:flex sm:items-center sm:justify-between">
                     <Link to="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
                         <span
-                            className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Lorem</span>
+                            className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">CipherMatcher</span>
                     </Link>
 
                     <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-white">
@@ -25,7 +25,7 @@ export default function Footer() {
                 </div>
                 <hr className="my-6 border-white sm:mx-auto lg:my-8"/>
 
-                <span className="block text-sm text-white sm:text-center">© 2025  <Link to="/" className="hover:underline">Lorem
+                <span className="block text-sm text-white sm:text-center">© 2025  <Link to="/" className="hover:underline">CipherMatcher
                 </Link>. All Rights Reserved.</span>
 
             </div>

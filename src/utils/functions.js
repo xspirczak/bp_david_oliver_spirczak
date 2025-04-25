@@ -30,3 +30,39 @@ export function isStrongPassword (password) {
 
     return { strong: true, error: ""};
 }
+
+// Checks if there are code duplicates in key @returns false is there are none
+export const checkForDuplicates = (keyObject) => {
+    if (typeof keyObject !== 'object' || keyObject === null || Array.isArray(keyObject)) {
+        throw new Error('Input must be a valid object.');
+    }
+
+    const codes = new Set();
+    let totalCount = 0;
+
+    Object.values(keyObject).forEach(codeList => {
+        if (!Array.isArray(codeList)) return;
+        codeList.forEach(code => {
+            codes.add(code);
+            totalCount++;
+        });
+    });
+
+    return codes.size !== totalCount;
+};
+
+export function normalizeString(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+export function togglePasswordVisibility() {
+    let e = document.getElementById("password")
+
+    if (e.type === "password") {
+        e.type = "text"
+        e.placeholder = "vaše heslo"
+    } else {
+        e.type = "password"
+        e.placeholder = "••••••••"
+    }
+}

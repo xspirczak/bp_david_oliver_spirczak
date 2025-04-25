@@ -2,6 +2,7 @@ import {NavLink, useNavigate} from "react-router-dom";
 import {useRef, useState} from "react";
 import LoginSuccess from "./LoginSuccess.jsx";
 import AlreadyLoggedIn from "./AlreadyLoggedIn.jsx";
+import {togglePasswordVisibility} from "../utils/functions.js";
 
 export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validateEmail, decodeJWT }) {
     const [email, setEmail] = useState('');
@@ -13,17 +14,6 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
     const relocateRef = useRef(null);
 
-    function togglePasswordVisibility() {
-        let e = document.getElementById("password")
-
-        if (e.type === "password") {
-            e.type = "text"
-            e.placeholder = "vaše heslo"
-        } else {
-            e.type = "password"
-            e.placeholder = "••••••••"
-        }
-    }
 
 
     const handleSubmit = async (e) => {
@@ -96,8 +86,8 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                 <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12 flex justify-center">
 
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-10 py-10">
-                        <h1 className="lg:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
-                            Prihlásiť sa
+                        <h1 className="lg:text-fontSize48 xl:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
+                            Prihlásenie
                         </h1>
                         <p className="text-fontSize16 font-light text-gray-500 text-center mb-10">
                             Nemáte učet?  <NavLink to="/register" className="font-medium text-primary-600 hover:underline">

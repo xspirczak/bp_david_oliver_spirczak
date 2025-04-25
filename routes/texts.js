@@ -10,6 +10,8 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
 
+        const user = req.user;
+
         if (!id) {
             return res.status(400).json({ message: "ID textu musí byť zadané." });
         }
@@ -18,11 +20,17 @@ router.delete("/:id", authMiddleware, async (req, res) => {
             return res.status(400).json({ message: "Neplatné ID textu." });
         }
 
-        const deletedDoc = await Text.findByIdAndDelete(id);
+        const textToBeDeleted = await Text.findById(id);
 
-        if (!deletedDoc) {
-            return res.status(404).json({ message: "Dokument nenájdený." });
+        if (textToBeDeleted) {
+            if (!textToBeDeleted.uploadedBy || textToBeDeleted.uploadedBy.toString() !== user.id) {
+                return res.status(401).json({message: "Nemáte opravnenie vymazať tento text."});
+            }
+        } else {
+            return res.status(404).json({ message: "Text nebol nájdený." });
         }
+
+        await Text.findByIdAndDelete(id);
 
         res.json({ message: "Dokument bol úspešne vymazaný." });
     } catch (error) {
@@ -74,7 +82,7 @@ router.post('/', tokenExistsMiddleware, async (req, res) => {
 
         // Check if 'key' exists and is an array
         if (!document  || typeof document != 'string') {
-            console.log('Invalid data format:', document ); // Log invalid format
+            //console.log('Invalid data format:', document ); // Log invalid format
             return res.status(400).json({ error: 'Invalid key format. Expecting an array of strings.' });
         }
 

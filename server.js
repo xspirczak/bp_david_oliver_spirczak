@@ -11,7 +11,8 @@ import userRoutes from './routes/user.js';
 
 const allowedOrigins = [
   "https://bp-david-oliver-spirczak.vercel.app",
-  "http://localhost:5173"
+  "http://localhost:5173",
+  "http://localhost:5174"
 ];
 
 // Initialize apps
@@ -31,7 +32,12 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Listen on a port
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+//app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Testovanie
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
 
 // Create a simple route
 app.get('/', (req, res) => {
@@ -53,7 +59,7 @@ app.use("/api/mapping", mappingRoutes);
 app.use("/api/users", userRoutes);
 
 
-
+export default app;
 
 
 
