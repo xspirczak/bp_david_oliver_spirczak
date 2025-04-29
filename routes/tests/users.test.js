@@ -28,7 +28,7 @@ describe('User Routes', () => {
     const email = 'testuser@example.com';
 
     beforeAll(async () => {
-        // Ensure MongoDB is connected
+        // Pripojenie MongoDB databázy
         if (mongoose.connection.readyState === 0) {
             await mongoose.connect(process.env.MONGODB_URI, {
                 useNewUrlParser: true,
@@ -36,7 +36,7 @@ describe('User Routes', () => {
             });
         }
 
-        // Clean up if the user already exists
+        // Ak používateľ z daným emailom už existuje, vymaž ho
         await User.deleteOne({ email: 'testuser@example.com' });
 
         const testUser = await User.create({
@@ -47,7 +47,7 @@ describe('User Routes', () => {
             role: 'user',
         });
 
-        // Now login to get the token
+        // Prihlasenie testovacieho používateľa a získanie tokenu
         const res = await request(app)
             .post('/api/users')
             .send({ email: 'testuser@example.com', password: 'Test123!' });

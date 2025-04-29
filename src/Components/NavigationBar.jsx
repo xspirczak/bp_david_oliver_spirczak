@@ -15,12 +15,36 @@ import {
 import {NavLink, useNavigate} from 'react-router-dom'
 import LogOutAlert from "./LogOutAlert.jsx";
 import {jwtDecode} from "jwt-decode";
+import {FaUserCircle} from "react-icons/fa";
 
 export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navigate = useNavigate();
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
-  const [fullName, setFullName] = useState("");
+  const [fullName, setFullName] = useState(localStorage.getItem('fullName'));
+
+  const [avatarUrl, setAvatarUrl] = useState("");
+
+
+  useEffect(() => {
+    const updateAvatar = () => {
+      const fullName = localStorage.getItem('fullName');
+      if (fullName) {
+        setAvatarUrl(`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(fullName)}`);
+      } else {
+        setAvatarUrl('');
+      }
+    };
+
+    window.addEventListener('fullNameUpdated', updateAvatar);
+
+    updateAvatar();
+
+    return () => {
+      window.removeEventListener('fullNameUpdated', updateAvatar);
+    };
+  }, []);
+
 
   const getActiveStyles = ({isActive}) => {
     return {
@@ -55,7 +79,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        setFullName(decoded.fullName || "Neznámy používateľ");
+        const name = decoded.fullName || "Neznámy používateľ";
+        setFullName(name);
       } catch (error) {
         console.error("Neplatný token", error);
         localStorage.removeItem("token"); // Ak je token poškodený, odstráni ho
@@ -63,7 +88,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
         navigate("/login");
       }
     }
-  }, [isLoggedIn]);
+  }, []);
 
 
   return (
@@ -77,17 +102,21 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
         <div className="flex lg:hidden gap-3">
           {isLoggedIn ? (<Popover className="relative">
                 <PopoverButton className="flex items-center space-x-2">
-                  <img
-                      src="https://picsum.photos/200/200"
-                      alt="User"
-                      className="w-10 h-10 rounded-full border border-gray-300"
-                  />
+                  {avatarUrl ? (
+                      <img
+                          src={avatarUrl}
+                          alt="profilePhoto"
+                          className="w-10 h-10 rounded-full border border-gray-300"
+                      />
+                  ) :         <FaUserCircle className="text-custom-dark-blue w-10 h-10" />
+                  }
+
                   <ChevronDownIcon className="w-5 h-5 text-white"/>
                 </PopoverButton>
 
                 <PopoverPanel
                     className="absolute right-0 mt-2 w-56 bg-white text-custom-dark-blue shadow-lg rounded-md border border-gray-700">
-                  <div className="px-4 py-3 border-b border-gray-700">
+                <div className="px-4 py-3 border-b border-gray-700">
                     <p className="text-sm font-semibold">{fullName || "-"}</p>
                     <p className="text-xs text-gray-400">{user || "-"}</p>
                   </div>
@@ -145,11 +174,14 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                    {isLoggedIn ? (
                        <Popover className="relative">
                          <PopoverButton className="flex items-center space-x-2">
-                           <img
-                               src="https://picsum.photos/200/200"
-                               alt="User"
-                               className="w-10 h-10 rounded-full border border-gray-300"
-                           />
+                           {avatarUrl ? (
+                               <img
+                                   src={avatarUrl}
+                                   alt="profilePhoto"
+                                   className="w-10 h-10 rounded-full border border-gray-300"
+                               />
+                           ) :         <FaUserCircle className="text-custom-dark-blue w-10 h-10" />
+                           }
                            <ChevronDownIcon className="w-5 h-5 text-white"/>
                          </PopoverButton>
 

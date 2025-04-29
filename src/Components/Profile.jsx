@@ -3,7 +3,7 @@ import { CiEdit } from "react-icons/ci";
 import { MdDone } from "react-icons/md";
 import { IoSendOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
-
+import {FaUserCircle} from "react-icons/fa";
 
 export default function Profile({setUser}) {
     const [profileData, setProfileData] = useState(null);
@@ -21,7 +21,18 @@ export default function Profile({setUser}) {
     const [verificationCode, setVerificationCode] = useState("");
     const [showVerificationInput, setShowVerificationInput] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [avatarUrl, setAvatarUrl] = useState("");
+    const [changedFullName, setChangedFullName] = useState("");
 
+
+    useEffect(() => {
+        if (changedFullName) {
+            const seed = `${changedFullName}`;
+            setAvatarUrl(`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(seed)}`);
+        } else {
+            setAvatarUrl('');
+        }
+    }, [changedFullName]);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -44,7 +55,7 @@ export default function Profile({setUser}) {
                     },
                 });
 
-                console.log(response)
+                //console.log(response)
 
                 if (!response.ok) {
                     throw new Error("Failed to fetch profile data");
@@ -52,6 +63,9 @@ export default function Profile({setUser}) {
 
                 const data = await response.json();
                 setProfileData(data);
+                setFirstName(data.firstName);
+                setLastName(data.lastName);
+                setChangedFullName(data.firstName + ' ' + data.lastName);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -92,7 +106,12 @@ export default function Profile({setUser}) {
             const updatedUser = await response.json();
             setProfileData(updatedUser.user);
 
+
+            const updatedFullName = updatedUser.user.firstName + ' ' + updatedUser.user.lastName;
+            localStorage.setItem("fullName", updatedFullName);
+            window.dispatchEvent(new Event('fullNameUpdated'));
             localStorage.setItem("token", updatedUser.token);
+            setChangedFullName(updatedFullName);
 
             setEditingField(null);
         } catch (error) {
@@ -266,10 +285,12 @@ export default function Profile({setUser}) {
         }
     };
 
+
+
     if (loading) {
         return (
             <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-500 to-cyan-200">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-custom-dark-blue"></div>
             </div>
         );
     }
@@ -279,12 +300,18 @@ export default function Profile({setUser}) {
             <div className="flex items-center justify-center">
                 <div className="bg-white lg:rounded-91 rounded-3xl shadow lg:w-3/5 w-5/6 lg:px-20 px-6 lg:py-10 py-6 my-10">
                     <div className="sm:flex grid sm:gap-10 gap-2 border border-gray-200 rounded-3xl sm:p-6 p-3">
-                        <img src={"https://picsum.photos/200/200"}
-                             alt="profilePhoto"
-                             className="rounded-3xl md:w-[200px] md:h-[200px] w-[100px] h-[100px]"/>
+                        {avatarUrl ? (
+                            <img
+                                src={avatarUrl}
+                                alt="profilePhoto"
+                                className="rounded-3xl md:w-[200px] md:h-[200px] w-[100px] h-[100px]"
+                            />
+                        ) : <FaUserCircle className="text-custom-dark-blue md:w-[200px] md:h-[200px] w-[100px] h-[100px]" />
+                        }
+
                         <div className="mt-4" id="titleInfo">
                             <p className="md:text-fontSize28 text-fontSize20 font-bold text-custom-dark-blue break-after-all">
-                                {profileData.firstName + " "} {profileData.lastName}
+                            {profileData.firstName + " "} {profileData.lastName}
                             </p>
                             <p className="md:text-fontSize20 text-fontSize16 font-semibold text-custom-dark-blue break-all">
                                 {profileData.email}

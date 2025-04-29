@@ -1,6 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import { FaInfoCircle } from "react-icons/fa";
 
+
+const facts = [
+    "Nomenklátorové šifry kombinovali kódovanie slov a šifrovanie písmen.",
+    "Používali sa najmä v 15. až 18. storočí v diplomatickej korešpondencii.",
+    "Často obsahovali špeciálne kódy pre mená, miesta alebo výrazy.",
+    "Rozlúštenie nomenklátorov bolo kľúčové v historickej kryptanalýze.",
+];
 const Mapping = () => {
     const [ciphertext, setCiphertext] = useState('');
     const [key, setKey] = useState('');
@@ -14,6 +21,15 @@ const Mapping = () => {
     const [isClient, setIsClient] = useState(false);
     const [parsedKey, setParsedKey] = useState('');
     const [loading, setLoading] = useState(false);
+    const [factIndex, setFactIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setFactIndex(prev => (prev + 1) % facts.length);
+        }, 4000); // každé 4 sekundy
+
+        return () => clearInterval(interval); // vyčistenie po unmountnutí
+    }, []);
 
     useEffect(() => {
         setIsClient(true);
@@ -286,14 +302,26 @@ const Mapping = () => {
 
                 {/* Results */}
                 {loading && (
-                    <div className="flex justify-center items-center h-screen">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+                    <div className="flex flex-col items-center mt-6 min-h-[60vh] text-center px-4">
+                        <div
+                            className="animate-spin rounded-full h-10 w-10 border-t-4 border-custom-dark-blue mb-3"></div>
+
+                        <p className="text-lg text-custom-dark-blue font-medium">Prebieha mapovanie...</p>
+
+                        <p className="text-sm text-gray-500 mt-1">
+                            Tento proces môže chvíľu trvať.&nbsp;
+                            <span
+                                className="block text-xs text-gray-400 mt-1 italic max-w-xs mx-auto transition-opacity duration-500">
+            {facts[factIndex]}
+        </span>
+                        </p>
                     </div>
+
                 )}
                 {!loading && result && (
                     <div className="w-full">
                         <h3 className="text-custom-dark-blue text-fontSize28 md:text-fontSize48 font-bold mb-6 text-center">
-                            Výsledky (Top 3):
+                            Výsledky mapovania:
                         </h3>
                         {result.length === 0 ? (
                             <p className="text-center text-custom-dark-blue">
