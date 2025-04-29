@@ -24,7 +24,6 @@ export default function Profile({setUser}) {
     const [avatarUrl, setAvatarUrl] = useState("");
     const [changedFullName, setChangedFullName] = useState("");
 
-
     useEffect(() => {
         if (changedFullName) {
             const seed = `${changedFullName}`;
