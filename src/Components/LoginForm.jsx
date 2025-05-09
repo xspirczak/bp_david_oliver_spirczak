@@ -132,7 +132,7 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                                               fill="black"/>
                                     </svg>
                                     <button type="button" className="absolute top-4 right-4"
-                                            onClick={togglePasswordVisibility}>
+                                            onClick={() => togglePasswordVisibility("password")}>
                                         <svg width="14" height="12" viewBox="0 0 14 12" fill="none"
                                              xmlns="http://www.w3.org/2000/svg">
                                             <path

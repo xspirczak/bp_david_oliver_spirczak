@@ -8,6 +8,7 @@ import textRoutes from './routes/texts.js';
 import keyRoutes from './routes/keys.js';
 import mappingRoutes from './routes/mapping.js';
 import userRoutes from './routes/user.js';
+import tutorialRoutes from './routes/tutorial.js';
 
 const allowedOrigins = [
   "https://bp-david-oliver-spirczak.vercel.app",
@@ -57,6 +58,7 @@ app.use("/api/texts", textRoutes);
 app.use("/api/keys", keyRoutes);
 app.use("/api/mapping", mappingRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/tutorial", tutorialRoutes);
 
 
 export default app;

@@ -1,4 +1,3 @@
-import React from 'react';
 import MultiRangeSlider from "./RangeSlider.jsx";
 
 const SearchBar = ({ filters, onFilterChange }) => {
@@ -99,7 +98,7 @@ const SearchBar = ({ filters, onFilterChange }) => {
                             <span className="mt-2 text-sm font-medium">Texty</span>
                         </label>
                         <span
-                            className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-3 py-1 text-sm text-white bg-custom-dark-blue rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+                            className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-3 py-1 text-sm text-white bg-custom-dark-blue rounded-lg opacity-0 sm:group-hover:opacity-100 transition-opacity whitespace-nowrap z-50"
                             id="tooltipDocuments">
                             Skryť texty
                         </span>
@@ -125,7 +124,7 @@ const SearchBar = ({ filters, onFilterChange }) => {
                             <span className="mt-2 text-sm font-medium">Kľúče</span>
                         </label>
                         <span
-                            className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-3 py-1 text-sm text-white bg-custom-dark-blue rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
+                            className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-3 py-1 text-sm text-white bg-custom-dark-blue rounded-lg opacity-0 sm:group-hover:opacity-100 transition-opacity whitespace-nowrap z-50"
                             id="tooltipKeys"
                         >
                             Skryť kľúče

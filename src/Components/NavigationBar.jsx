@@ -30,9 +30,11 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
     const updateAvatar = () => {
       const fullName = localStorage.getItem('fullName');
       if (fullName) {
+        setFullName(fullName);
         setAvatarUrl(`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(fullName)}`);
       } else {
         setAvatarUrl('');
+        setFullName('');
       }
     };
 
@@ -81,9 +83,11 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
         const decoded = jwtDecode(token);
         const name = decoded.fullName || "Neznámy používateľ";
         setFullName(name);
+        window.dispatchEvent(new Event('fullNameUpdated'));
       } catch (error) {
         console.error("Neplatný token", error);
-        localStorage.removeItem("token"); // Ak je token poškodený, odstráni ho
+        localStorage.removeItem("token");
+        localStorage.removeItem('fullName');
         setIsLoggedIn(false);
         navigate("/login");
       }
@@ -115,8 +119,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                 </PopoverButton>
 
                 <PopoverPanel
-                    className="absolute right-0 mt-2 w-56 bg-white text-custom-dark-blue shadow-lg rounded-md border border-gray-700">
-                <div className="px-4 py-3 border-b border-gray-700">
+                    className="absolute right-0 mt-2 w-56 bg-white text-custom-dark-blue shadow-lg rounded-md border border-custom-dark-blue font-semibold">
+                <div className="px-4 py-3 border-b border-custom-dark-blue">
                     <p className="text-sm font-semibold">{fullName || "-"}</p>
                     <p className="text-xs text-gray-400">{user || "-"}</p>
                   </div>
@@ -127,7 +131,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                     </NavLink>
                   </div>
 
-                  <div className="border-t border-gray-700">
+                  <div className="border-t border-custom-dark-blue">
                     <button
                         onClick={handleLogoutClick}
                         className="block w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400"
@@ -186,8 +190,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                          </PopoverButton>
 
                          <PopoverPanel
-                             className="absolute right-0 mt-2 w-56 bg-white text-custom-dark-blue shadow-lg rounded-md border border-gray-700">
-                           <div className="px-4 py-3 border-b border-gray-700">
+                             className="absolute right-0 mt-2 w-56 bg-white text-custom-dark-blue shadow-lg rounded-md border border-custom-dark-blue font-semibold">
+                           <div className="px-4 py-3 border-b border-custom-dark-blue">
                              <p className="text-sm font-semibold">{fullName || "-"}</p>
                              <p className="text-xs text-gray-400">{user || "-"}</p>
                            </div>
@@ -198,7 +202,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                              </NavLink>
                            </div>
 
-                           <div className="border-t border-gray-700">
+                           <div className="border-t border-custom-dark-blue">
                              <button
                                  onClick={handleLogoutClick}
                                  className="block w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400"

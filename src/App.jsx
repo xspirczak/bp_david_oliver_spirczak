@@ -18,6 +18,9 @@ import './styles/animations.css';
 import {ContactPage} from "./Pages/contact.jsx";
 import {AboutPage} from "./Pages/about.jsx";
 import {TutorialPage} from "./Pages/tutorial.jsx";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {PrivacyPage} from "./Pages/privacy.jsx";
 
 export default function App() {
   // State to track if the user is logged in
@@ -27,31 +30,70 @@ export default function App() {
   const [validEmail, setValidEmail] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
+  const decodeJWT = (token) => {
+    if (!token || typeof token !== 'string') {
+      throw new Error('Token is missing or invalid');
     }
-  }, []);
 
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      throw new Error('Invalid JWT format');
+    }
+
+    try {
+      const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(payload));
+    } catch (error) {
+      console.error('Error decoding JWT token:', error);
+      throw new Error('Error decoding JWT token');
+    }
+  };
+
+  const isTokenExpired = (token) => {
+    try {
+      const decoded = decodeJWT(token);
+      if (!decoded.exp) return true;
+      const now = Date.now() / 1000;
+      return decoded.exp < now;
+    } catch (error) {
+      return true;
+    }
+  };
+
+  // Inicializácia po načítaní
   useEffect(() => {
     const token = localStorage.getItem('token');
-
     if (token) {
       const decoded = decodeJWT(token);
-
-      // Check if token has expired
       if (decoded.exp * 1000 < Date.now()) {
         localStorage.removeItem('token');
+        localStorage.removeItem('fullName');
         setIsLoggedIn(false);
         setUser(null);
       } else {
         setIsLoggedIn(true);
         setUser(decoded.email);
       }
+    } else {
+      setIsLoggedIn(false);
     }
+  }, []);
+
+  // Automatická kontrola expirácie tokenu každých 5 sekúnd
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const token = localStorage.getItem("token");
+      if (token && isTokenExpired(token)) {
+        console.warn("Token expiroval");
+        localStorage.removeItem("token");
+        localStorage.removeItem("fullName");
+        toast.info("Vaša relácia vypršala, boli ste odhlásený.");
+        setIsLoggedIn(false);
+        setUser(null);
+      }
+    }, 5000); // každých 5 sekúnd
+
+    return () => clearInterval(interval);
   }, []);
 
   const validateEmail = (email, id) => {
@@ -69,32 +111,6 @@ export default function App() {
       input.classList.remove("border-custom-dark-blue");
       input.classList.add("border-red-400");
     }
-  }
-
-  const decodeJWT = (token) => {
-    // Check if the token is defined and is a string
-    if (!token || typeof token !== 'string') {
-      throw new Error('Token is missing or invalid');
-    }
-
-    // Split the token into three parts: header, payload, and signature
-    const parts = token.split('.');
-
-    // Validate the token structure (it should have 3 parts)
-    if (parts.length !== 3) {
-      throw new Error('Invalid JWT format');
-    }
-
-    try {
-      // Decode the payload from base64Url to a regular base64 string
-      const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-
-      // Decode the base64 string into a UTF-8 string, then parse it as JSON
-      return JSON.parse(atob(payload));
-    } catch (error) {
-      console.error('Error decoding JWT token:', error);
-      throw new Error('Error decoding JWT token');
-    }
   };
 
   if (isLoggedIn === null) {
@@ -109,6 +125,7 @@ export default function App() {
   return (
 
       <Router>
+        <ToastContainer position="top-center" autoClose={4000} />
         <Routes>
           <Route
               element={<Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} user={user} setUser={setUser}/>}>
@@ -123,6 +140,7 @@ export default function App() {
             <Route path="/contact" element={<ContactPage/>}/>
             <Route path="/about" element={<AboutPage/>}/>
             <Route path="/tutorial" element={<TutorialPage/>}/>
+            <Route path="/privacy" element={<PrivacyPage/>}/>
             <Route element={<PrivateRoute isLoggedIn={isLoggedIn}/>}>
               <Route path="/mapping" element={<MappingPage/>}/>
             </Route>

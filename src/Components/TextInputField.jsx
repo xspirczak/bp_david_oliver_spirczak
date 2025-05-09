@@ -9,6 +9,14 @@ export default function TextInputField() {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [language, setLanguage] = useState('');
+    const [customLanguage, setCustomLanguage] = useState('');
+    const predefinedLanguages = [
+        { label: "Anglicky", value: "english" },
+        { label: "Francúzsky", value: "french" },
+        { label: "Nemecky", value: "german" },
+        { label: "Iný", value: "other" }
+    ];
+
     const [year, setYear] = useState('');
     const [country, setCountry] = useState("");
 
@@ -56,12 +64,24 @@ export default function TextInputField() {
             return;  // Stop the function from executing further
         }
 
+        const validFormat = /^([A-Za-z]+|#[0-9a-fA-F]+|[!.,?]|\s)+$/;
+
+        if (!validFormat.test(trimmedInput)) {
+            setError("Text obsahuje neplatné znaky alebo formát.");
+            return;
+        }
+
+        if (language === 'other' && !customLanguage.trim()) {
+            setError("Zadajte jazyk textu.");
+            return;
+        }
+
         //console.log("PRINT" ,name, description, language, country);
         const jsonData = {
-            document: inputText,  // This is the plain text to be sent as JSON
+            document: trimmedInput,  // This is the plain text to be sent as JSON
             name,
             description,
-            language,
+            language: language === "other" ? customLanguage : language,
             country,
             year: year ? Number(year) : -1 // -1 when there is no year provided (so later I know  that are is no year provided, when displaying or filtering)
         };
@@ -84,11 +104,12 @@ export default function TextInputField() {
             // Handle the response
             if (response.ok) {
                 const result = await response.json();
-                console.log('Data saved successfully:', result);
+                //console.log('Data saved successfully:', result);
                 setInputText('');  // Clear the textarea after submission
                 setName('');
                 setDescription('');
                 setLanguage('');
+                setCustomLanguage('');
                 setCountry('');
                 setYear('');
                 setIsValid(true);
@@ -110,7 +131,7 @@ export default function TextInputField() {
     return (
         <div className="flex flex-col items-center justify-center mb-6">
             <h1 className="text-custom-dark-blue lg:text-fontSize61 md:text-fontSize48 text-fontSize32 font-bold mb-6 text-center mt-6 px-2">Vložte šifrovaný text</h1>
-            <p className="text-custom-dark-blue font-light md:text-fontSize16 text-fontSize12 text-center px-4 mb-6">Nahrať texty je možné v digitálnom
+            <p className="text-custom-dark-blue font-light md:text-fontSize16 text-fontSize12 text-center px-4 mb-6">Nahrať text je možné v digitálnom
                 formáte <span className="font-semibold">(.txt)</span> alebo samotným vložením textu do vstupného poľa
                 nižšie.</p>
             <div className="bg-white shadow-lg rounded-lg sm:p-6 p-2 w-11/12 max-w-4xl">
@@ -135,12 +156,12 @@ export default function TextInputField() {
                                        placeholder="Krajina pôvodu" required=""/>
                             </div>
                             <div>
-                                <label htmlFor="language"
-                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Jazyk</label>
-                                <input type="text" name="language" id="language" value={language}
-                                       onChange={handleInputChange(setLanguage)}
+                                <label htmlFor="year"
+                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Rok</label>
+                                <input type="number" name="year" id="year" min="1400" max="2000" value={year}
+                                       onChange={handleInputChange(setYear)}
                                        className="text-fontSize12 border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover block w-full p-2"
-                                       placeholder="Jazyk dokumentu" required=""/>
+                                       placeholder="1400" required=""/>
                             </div>
 
 
@@ -154,13 +175,44 @@ export default function TextInputField() {
                                           className="text-fontSize12 border border-custom-dark-blue-hover text-custom-dark-blue rounded-lg focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover block w-full p-2"
                                           placeholder="Popis dokumentu" required=""/>
                             </div>
-                            <div>
-                                <label htmlFor="year"
-                                       className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Rok</label>
-                                <input type="number" name="year" id="year" min="1400" max="2000" value={year}
-                                       onChange={handleInputChange(setYear)}
-                                       className="text-fontSize12 border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover block w-full p-2"
-                                       placeholder="1400" required=""/>
+
+
+                            <div className="grid md:flex gap-6">
+                                <div>
+                                    <label htmlFor="language"
+                                           className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Jazyk</label>
+                                    <select
+                                        name="language"
+                                        id="language"
+                                        value={language}
+                                        onChange={(e) => setLanguage(e.target.value)}
+                                        className="text-fontSize12 border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover block w-full p-2"
+                                        required
+                                    >
+                                        <option value="">-- Vyberte jazyk --</option>
+                                        {predefinedLanguages.map((lang) => (
+                                            <option key={lang.value} value={lang.value}>{lang.label}</option>
+                                        ))}
+                                    </select>
+
+                                </div>
+                                {language === "other" && (
+                                    <div>
+                                        <label htmlFor="customLanguage"
+                                               className="mb-2 text-fontSize16 text-custom-dark-blue flex justify-center">Zadajte
+                                            jazyk</label>
+                                        <input
+                                            type="text"
+                                            name="customLanguage"
+                                            id="customLanguage"
+                                        value={customLanguage}
+                                        onChange={(e) => setCustomLanguage(e.target.value)}
+                                        className="text-fontSize12 border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover block w-full p-2"
+                                        placeholder="Slovenský"
+                                        required=""
+                                    />
+                                </div>
+                            )}
                             </div>
 
                         </div>
@@ -186,11 +238,11 @@ export default function TextInputField() {
                             className="block w-full rounded-3xl shadow-md sm:text-sm p-4 resize-none border-2 focus:outline-custom-dark-blue-hover border-dashed border-custom-dark-blue-hover"
                             placeholder='Sem vložte šifrovaný text v digitalnom formáte'></textarea>
                     </div>
-                    <div className="flex justify-center">
+                    <div className="flex justify-center text-fontSize20">
                         {error ? (
                             <p className="text-red-500 text-center font-semibold">{error}</p>
-                        ) : isValid ? (
-                            <p className="text-green-500 text-center font-semibold">Text v správnom formáte.</p>
+                        ) : isValid  && submissionSuccess? (
+                            <p className="text-green-500 text-center font-semibold">Text bol úspešné uložený.</p>
                         ) : (
                             <p className="text-custom-dark-blue text-center font-semibold">Zadajte šifrovaný text v digitálnom
                                 formáte.</p>
@@ -204,11 +256,6 @@ export default function TextInputField() {
                             Vložiť
                         </button>
                     </div>
-                    {submissionSuccess && (
-                        <div className="text-green-500 mt-4 text-center font-semibold">
-                            Text bol úspešné vložený.
-                        </div>
-                    )}
                 </form>
             </div>
 

@@ -56,8 +56,17 @@ router.post('/register', async (req, res) => {
         const mailOptions = {
             from: 'oliverspirczak@gmail.com',
             to: email,
-            subject: "Verifikácia emailu",
-            text: `Verifikačný kód: ${verificationCode}`
+            subject: "CipherMatcher - Verifikácia emailu",
+            text: `Dobrý deň,
+
+ďakujeme za registráciu v našej aplikácii.
+
+Váš verifikačný kód je: ${verificationCode}
+
+Zadajte ho do aplikácie pre dokončenie registrácie.
+
+S pozdravom,  
+CipherMatcher`
         };
 
         //console.log("Transporter config:", transporter);
@@ -120,8 +129,18 @@ router.post("/request-email-change", authMiddleware, async (req, res) => {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: newEmail,
-            subject: "Overenie zmeny emailu",
-            text: `Váš overovací kód: ${verificationCode}`
+            subject: "CipherMatcher - Zmena emailovej adresy",
+            text: `Dobrý deň,
+
+požiadali ste o zmenu vašej e-mailovej adresy v našej aplikácii. 
+Na overenie tejto zmeny prosím zadajte nasledujúci overovací kód:
+
+Overovací kód: ${verificationCode}
+
+Ak ste o túto zmenu nežiadali, ignorujte túto správu.
+
+S pozdravom,  
+CipherMatcher`
         };
 
         await transporter.sendMail(mailOptions);
@@ -214,8 +233,19 @@ router.post("/forgot-password",  async (req, res) => {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: "Obnova hesla",
-            text: `Váš overovací kód na obnovanie hesla: ${verificationCode}`
+            subject: "CipherMatcher - Obnovenie hesla",
+            text: `Dobrý deň,
+
+požiadali ste o obnovenie hesla v našej aplikácii. 
+Na overenie tejto zmeny prosím zadajte nasledujúci overovací kód:
+
+Overovací kód: ${verificationCode}
+
+Ak ste o túto zmenu nežiadali, ignorujte túto správu.
+
+S pozdravom,  
+CipherMatcher`
+
         };
 
         await transporter.sendMail(mailOptions);

@@ -74,11 +74,13 @@ export default function DisplayAllDocuments() {
         if (filters.yearRange.start && filters.yearRange.end) {
             const startYear = parseInt(filters.yearRange.start, 10);
             const endYear = parseInt(filters.yearRange.end, 10);
+
             filteredDocuments = filteredDocuments.filter(doc =>
-                doc.year >= startYear && doc.year <= endYear || doc.year === -1
+                (typeof doc.year !== "number") || doc.year === -1 || (doc.year >= startYear && doc.year <= endYear)
             );
+
             filteredKeys = filteredKeys.filter(key =>
-                key.year >= startYear && key.year <= endYear || key.year === -1
+                (typeof key.year !== "number") || key.year === -1 || (key.year >= startYear && key.year <= endYear)
             );
         }
 

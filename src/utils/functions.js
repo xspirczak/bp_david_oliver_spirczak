@@ -34,7 +34,7 @@ export function isStrongPassword (password) {
 // Checks if there are code duplicates in key @returns false is there are none
 export const checkForDuplicates = (keyObject) => {
     if (typeof keyObject !== 'object' || keyObject === null || Array.isArray(keyObject)) {
-        throw new Error('Input must be a valid object.');
+        throw new Error('Vstup musí byť validný objekt.');
     }
 
     const codes = new Set();
@@ -55,8 +55,8 @@ export function normalizeString(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-export function togglePasswordVisibility() {
-    let e = document.getElementById("password")
+export function togglePasswordVisibility(id) {
+    let e = document.getElementById(id)
 
     if (e.type === "password") {
         e.type = "text"

@@ -4,6 +4,7 @@ import { MdDone } from "react-icons/md";
 import { IoSendOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import {FaUserCircle} from "react-icons/fa";
+import {useNavigate} from "react-router-dom";
 
 export default function Profile({setUser}) {
     const [profileData, setProfileData] = useState(null);
@@ -24,6 +25,8 @@ export default function Profile({setUser}) {
     const [avatarUrl, setAvatarUrl] = useState("");
     const [changedFullName, setChangedFullName] = useState("");
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (changedFullName) {
             const seed = `${changedFullName}`;
@@ -37,10 +40,10 @@ export default function Profile({setUser}) {
         const fetchUserProfile = async () => {
             try {
                 // Get user ID from localStorage or authentication context
-                const token = localStorage.getItem("token"); // Assuming you store a token after login
+                const token = localStorage.getItem("token");
 
                 if (!token) {
-                    throw new Error("User not logged in");
+                    navigate('/login');
                 }
 
                 // fetch("http://localhost:3000/api/users",
@@ -50,14 +53,16 @@ export default function Profile({setUser}) {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`, // If your API requires authentication
+                        "Authorization": `Bearer ${token}`,
                     },
                 });
 
                 //console.log(response)
 
                 if (!response.ok) {
-                    throw new Error("Failed to fetch profile data");
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("fullName");
+                    navigate('/login')
                 }
 
                 const data = await response.json();

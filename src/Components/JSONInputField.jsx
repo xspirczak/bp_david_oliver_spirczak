@@ -323,11 +323,11 @@ export default function JSONInputField() {
                         </div>
                     )}
 
-                    <div className="flex justify-center">
+                    <div className="flex justify-center text-fontSize20">
                         {error ? (
                             <p className="text-red-500 text-center font-semibold">{error}</p>
-                        ) : isValid ? (
-                            <p className="text-green-500 text-center font-semibold">Kľúč je v správnom formáte.</p>
+                        ) : isValid  && submissionSuccess ? (
+                            <p className="text-green-500 text-center font-semibold">Kľúč bol úspešne uložený.</p>
                         ) : (
                             <p className="text-custom-dark-blue text-center font-semibold">Zadajte šifrovací kľúč v digitálnom
                                 formáte.</p>
@@ -341,11 +341,6 @@ export default function JSONInputField() {
                             Vložiť
                         </button>
                     </div>
-                    {submissionSuccess && (
-                        <div className="text-green-500 mt-4 text-center font-semibold">
-                            Kľúč bol úspešné vložený.
-                        </div>
-                    )}
                 </form>
             </div>
 

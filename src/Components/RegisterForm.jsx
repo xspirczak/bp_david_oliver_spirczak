@@ -129,7 +129,7 @@ export default function RegisterForm({ validateEmail, validEmail }) {
                                     </svg>
                                     <input type="email" name="email" id="email" autoComplete={"email"}
                                            className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:outline-custom-dark-blue focus:border-primary-600 block w-full p-2.5"
-                                           placeholder="name@company.com" required="" onChange={(e) => {handleChange(e)
+                                           placeholder="meno@domena.com" required="" onChange={(e) => {handleChange(e)
                                         validateEmail(e.target.value, "email")
                                         setError(null)}}/>
                                 </div>
@@ -173,7 +173,7 @@ export default function RegisterForm({ validateEmail, validEmail }) {
                                     {formData.lastName ? (
                                     <input type="text" name="lastName" id="lastName" autoComplete={"username"}
                                            className="border border-green-400 text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:outline-custom-dark-blue focus:border-primary-600 block w-full p-2.5"
-                                           placeholder="Horvát" required="" onChange={handleChange}/>
+                                           placeholder="Vysoký" required="" onChange={handleChange}/>
                                     ) : (
                                         <input type="text" name="lastName" id="lastName" autoComplete={"username"}
                                                className="border border-custom-dark-blue text-custom-dark-blue pl-10 rounded-3xl focus:ring-primary-600 focus:outline-custom-dark-blue focus:border-primary-600 block w-full p-2.5"

@@ -280,7 +280,7 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
                     </React.Fragment>
                 ))}
                 {showDeleteAlert && (
-                    <DeleteAlert onConfirm={() => handleDelete(docId)} onDismiss={dismissDelete} docType={"dokument"}></DeleteAlert>
+                    <DeleteAlert onConfirm={() => handleDelete(docId)} onDismiss={dismissDelete} docType={"text"}></DeleteAlert>
                 )}
 
                 {isEditing && (

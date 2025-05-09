@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import NavigationBar from "./Components/NavigationBar"
 import Footer from "./Components/Footer.jsx";
+import CookieBanner from "./Components/CookieBanner.jsx";
 
 export function Layout({ isLoggedIn, setIsLoggedIn, user, setUser }) {
     return (
@@ -9,6 +10,7 @@ export function Layout({ isLoggedIn, setIsLoggedIn, user, setUser }) {
             <main className="flex-grow">
                 <Outlet/>
             </main>
+            <CookieBanner />
             <Footer></Footer>
         </div>
     )

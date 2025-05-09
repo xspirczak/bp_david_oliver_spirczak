@@ -120,8 +120,6 @@ const Mapping = () => {
         try {
             let keyToSend = key;
 
-            //console.log(key);
-
             if (typeof key === 'string') {
                 try {
                     keyToSend = JSON.parse(key);
@@ -190,7 +188,7 @@ const Mapping = () => {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center my-6">
+        <div className="flex flex-col justify-center items-center mb-6">
             <h1 className="text-custom-dark-blue lg:text-fontSize61 md:text-fontSize48 text-fontSize32 font-bold mb-6 text-center mt-6 px-2">
                 Mapovanie dokumentov
             </h1>

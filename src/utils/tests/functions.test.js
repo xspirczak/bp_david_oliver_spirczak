@@ -120,7 +120,7 @@ describe('togglePasswordVisibility', () => {
     });
 
     it('should change type from password to text and update placeholder', () => {
-        togglePasswordVisibility();
+        togglePasswordVisibility("password");
         expect(input.type).toBe('text');
         expect(input.placeholder).toBe('vaše heslo');
     });
@@ -129,7 +129,7 @@ describe('togglePasswordVisibility', () => {
         input.type = 'text';
         input.placeholder = 'vaše heslo';
 
-        togglePasswordVisibility();
+        togglePasswordVisibility("password");
         expect(input.type).toBe('password');
         expect(input.placeholder).toBe('••••••••');
     });
