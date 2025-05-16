@@ -5,6 +5,7 @@ import { IoSendOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import {FaUserCircle} from "react-icons/fa";
 import {useNavigate} from "react-router-dom";
+import {motion} from "framer-motion";
 
 export default function Profile({setUser}) {
     const [profileData, setProfileData] = useState(null);
@@ -302,7 +303,11 @@ export default function Profile({setUser}) {
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200 min-h-screen">
 
             <div className="flex items-center justify-center">
-                <div className="bg-white lg:rounded-91 rounded-3xl shadow lg:w-3/5 w-5/6 lg:px-20 px-6 lg:py-10 py-6 my-10">
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="bg-white lg:rounded-91 rounded-3xl shadow lg:w-3/5 w-5/6 lg:px-20 px-6 lg:py-10 py-6 my-10">
                     <div className="sm:flex grid sm:gap-10 gap-2 border border-gray-200 rounded-3xl sm:p-6 p-3">
                         {avatarUrl ? (
                             <img
@@ -514,8 +519,8 @@ export default function Profile({setUser}) {
                         <div className="flex">
                             {editingField === "password" ? (
                                 <>
-                                    <div className="sm:flex grid w-full">
-                                        <div className="lg:w-1/2 w-full">
+                                    <div className="grid w-full">
+                                        <div className="w-full">
                                             <p className="font-light text-fontSize16 text-custom-dark-blue">Staré
                                                 heslo</p>
                                             <input type="password"
@@ -524,7 +529,7 @@ export default function Profile({setUser}) {
                                                    value={passwords.oldPassword}
                                                    onChange={handlePasswordChange}></input>
                                         </div>
-                                        <div className="lg:w-1/2 w-full">
+                                        <div className="w-full">
                                             <p className="font-light text-fontSize16 text-custom-dark-blue">Nové
                                                 heslo</p>
                                             <input type="password"
@@ -533,7 +538,7 @@ export default function Profile({setUser}) {
                                                    value={passwords.newPassword}
                                                    onChange={handlePasswordChange}></input>
                                         </div>
-                                        <div className="lg:w-1/2 w-full">
+                                        <div className="w-full">
                                             <p className="font-light text-fontSize16 text-custom-dark-blue">Opakované
                                                 heslo</p>
                                             <input type="password"
@@ -601,7 +606,7 @@ export default function Profile({setUser}) {
                             ) : <></>
                             }
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
         </section>
     )

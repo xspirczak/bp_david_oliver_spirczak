@@ -16,12 +16,14 @@ import {NavLink, useNavigate} from 'react-router-dom'
 import LogOutAlert from "./LogOutAlert.jsx";
 import {jwtDecode} from "jwt-decode";
 import {FaUserCircle} from "react-icons/fa";
+import {FiLogOut, FiUser} from "react-icons/fi";
 
 export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navigate = useNavigate();
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [fullName, setFullName] = useState(localStorage.getItem('fullName'));
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [avatarUrl, setAvatarUrl] = useState("");
 
@@ -85,7 +87,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
         setFullName(name);
         window.dispatchEvent(new Event('fullNameUpdated'));
       } catch (error) {
-        console.error("Neplatný token", error);
+        //console.error("Neplatný token", error);
         localStorage.removeItem("token");
         localStorage.removeItem('fullName');
         setIsLoggedIn(false);
@@ -110,7 +112,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                       <img
                           src={avatarUrl}
                           alt="profilePhoto"
-                          className="w-10 h-10 rounded-full border border-gray-300"
+                          className="w-10 h-10 rounded-full border border-custom-dark-blue"
                       />
                   ) :         <FaUserCircle className="text-custom-dark-blue w-10 h-10" />
                   }
@@ -126,7 +128,8 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                   </div>
 
                   <div className="py-2 hover:bg-custom-dark-blue-hover hover:text-white">
-                    <NavLink to="/profile" className="block w-full text-left px-4 py-2 text-sm">
+                    <NavLink to="/profile" className="flex w-full text-left px-4 py-2 text-sm gap-1">
+                      <FiUser className="text-lg" />
                       Profil
                     </NavLink>
                   </div>
@@ -134,8 +137,9 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                   <div className="border-t border-custom-dark-blue">
                     <button
                         onClick={handleLogoutClick}
-                        className="block w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400"
+                        className="flex w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400 gap-1"
                     >
+                      <FiLogOut className="text-lg" />
                       Odhlásiť sa
                     </button>
                   </div>
@@ -155,20 +159,39 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
           <Popover className="relative">
           </Popover>
 
-          <NavLink to="/" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
+          <NavLink to="/" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-custom-dark-blue">
             Domov
           </NavLink>
-          <NavLink to="/mapping" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
+          <NavLink to="/mapping" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-custom-dark-blue">
             Mapovanie
           </NavLink>
-          <NavLink to="/keys" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
-            Kľúče
-          </NavLink>
-          <NavLink to="/texts" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
-            Texty
-          </NavLink>
-          <NavLink to="/search" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-gray-900">
-            Vyhľadávať
+          <Popover className="relative">
+            <PopoverButton className="-mx-3 flex items-center gap-x-1 rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-custom-dark-blue">
+              Nahrať dokumenty
+              <ChevronDownIcon className="h-5 w-5" />
+            </PopoverButton>
+            <PopoverPanel className="absolute z-10 mt-2 w-40 rounded-md bg-white shadow-lg ring-1 ring-gray-200 focus:outline-none">
+              <div className="py-1">
+                <NavLink
+                    to="/keys"
+                    style={getActiveStyles}
+                    className="block px-4 py-2 text-sm text-custom-dark-blue font-semibold hover:bg-gray-100"
+                >
+                  Kľúče
+                </NavLink>
+                <NavLink
+                    to="/texts"
+                    style={getActiveStyles}
+                    className="block px-4 py-2 text-sm text-custom-dark-blue font-semibold hover:bg-gray-100"
+                >
+                  Texty
+                </NavLink>
+              </div>
+            </PopoverPanel>
+          </Popover>
+
+          <NavLink to="/search" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-custom-dark-blue">
+            Knižnica
           </NavLink>
 
         </PopoverGroup>
@@ -197,16 +220,17 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                            </div>
 
                            <div className="py-2 hover:bg-custom-dark-blue-hover hover:text-white">
-                             <NavLink to="/profile" className="block w-full text-left px-4 py-2 text-sm">
-                               Profil
+                             <NavLink to="/profile" className="flex w-full text-left px-4 py-2 text-sm gap-1">
+                               <FiUser className="text-lg" /> Profil
                              </NavLink>
                            </div>
 
                            <div className="border-t border-custom-dark-blue">
                              <button
                                  onClick={handleLogoutClick}
-                                 className="block w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400"
+                                 className="flex w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400 gap-1"
                              >
+                               <FiLogOut className="text-lg" />
                                Odhlásiť sa
                              </button>
                            </div>
@@ -255,31 +279,48 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                          className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                   Mapovanie
                 </NavLink>
-                <NavLink to="/keys" onClick={() => setMobileMenuOpen(false)}
-                         className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                  Kľúče
-                </NavLink>
-                <NavLink to="/texts" onClick={() => setMobileMenuOpen(false)}
-                         className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                  Texty
-                </NavLink>
+                <div className="-mx-3 px-3">
+                  <button
+                      type="button"
+                      className="flex w-full items-center justify-between rounded-lg py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                  >
+                    Nahrať dokumenty
+                    <ChevronDownIcon className="h-5 w-5"/>
+                  </button>
+                  {dropdownOpen && (
+                      <div className="ml-4 mt-1 space-y-1">
+                        <NavLink to="/keys" onClick={() => setMobileMenuOpen(false)}
+                                 className="block text-fontSize18 text-gray-700 hover:underline">
+                          Kľúče
+                        </NavLink>
+                        <NavLink to="/texts" onClick={() => setMobileMenuOpen(false)}
+                                 className="block text-fontSize18 text-gray-700 hover:underline">
+                          Texty
+                        </NavLink>
+                      </div>
+                  )}
+                </div>
+
                 <NavLink to="/search" onClick={() => setMobileMenuOpen(false)}
                          className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                  Vyhľadávať
+                  Knižnica
                 </NavLink>
               </div>
 
-                  {isLoggedIn ? (
-                      <></>
-                  ) : (
-                      <div className="py-6">
-                        <div className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 w-32 flex justify-center">
-                      <NavLink to="/login" onClick={() => setMobileMenuOpen(false)} className="text-fontSize16 font-semibold leading-6 text-white">
+              {isLoggedIn ? (
+                  <></>
+              ) : (
+                  <div className="py-6">
+                    <div
+                        className="border-2 border-custom-dark-blue bg-custom-dark-blue rounded-full px-2.5 py-1 w-32 flex justify-center">
+                      <NavLink to="/login" onClick={() => setMobileMenuOpen(false)}
+                               className="text-fontSize16 font-semibold leading-6 text-white">
                         Prihlásiť sa
                       </NavLink>
-                        </div>
-                      </div>
-                  )}
+                    </div>
+                  </div>
+              )}
 
             </div>
           </div>

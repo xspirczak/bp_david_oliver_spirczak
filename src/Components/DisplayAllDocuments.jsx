@@ -3,8 +3,9 @@ import axios from "axios";
 import DisplayKey from "../Components/DisplayKey.jsx";
 import DisplayText from "./DisplayText.jsx";
 import SearchBar from "../Components/Filters.jsx";
-import {GrFormNext, GrFormPrevious} from "react-icons/gr"; // Import SearchBar component
+import {GrFormNext, GrFormPrevious} from "react-icons/gr";
 import {normalizeString} from "../utils/functions.js";
+import {motion} from "framer-motion";
 
 export default function DisplayAllDocuments() {
     const [keys, setKeys] = useState([]);
@@ -17,6 +18,9 @@ export default function DisplayAllDocuments() {
         key: true,
         document: true,
         yearRange: { start: '', end: '' },
+        language: [],
+        source: [],
+        country: []
     });
     const [userId, setUserId] = useState(null);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -81,6 +85,49 @@ export default function DisplayAllDocuments() {
 
             filteredKeys = filteredKeys.filter(key =>
                 (typeof key.year !== "number") || key.year === -1 || (key.year >= startYear && key.year <= endYear)
+            );
+        }
+
+        if (filters.language && filters.language.length > 0) {
+            const selectedLanguages = filters.language.map(lang => lang.toLowerCase());
+
+            filteredDocuments = filteredDocuments.filter(doc =>
+                doc.language &&
+                (selectedLanguages.includes(doc.language.toLowerCase()) || doc.language.trim() === "")
+            );
+
+            filteredKeys = filteredKeys.filter(key =>
+                key.language &&
+                (selectedLanguages.includes(key.language.toLowerCase()) || key.language.trim() === "")
+            );
+        }
+
+
+        if (filters.source && filters.source.length > 0) {
+            const selectedSources = filters.source.map(lang => lang.toLowerCase());
+
+            filteredDocuments = filteredDocuments.filter(doc =>
+                doc.source &&
+                (selectedSources.includes(doc.source.toLowerCase()) || doc.source.trim() === "")
+            );
+
+            filteredKeys = filteredKeys.filter(key =>
+                key.source &&
+                (selectedSources.includes(key.source.toLowerCase()) || key.source.trim() === "")
+            );
+        }
+
+        if (filters.country && filters.country.length > 0) {
+            const selectedCountries = filters.country.map(lang => lang.toLowerCase());
+
+            filteredDocuments = filteredDocuments.filter(doc =>
+                doc.country &&
+                (selectedCountries.includes(doc.country.toLowerCase()) || doc.country.trim() === "")
+            );
+
+            filteredKeys = filteredKeys.filter(key =>
+                key.country &&
+                (selectedCountries.includes(key.country.toLowerCase()) || key.country.trim() === "")
             );
         }
 
@@ -284,19 +331,29 @@ export default function DisplayAllDocuments() {
     }
 
     return (
-        <div className="flex flex-col min-h-screen p-4">
+        <motion.div
+            initial={{opacity: 0, y: 50}}
+            whileInView={{opacity: 1, y: 0}}
+            viewport={{once: true}}
+            transition={{duration: 0.6, ease: "easeOut"}}
+            className="flex flex-col min-h-screen p-4">
             <SearchBar filters={filters} onFilterChange={handleSearchChange}/>
 
             <div className="flex-grow">
                 {filteredKeys.length === 0 && filteredDocuments.length === 0 && (
-                    <div className="text-center text-fontSize28 text-custom-dark-blue font-bold">Žiadne dokumenty na zobrazenie.</div>
+                    <div className="text-center text-fontSize28 text-custom-dark-blue font-bold">Žiadne dokumenty na
+                        zobrazenie.</div>
                 )}
 
-                {paginatedKeys.length > 0 && <DisplayKey userId={userId} keys={paginatedKeys} setKeys={setKeys} deleteKey={deleteKey}/>}
-                {paginatedDocuments.length > 0 && <DisplayText userId={userId} docs={paginatedDocuments} setDocs={setDocuments} deleteDoc={deleteDoc}/>}
-            </div>
 
-            <div className="mt-auto">{renderPagination()}</div>
-        </div>
-    );
-}
+                    {paginatedKeys.length > 0 &&
+                        <DisplayKey userId={userId} keys={paginatedKeys} setKeys={setKeys} deleteKey={deleteKey}/>}
+                    {paginatedDocuments.length > 0 &&
+                        <DisplayText userId={userId} docs={paginatedDocuments} setDocs={setDocuments}
+                                     deleteDoc={deleteDoc}/>}
+                </div>
+
+                <div className="mt-auto">{renderPagination()}</div>
+            </motion.div>
+            );
+            }

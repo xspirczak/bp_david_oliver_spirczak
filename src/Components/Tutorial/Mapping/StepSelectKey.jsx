@@ -1,58 +1,8 @@
 import {useState} from "react";
 import Joyride from "react-joyride";
+import {motion} from "framer-motion";
 
-const mockKeys = [
-    {
-        name: "Kľúč A",
-        mapping: {
-            H: [1],
-            "he": [2, 3],
-            "hello world": [22, 11, 111]
-        }
-    },
-    {
-        name: "Kľúč B",
-        mapping: {
-            "d": [12],
-            "ca": [13, 4],
-            "malá myš": [15, 16]
-        }
-    },
-    {
-        name: "Kľúč C",
-        mapping: {
-            "A": [1],
-            "be": [2, 3],
-            "Tri slová": [4]
-        }
-    },
-    {
-        name: "Kľúč D",
-        mapping: {
-            "al": [77, 78],
-            "B": [88],
-            "Beta ver": [89]
-        }
-    },
-    {
-        name: "Kľúč E",
-        mapping: {
-            "Te": [999, 1000],
-            "demo text": [1001],
-            "X": [1002]
-        }
-    },
-    {
-        name: "Kľúč F",
-        mapping: {
-            "s": [42, 43],
-            "Mesiac": [44],
-            "Hviezda veľká": [45, 46]
-        }
-    }
-];
-
-export function StepSelectKey({ selectedKey, setSelectedKey }) {
+export function StepSelectKey({ selectedKey, setSelectedKey, mockKeys }) {
     const [run, setRun] = useState(true);
     const steps = [
         {
@@ -92,7 +42,12 @@ export function StepSelectKey({ selectedKey, setSelectedKey }) {
                     nextLabelWithProgress: 'Krok {step} z {steps}',
                 }}
             />
-        <div className="space-y-6">
+        <motion.div
+            initial={{opacity: 0, y: 50}}
+            whileInView={{opacity: 1, y: 0}}
+            viewport={{once: true}}
+            transition={{duration: 0.6, ease: "easeOut"}}
+            className="space-y-6">
             <h3 className="text-xl font-semibold text-custom-dark-blue text-center" id="keySelectionTitle">
                Vyberte šifrovací kľúč
             </h3>
@@ -119,7 +74,7 @@ export function StepSelectKey({ selectedKey, setSelectedKey }) {
                     );
                 })}
             </div>
-        </div>
+        </motion.div>
             </>
     );
 }

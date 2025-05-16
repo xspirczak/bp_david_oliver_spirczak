@@ -3,6 +3,7 @@ import {useRef, useState} from "react";
 import LoginSuccess from "./LoginSuccess.jsx";
 import AlreadyLoggedIn from "./AlreadyLoggedIn.jsx";
 import {togglePasswordVisibility} from "../utils/functions.js";
+import {motion} from "framer-motion";
 
 export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validateEmail, decodeJWT }) {
     const [email, setEmail] = useState('');
@@ -85,7 +86,12 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
         {!isLoginSuccessful && !isLoggedIn ? (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200 py-10">
             <div className="flex flex-col items-center px-4 py-6 mx-auto min-h-screen lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12 flex justify-center">
+                <motion.div
+                    initial={{opacity: 0, y: 50}}
+                    whileInView={{opacity: 1, y: 0}}
+                    viewport={{once: true}}
+                    transition={{duration: 0.3, ease: "easeOut"}}
+                    className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12 flex justify-center">
 
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-10 py-10">
                         <h1 className="lg:text-fontSize48 xl:text-fontSize61 text-fontSize32 font-bold leading-tight tracking-tight text-custom-dark-blue text-center">
@@ -178,7 +184,7 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                         </form>
                     </div>
 
-                </div>
+                </motion.div>
             </div>
         </section>
         ) : isLoginSuccessful ? (

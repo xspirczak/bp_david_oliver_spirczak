@@ -43,7 +43,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 router.put("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, language, country, year, document } = req.body;
+        const { name, description, language, country, year, document, source, author } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "ID kľúča musí byť zadané." });
@@ -59,7 +59,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
         const updatedDoc = await Text.findByIdAndUpdate(
             id,
-            {  name: name, description: description, language: language, country: country, year: year,document: document },
+            {  name: name, description: description, language: language, country: country, year: year, source: source, author: author, document: document },
         { new: true}
         );
 
@@ -78,7 +78,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 router.post('/', tokenExistsMiddleware, async (req, res) => {
     try {
 
-        const { document, name, description, language, country, year } = req.body;
+        const { document, name, description, language, country, year, source, author, createdAt } = req.body;
 
         // Check if 'key' exists and is an array
         if (!document  || typeof document != 'string') {
@@ -89,7 +89,7 @@ router.post('/', tokenExistsMiddleware, async (req, res) => {
         const uploadedBy = req.user ? req.user.id : null;
 
         // Save the key to the database
-        const newDocument = new Text({ document, name, description, language, country, year, uploadedBy });
+        const newDocument = new Text({ document, name, description, language, country, year, source, author, createdAt, uploadedBy });
 
         const savedDocument = await newDocument.save(); // Await saving the document
         //console.log('New document saved to MongoDB:', savedDocument); // Log saved document

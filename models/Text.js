@@ -14,12 +14,15 @@ const TextSchema = new mongoose.Schema({
     language: {
         type: String,
     },
+    source: {type: String},
+    author: {type: String},
     country: {
         type: String,
     },
     year: {
         type: Number,
     },
+    createdAt: {type: Date, default: new Date},
     uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
 });
 

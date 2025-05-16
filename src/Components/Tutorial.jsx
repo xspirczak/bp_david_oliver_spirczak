@@ -8,6 +8,7 @@ import {DemoUploadKey} from "./Tutorial/DemoUploadKey.jsx";
 import {FaCircleMinus} from "react-icons/fa6";
 import {DemoMapping} from "./Tutorial/DemoMapping.jsx";
 import {useNavigate} from "react-router-dom";
+import {motion} from "framer-motion";
 
 export default function Tutorial() {
     const navigate = useNavigate();
@@ -47,7 +48,10 @@ export default function Tutorial() {
 
                     <div className="flex justify-between sm:justify-start sm:items-center gap-4 sm:w-auto w-full">
                         <button
-                            onClick={onClick}
+                            onClick={() => {onClick()
+                                window.scrollTo({ top: 0, behavior: 'smooth' })
+
+                            }}
                             className="min-w-[80%] sm:min-w-60 sm:w-auto px-4 py-2 bg-custom-dark-blue text-white rounded-lg hover:bg-custom-dark-blue-hover transition flex items-center gap-2 justify-center disabled:bg-gray-600"
                             disabled={!isUnlocked}
                         >
@@ -76,91 +80,118 @@ export default function Tutorial() {
         navigate('/');
     }
 
+    const stepVariants = {
+        hidden: { opacity: 0, x: 50 },
+        visible: (i) => ({
+            opacity: 1,
+            x: 0,
+            transition: { delay: i * 0.1, duration: 0.4, ease: "easeOut" }
+        })
+    };
+
+
     return (
         <section className="min-h-screen px-4 pb-12 grid justify-center mt-1.5">
 
             {step === null ? (
-                <div>
+                <motion.div
+                    initial={{opacity: 0, y: 50}}
+                    whileInView={{opacity: 1, y: 0}}
+                    viewport={{once: true}}
+                    transition={{duration: 0.6, ease: "easeOut"}}
+                >
                     <div className="text-center">
                         <h1 className="text-custom-dark-blue lg:text-fontSize61 md:text-fontSize48 text-fontSize32 font-bold text-center mt-6 px-2">Tutoriál</h1>
-                        <p className="text-gray-600 text-lg mb-10">
+                        <p className="text-custom-dark-blue text-lg mb-10">
                             Vyskúšajte si, ako aplikácia funguje, krok za krokom.
                         </p>
                     </div>
-                    <div className="space-y-6 animate-fadeIn px-3">
-                        <TutorialStep
-                            icon={<FaUserEdit className="text-custom-dark-blue w-6 h-6"/>}
-                            title="1. Vytvorenie používateľa"
-                            description="Simulujte registráciu používateľa pomocou demo údajov."
-                            buttonText="Vyskúšať registráciu"
-                            onClick={() => setStep('register')}
-                            state={progress.register}
-                        />
+                    <div className="space-y-6 px-3">
+                        {[
+                            {
+                                icon: <FaUserEdit className="text-custom-dark-blue w-6 h-6"/>,
+                                title: "1. Vytvorenie používateľa",
+                                description: "Simulujte registráciu používateľa pomocou demo údajov.",
+                                buttonText: "Vyskúšať registráciu",
+                                onClick: () => setStep("register"),
+                                state: progress.register
+                            },
+                            {
+                                icon: <FaKey className="text-custom-dark-blue w-6 h-6"/>,
+                                title: "2. Prihlásenie",
+                                description: "Zistite, ako prebieha prihlásenie a autentifikácia.",
+                                buttonText: "Vyskúšať prihlásenie",
+                                onClick: () => setStep("login"),
+                                state: progress.login
+                            },
+                            {
+                                icon: <FaBook className="text-custom-dark-blue w-6 h-6"/>,
+                                title: "3. Nahrávanie textov",
+                                description: "Vyskúšajte si nahrávanie šífrovaných textov.",
+                                buttonText: "Spustiť demo",
+                                onClick: () => setStep("textUpload"),
+                                state: progress.textUpload
+                            },
+                            {
+                                icon: <FaKey className="text-custom-dark-blue w-6 h-6"/>,
+                                title: "4. Nahrávanie kľúčov",
+                                description: "Vyskúšajte si nahrávanie šifrovacích kľúčov.",
+                                buttonText: "Spustiť demo",
+                                onClick: () => setStep("keyUpload"),
+                                state: progress.keyUpload
+                            },
+                            {
+                                icon: <FaPlayCircle className="text-custom-dark-blue w-6 h-6"/>,
+                                title: "5. Mapovací algoritmus",
+                                description: "Mapovací algorimus.",
+                                buttonText: "Vyskúšať mapovanie",
+                                onClick: () => setStep("mapping"),
+                                state: progress.mapping
+                            }
+                        ].map((step, index) => (
+                            <motion.div
+                                key={index}
+                                custom={index}
+                                initial="hidden"
+                                animate="visible"
+                                variants={stepVariants}
+                            >
+                                <TutorialStep {...step} />
+                            </motion.div>
+                        ))}
 
-                        <TutorialStep
-                            icon={<FaKey className="text-custom-dark-blue w-6 h-6"/>}
-                            title="2. Prihlásenie"
-                            description="Zistite, ako prebieha prihlásenie a autentifikácia."
-                            buttonText="Vyskúšať prihlásenie"
-                            onClick={() => setStep('login')}
-                            state={progress.login}
-                        />
-
-                        <TutorialStep
-                            icon={<FaBook className="text-custom-dark-blue w-6 h-6"/>}
-                            title="3. Nahrávanie textov"
-                            description="Vyskúšajte si nahrávanie šífrovaných textov."
-                            buttonText="Spustiť demo"
-                            onClick={() => setStep('textUpload')}
-                            state={progress.textUpload}
-
-                        />
-
-                        <TutorialStep
-                            icon={<FaKey className="text-custom-dark-blue w-6 h-6"/>}
-                            title="4. Nahrávanie kľúčov"
-                            description="Vyskúšajte si nahrávanie šifrovacích kľúčov."
-                            buttonText="Spustiť demo"
-                            onClick={() => setStep('keyUpload')}
-                            state={progress.keyUpload}
-
-                        />
-
-                        <TutorialStep
-                            icon={<FaPlayCircle className="text-custom-dark-blue w-6 h-6" />}
-                            title="5. Mapovací algoritmus"
-                            description="Mapovací algorimus."
-                            buttonText="Vyskúšať mapovanie"
-                            onClick={() => setStep('mapping')}
-                            state={progress.mapping}
-
-                        />
-
-                        {progress.finished === 'completed' && (
-                            <div
-                                className="bg-green-50 border border-green-300 rounded-xl p-8 shadow-md text-center space-y-4">
+                        {progress.finished === "completed" && (
+                            <motion.div
+                                initial={{opacity: 0, y: 20}}
+                                animate={{opacity: 1, y: 0}}
+                                transition={{duration: 0.4, ease: "easeOut", delay: 0.6}}
+                                className="bg-green-50 border border-green-300 rounded-xl p-8 shadow-md text-center space-y-4"
+                            >
                                 <div className="flex justify-center">
                                     <div
                                         className="border-1 border-custom-dark-blue rounded-full flex items-center justify-center bg-custom-dark-blue w-8 h-8 shrink-0">
                                         <FaCheckCircle className="text-green-300 w-7 h-7"/>
                                     </div>
                                 </div>
-                                <h3 className="text-2xl font-bold text-custom-dark-blue">Tutoriál dokončený!</h3>
+                                <h3 className="text-2xl font-bold text-custom-dark-blue">
+                                    Tutoriál dokončený!
+                                </h3>
                                 <p className="text-custom-dark-blue font-light">
                                     Skvelá práca! Teraz ste pripravený/á začať používať aplikáciu naplno.
                                 </p>
                                 <button
-                                    onClick={goHome}
+                                    onClick={() => {
+                                        goHome();
+                                        window.scrollTo({top: 0, behavior: "smooth"});
+                                    }}
                                     className="mt-4 px-4 py-2 bg-custom-dark-blue text-white rounded-xl hover:bg-custom-dark-blue-hover transition"
                                 >
                                     Prejsť do aplikácie
                                 </button>
-                            </div>
-
+                            </motion.div>
                         )}
-
                     </div>
-                </div>
+                </motion.div>
             ) : step === 'register' ? (
                 <div className="animate-fadeIn pt-4">
                     <DemoRegistration setProgress={setProgress} progress={progress} setStep={setStep}/>

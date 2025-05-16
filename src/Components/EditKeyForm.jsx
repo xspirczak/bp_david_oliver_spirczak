@@ -6,6 +6,9 @@ export default function EditKeyForm({ currentKey, onSave, onCancel, error, setEr
         description: currentKey.description || "",
         country: currentKey.country || "",
         year: currentKey.year || -1,
+        language: currentKey.language || "",
+        author: currentKey.author || "",
+        source: currentKey.source || "",
         key: typeof currentKey.key === 'string' ? currentKey.key : JSON.stringify(currentKey.key, null, 2) || "{}"
     });
 
@@ -16,6 +19,9 @@ export default function EditKeyForm({ currentKey, onSave, onCancel, error, setEr
             description: currentKey.description || "",
             country: currentKey.country || "",
             year: currentKey.year || -1,
+            author: currentKey.author || "",
+            language: currentKey.language || "",
+            source: currentKey.source || "",
             key: typeof currentKey.key === 'string' ? currentKey.key : JSON.stringify(currentKey.key, null, 2) || "{}"
         });
     }, [currentKey]);
@@ -41,7 +47,7 @@ export default function EditKeyForm({ currentKey, onSave, onCancel, error, setEr
 
             // Skontrolujeme či je kľúč validný JSON
             const parsedKey = JSON.parse(formData.key);
-            
+
             // Odošleme kľúč v pôvodnom formáte string
             await onSave({ ...formData, key: formData.key }, currentKey._id);
             setError(null);
@@ -74,7 +80,19 @@ export default function EditKeyForm({ currentKey, onSave, onCancel, error, setEr
                             />
                         </div>
                         <div className="mb-5">
-                            <label htmlFor="description" className="block font-semibold text-gray-700 mb-2">Popis</label>
+                            <label htmlFor="author" className="block font-semibold text-gray-700 mb-2">Autor</label>
+                            <input
+                                type="text"
+                                id="author"
+                                name="author"
+                                value={formData.author}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
+                            />
+                        </div>
+                        <div className="mb-5">
+                            <label htmlFor="description"
+                                   className="block font-semibold text-gray-700 mb-2">Popis</label>
                             <textarea
                                 id="description"
                                 name="description"
@@ -90,6 +108,28 @@ export default function EditKeyForm({ currentKey, onSave, onCancel, error, setEr
                                 id="country"
                                 name="country"
                                 value={formData.country}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
+                            />
+                        </div>
+                        <div className="mb-5">
+                            <label htmlFor="language" className="block font-semibold text-gray-700 mb-2">Jazyk</label>
+                            <input
+                                type="text"
+                                id="language"
+                                name="language"
+                                value={formData.language}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
+                            />
+                        </div>
+                        <div className="mb-5">
+                            <label htmlFor="source" className="block font-semibold text-gray-700 mb-2">Pôvod</label>
+                            <input
+                                type="text"
+                                id="source"
+                                name="source"
+                                value={formData.source}
                                 onChange={handleChange}
                                 className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
                             />
@@ -118,9 +158,11 @@ export default function EditKeyForm({ currentKey, onSave, onCancel, error, setEr
                         </div>
                         <div className="relative">
                             {error ? (
-                                <div className="mb-5 text-red-600 text-center font-semibold p-3 rounded-lg sticky top-0 z-10">{error}</div>
+                                <div
+                                    className="mb-5 text-red-600 text-center font-semibold p-3 rounded-lg sticky top-0 z-10">{error}</div>
                             ) : (
-                                <div className="mb-5 text-red-500 text-center font-semibold invisible">Error Placeholder</div>
+                                <div className="mb-5 text-red-500 text-center font-semibold invisible">Error
+                                    Placeholder</div>
                             )}
                         </div>
                     </div>

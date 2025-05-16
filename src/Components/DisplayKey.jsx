@@ -3,6 +3,7 @@ import { BiWorld } from "react-icons/bi";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import DeleteAlert from "./DeleteAlert.jsx";
 import EditKeyForm from "./EditKeyForm.jsx";
+import {IoLanguage} from "react-icons/io5";
 
 export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
     const [isClient, setIsClient] = useState(false);
@@ -40,6 +41,8 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
             name: doc.name || "Neznámy dokument",
             description: doc.description || "Bez popisu",
             country: doc.country || "Neznáma krajina",
+            language: doc.language || "Neznámy jazyk",
+            author: doc.author || "Neznámy autor",
             year: doc.year !== -1 ? doc.year : "Neznámy rok"
         };
 
@@ -55,8 +58,7 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
 
 
     const handleEditSubmit = async (formData, id) => {
-
-        if (!keyId) {
+        if (!id) {
             setError("Zadajte ID kľúča.");
         }
 
@@ -167,38 +169,55 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
 
                                 <h2 className="text-fontSize24 font-bold text-white">{keyData.name ? keyData.name : "Šifrovací kľúč č. " + counter++}</h2>
                             </div>
-                            <p className="text-fontSize12 font-light text-white">{keyData.description ? keyData.description : "Bez popisu"}</p>
-
+                                <div className="mb-2 text-fontSize12 text-white/70 italic">
+                                    {keyData.author ? <span>Autor: {keyData.author}</span> : "Autor: Neznámy"}
+                                    <span className="mx-1">|</span>
+                                    {keyData.source ? <span>Zdroj: {keyData.source}</span> : "Zdroj neznámy"}
+                                </div>
+                            <p className="text-fontSize12 font-light text-white truncate max-w-full"
+                               title={keyData.description || "Bez popisu"}>
+                                {keyData.description ? keyData.description : "Bez popisu"}
+                            </p>
                             <div className="sm:flex grid justify-between">
                                 <div
-                                    className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 gap-5">
-                                    <div className="flex items-center">
+                                    className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 sm:justify-around gap-3 flex-wrap">
+                                    <div
+                                        className="flex items-center max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
+                                        title={keyData.country || "-"}>
                                         <BiWorld/>
-                                        <span className="ml-1">{keyData.country ? keyData.country : "-"}</span>
+                                        <span className="ml-1 truncate">{keyData.country ? keyData.country : "-"}</span>
                                     </div>
-
-                                    <div className="flex items-center">
+                                    <div
+                                        className="flex items-center max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
+                                        title={keyData.language || "-"}>
+                                        <IoLanguage/>
+                                        <span className="ml-1 truncate">{keyData.language ? keyData.language : "-"}</span>
+                                    </div>
+                                    <div
+                                        className="flex items-center max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
+                                        title={keyData.year !== -1 && keyData.year !== undefined ? keyData.year.toString() : "-"}>
                                         <FaRegCalendarAlt/>
-                                        <span className="ml-1">{keyData.year !== -1 ? keyData.year : "-"}</span>
+                                        <span
+                                            className="ml-1 truncate">{keyData.year !== -1 && keyData.year !== undefined ? keyData.year : "-"}</span>
                                     </div>
                                 </div>
 
                                 <div className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 gap-1">
                                     {keyData.uploadedBy === userId && userId !== null ? (
-                                    <>
-                                    <div className="relative flex items-center">
-                                        <button
-                                            onClick={() => handleDeleteClick(keyData._id)}
-                                            type="button"
-                                            className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM17 6H7V19H17V6ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"
-                                                    fill="#FEF7FF"/>
-                                            </svg>
-                                            <span
-                                                className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <>
+                                            <div className="relative flex items-center">
+                                                <button
+                                                    onClick={() => handleDeleteClick(keyData._id)}
+                                                    type="button"
+                                                    className="p-1 px-3 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-3xl sm:text-fontSize16 text-fontSize12 relative group">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                         xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6H4V4H9V3H15V4H20V6H19V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM17 6H7V19H17V6ZM9 17H11V8H9V17ZM13 17H15V8H13V17Z"
+                                                            fill="#FEF7FF"/>
+                                                    </svg>
+                                                    <span
+                                                        className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     Vymaž kľúč
                                             </span>
 

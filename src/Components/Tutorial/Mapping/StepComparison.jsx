@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {FaCheck, FaCheckCircle, FaSpinner, FaTimesCircle} from "react-icons/fa";
 import Joyride from "react-joyride";
+import {motion} from "framer-motion";
 
 export function StepComparison({ selectedText, selectedKey, setComparisonResult }) {
     const [result, setResult] = useState(null);
@@ -81,7 +82,12 @@ export function StepComparison({ selectedText, selectedKey, setComparisonResult 
                 }}
             />
 
-            <div className="space-y-6">
+            <motion.div
+                initial={{opacity: 0, y: 50}}
+                whileInView={{opacity: 1, y: 0}}
+                viewport={{once: true}}
+                transition={{duration: 0.6, ease: "easeOut"}}
+                className="space-y-6">
                 <h3 className="text-xl font-bold text-custom-dark-blue text-center">Počet zhôd medzi kľúčom a textom</h3>
 
                 <div className="text-center">
@@ -106,7 +112,12 @@ export function StepComparison({ selectedText, selectedKey, setComparisonResult 
                 </div>
 
                 {typeof result === "number" && (
-                    <div className="space-y-4">
+                    <motion.div
+                        initial={{opacity: 0, y: 50}}
+                        whileInView={{opacity: 1, y: 0}}
+                        viewport={{once: true}}
+                        transition={{duration: 0.6, ease: "easeOut"}}
+                        className="space-y-4">
                         <div className="bg-green-50 border border-green-300 text-green-800 rounded-xl p-4 text-center" id="comparisonResult">
                             Zhodných znakov: <span className="font-bold">{(result * 100).toFixed(2)} / 100</span>
                         </div>
@@ -151,7 +162,7 @@ export function StepComparison({ selectedText, selectedKey, setComparisonResult 
                             </ul>
                         </div>
 
-                    </div>
+                    </motion.div>
                 )}
 
                 {typeof result === "string" && (
@@ -159,7 +170,7 @@ export function StepComparison({ selectedText, selectedKey, setComparisonResult 
                         {result}
                     </div>
                 )}
-            </div>
+            </motion.div>
         </>
     );
 }

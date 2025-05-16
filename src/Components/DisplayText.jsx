@@ -138,7 +138,7 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
                             className="sm:w-full w-5/6 max-w-3xl rounded-3xl px-6 py-5 bg-custom-dark-blue shadow-lg transform transition-all duration-500 ease-in-out opacity-0 animate-fadeIn"
                             style={{ animationDelay: `${index * 150}ms` }}
                         >
-                            <div className="flex gap-3 mb-3">
+                            <div className="flex gap-3 mb-2">
                                 <svg width="41" height="44" viewBox="0 0 41 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12.1979 31.5334H10.5715C10.1224 31.5334 9.7583 31.8618 9.7583 32.2668C9.7583 32.6718 10.1224 33.0001 10.5715 33.0001H12.1979C12.647 33.0001 13.0111 32.6718 13.0111 32.2668C13.0111 31.8618 12.647 31.5334 12.1979 31.5334Z" fill="white"/>
                                     <path d="M34.9678 31.5334H15.4509C15.0018 31.5334 14.6377 31.8618 14.6377 32.2668C14.6377 32.6718 15.0018 33.0001 15.4509 33.0001H34.9678C35.4169 33.0001 35.781 32.6718 35.781 32.2668C35.781 31.8618 35.4169 31.5334 34.9678 31.5334Z" fill="white"/>
@@ -157,25 +157,43 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
 
                                 <h2 className="text-fontSize24 font-bold text-white">{doc.name ? doc.name : "Šifrovaný text č. " + counter++}</h2>
                             </div>
-                            <p className="text-fontSize12 font-light text-white">{doc.description ? doc.description : "Bez popisu"}</p>
+                            <div className="mb-2 text-fontSize12 text-white/70 italic">
+                                {doc.author ? <span>Autor: {doc.author}</span> : "Autor: Neznámy"}
+                                <span className="mx-1">|</span>
+                                {doc.source ? <span>Zdroj: {doc.source}</span> : "Zdroj neznámy"}
+                            </div>
+                            <p
+                                className="text-fontSize12 font-light text-white truncate max-w-full"
+                                title={doc.description || "Bez popisu"}
+                            >
+                                {doc.description ? doc.description : "Bez popisu"}
+                            </p>
 
 
                             <div className="sm:flex grid justify-between">
                                 <div
-                                    className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 gap-5">
-                                    <div className="flex items-center">
+                                    className="mt-4 flex text-fontSize16 font-semibold text-white mb-2 sm:justify-around gap-3 flex-wrap">
+                                    <div
+                                        className="flex items-center max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
+                                        title={doc.country || "-"}>
                                         <BiWorld/>
-                                        <span className="ml-1">{doc.country ? doc.country : "-"}</span>
+                                        <span className="ml-1 truncate">{doc.country ? doc.country : "-"}</span>
                                     </div>
-                                    <div className="flex items-center">
+                                    <div
+                                        className="flex items-center max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
+                                        title={doc.language || "-"}>
                                         <IoLanguage/>
-                                        <span className="ml-1">{doc.language ? doc.language : "-"}</span>
+                                        <span className="ml-1 truncate">{doc.language ? doc.language : "-"}</span>
                                     </div>
-                                    <div className="flex items-center">
+                                    <div
+                                        className="flex items-center max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap"
+                                        title={doc.year !== -1 && doc.year !== undefined ? doc.year.toString() : "-"}>
                                         <FaRegCalendarAlt/>
-                                        <span className="ml-1">{doc.year !== -1 && doc.year !== undefined ? doc.year : "-"}</span>
+                                        <span
+                                            className="ml-1 truncate">{doc.year !== -1 && doc.year !== undefined ? doc.year : "-"}</span>
                                     </div>
                                 </div>
+
 
                                 <div className="mt-4 flex text-fontSize16 font-semibold text-white mb-2">
                                     {doc.uploadedBy === userId && userId !== null ? (
@@ -264,7 +282,8 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
                                                 </span>
                                         </button>
                                         {copiedDocId === doc._id && (
-                                            <div className="absolute bg-custom-dark-blue-hover top-0 right-0 text-white text-sm px-2 py-1 rounded-3xl shadow-lg mt-[-35px] mr-2">
+                                            <div
+                                                className="absolute bg-custom-dark-blue-hover top-0 right-0 text-white text-sm px-2 py-1 rounded-3xl shadow-lg mt-[-35px] mr-2">
                                                 Skopírované!
                                             </div>
                                         )}
@@ -280,7 +299,8 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
                     </React.Fragment>
                 ))}
                 {showDeleteAlert && (
-                    <DeleteAlert onConfirm={() => handleDelete(docId)} onDismiss={dismissDelete} docType={"text"}></DeleteAlert>
+                    <DeleteAlert onConfirm={() => handleDelete(docId)} onDismiss={dismissDelete}
+                                 docType={"text"}></DeleteAlert>
                 )}
 
                 {isEditing && (

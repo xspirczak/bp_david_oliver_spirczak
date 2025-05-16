@@ -9,7 +9,7 @@ export default function NotFound() {
                     <p className="mb-4 text-3xl tracking-tight font-bold text-custom-dark-blue md:text-4xl">Nastala chyba.</p>
                     <p className="mb-4 text-lg font-light text-custom-dark-blue ">Prepáčte, nemašli sme vami hľadanú stránku. Viac nájdete na domovskej stránke. </p>
                     <NavLink to={'/'}
-                       className="inline-flex bg-custom-dark-blue text-white hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-custom-dark-blue-hover text-fontSize16 rounded-3xl text-sm px-5 py-2.5 text-center dark:focus:ring-custom-dark-blue-hover my-4 hover:bg-custom-dark-blue-hover">Späť
+                       className="inline-flex bg-custom-dark-blue text-white font-semibold hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-custom-dark-blue-hover text-fontSize16 rounded-3xl text-sm px-5 py-2.5 text-center dark:focus:ring-custom-dark-blue-hover my-4 hover:bg-custom-dark-blue-hover">Späť
                         na domovskú stránku</NavLink>
                 </div>
             </div>

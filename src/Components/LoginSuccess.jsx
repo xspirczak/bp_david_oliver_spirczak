@@ -1,11 +1,17 @@
 import { MdDone } from "react-icons/md";
+import {motion} from "framer-motion";
 
 export default function LoginSuccess({ navigateTo, fullName}) {
 
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
             <div className="flex flex-col items-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12 flex justify-center p-6 mt-15 md:mt-40">
+                <motion.div
+                    initial={{opacity: 0, y: 50}}
+                    whileInView={{opacity: 1, y: 0}}
+                    viewport={{once: true}}
+                    transition={{duration: 0.3, ease: "easeOut"}}
+                    className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12 flex justify-center p-6 mt-15 md:mt-40">
 
                     <div className="grid justify-center p-6">
                         <div className="flex justify-center mb-3">
@@ -23,7 +29,7 @@ export default function LoginSuccess({ navigateTo, fullName}) {
                             </button>
                         </div>
                     </div>
-                </div>
+                </motion.div>
             </div>
         </section>
 )

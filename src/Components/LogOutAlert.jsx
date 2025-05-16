@@ -1,7 +1,13 @@
+import {motion} from "framer-motion";
+
 export default function LogOutAlert({ onConfirm, onDismiss }) {
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-custom-dark-blue bg-opacity-50 z-50">
-            <div
+            <motion.div
+                initial={{opacity: 0, y: 0}}
+                whileInView={{opacity: 1, y: 0}}
+                viewport={{once: true}}
+                transition={{duration: 0.3, ease: "easeOut"}}
                 className="p-6 border rounded-lg border-custom-dark-blue bg-custom-dark-blue w-96 shadow-lg"
                 role="alert"
             >
@@ -36,7 +42,7 @@ export default function LogOutAlert({ onConfirm, onDismiss }) {
                         Zrušiť
                     </button>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }

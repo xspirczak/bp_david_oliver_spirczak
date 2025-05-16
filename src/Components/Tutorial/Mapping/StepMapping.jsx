@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaCheck, FaSpinner } from "react-icons/fa";
 import Joyride from "react-joyride";
+import {motion} from "framer-motion";
 
 export function StepMapping({ selectedText, selectedKey, setMappingResult }) {
     const [result, setResult] = useState("");
@@ -70,7 +71,12 @@ export function StepMapping({ selectedText, selectedKey, setMappingResult }) {
                 }}
             />
 
-            <div className="space-y-6">
+            <motion.div
+                initial={{opacity: 0, y: 50}}
+                whileInView={{opacity: 1, y: 0}}
+                viewport={{once: true}}
+                transition={{duration: 0.6, ease: "easeOut"}}
+                className="space-y-6">
                 <h3 className="text-xl font-bold text-custom-dark-blue text-center">Proces mapovania</h3>
 
                 <div className="text-center">
@@ -109,7 +115,7 @@ export function StepMapping({ selectedText, selectedKey, setMappingResult }) {
                         </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </>
     );
 }

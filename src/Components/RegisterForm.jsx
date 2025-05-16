@@ -2,6 +2,7 @@ import {NavLink} from "react-router-dom";
 import {useEffect, useState} from "react";
 import VerifyCodeForm from "./VerifyCodeForm.jsx";
 import {togglePasswordVisibility} from "../utils/functions.js";
+import {motion} from "framer-motion";
 
 export default function RegisterForm({ validateEmail, validEmail }) {
     const [error, setError] = useState(null);
@@ -97,7 +98,12 @@ export default function RegisterForm({ validateEmail, validEmail }) {
 
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200 py-10">
             <div className="flex flex-col items-center px-4 py-6 mx-auto min-h-screen lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12  flex justify-center">
+                <motion.div
+                    initial={{opacity: 0, y: 50}}
+                    whileInView={{opacity: 1, y: 0}}
+                    viewport={{once: true}}
+                    transition={{duration: 0.3, ease: "easeOut"}}
+                    className="bg-white md:rounded-91 rounded-3xl shadow w-5/6 lg:w-1/2 xl:w-5/12  flex justify-center">
                     <div className="w-5/6 sm:w-2/3 lg:w-3/5 sm:p-6 p-0 sm:py-10 py-10">
 
                         { !registrationDone ? (
@@ -290,7 +296,7 @@ export default function RegisterForm({ validateEmail, validEmail }) {
                             <VerifyCodeForm setRegistrationDone={setRegistrationDone} formnData={formData} setShowVerification={setShowVerification} setPasswordMatch={setPasswordMatch} setSuccess={setSuccess} email={formData.email} firstName={formData.firstName} lastName={formData.lastName} password={formData.password} role={formData.role} />
                         )}
                     </div>
-                </div>
+                </motion.div>
             </div>
         </section>
 

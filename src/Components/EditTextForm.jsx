@@ -6,6 +6,8 @@ export default function EditTextForm({ doc, onSave, onCancel, error, setError}) 
         description: doc.description || "",
         country: doc.country || "",
         language: doc.language || "",
+        source: doc.source || "",
+        author: doc.author || "",
         year: doc.year || -1,
         document: doc.document || "",
     });
@@ -16,6 +18,8 @@ export default function EditTextForm({ doc, onSave, onCancel, error, setError}) 
             description: doc.description || "",
             country: doc.country || "",
             language: doc.language || "",
+            source: doc.source || "",
+            author: doc.author || "",
             year: doc.year || -1,
             document: doc.document || "",
         });
@@ -56,6 +60,17 @@ export default function EditTextForm({ doc, onSave, onCancel, error, setError}) 
                         />
                     </div>
                     <div className="mb-5">
+                        <label htmlFor="author" className="block font-semibold text-gray-700 mb-2">Autor</label>
+                        <input
+                            type="text"
+                            id="author"
+                            name="author"
+                            value={formData.author}
+                            onChange={handleChange}
+                            className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
+                        />
+                    </div>
+                    <div className="mb-5">
                         <label htmlFor="description" className="block font-semibold text-gray-700 mb-2">Popis</label>
                         <textarea
                             id="description"
@@ -83,6 +98,17 @@ export default function EditTextForm({ doc, onSave, onCancel, error, setError}) 
                             id="language"
                             name="language"
                             value={formData.language}
+                            onChange={handleChange}
+                            className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
+                        />
+                    </div>
+                    <div className="mb-5">
+                        <label htmlFor="source" className="block font-semibold text-gray-700 mb-2">Zdroj</label>
+                        <input
+                            type="text"
+                            id="source"
+                            name="source"
+                            value={formData.source}
                             onChange={handleChange}
                             className="w-full p-3 border border-custom-dark-blue rounded-lg bg-white text-custom-dark-blue focus:outline-none focus:border-custom-dark-blue-hover focus:ring-1 focus:ring-custom-dark-blue-hover"
                         />

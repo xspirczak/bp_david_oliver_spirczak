@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import { FaInfoCircle } from "react-icons/fa";
+import {AnimatePresence, motion} from "framer-motion";
 
 
 const facts = [
@@ -101,7 +102,8 @@ const Mapping = () => {
 
             setResultData(keysData);
 
-            //console.log(keysData);
+
+            console.log(keysData);
         } catch (error) {
             setLoading(false);
             setError('Chyba pri mapovaní: ' + error.message);
@@ -155,11 +157,11 @@ const Mapping = () => {
 
             const data = await response.json();
             setResult(data);
-            setViewDecrypted(data.map(() => true)); // Initialize view states for this mode too
+            setViewDecrypted(data.map(() => true));
             setParsedKey(keyToSend);
             setLoading(false);
 
-            //console.log('Výsledok:', data);
+
         } catch (error) {
             setLoading()
             setError('Chyba pri mapovaní: ' + error.message);
@@ -188,7 +190,12 @@ const Mapping = () => {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center mb-6">
+        <motion.div
+            initial={{opacity: 0, y: 50}}
+            whileInView={{opacity: 1, y: 0}}
+            viewport={{once: true}}
+            transition={{duration: 0.6, ease: "easeOut"}}
+            className="flex flex-col justify-center items-center mb-6">
             <h1 className="text-custom-dark-blue lg:text-fontSize61 md:text-fontSize48 text-fontSize32 font-bold mb-6 text-center mt-6 px-2">
                 Mapovanie dokumentov
             </h1>
@@ -199,39 +206,59 @@ const Mapping = () => {
                 <span className="font-semibold flex text-center justify-center items-center gap-2">
         Vyberte režim a zadajte vstup
         <div className="relative group inline-block">
-            <FaInfoCircle className="text-custom-dark-blue"/>
+            <FaInfoCircle className="text-custom-dark-blue cursor-pointer"/>
             <span
                         className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center z-10"
                         id="tooltipDocuments"
                     >
                         Prepínačom vyberte požadovaný režim mapovania.
                     </span>
-                </div>
+        </div>
             </span>
             </div>
 
 
-            <div className="bg-white shadow-lg rounded-lg sm:p-6 p-2 w-11/12 max-w-4xl">
+            <div className="bg-white shadow-lg rounded-lg sm:p-6 p-2 w-11/12 max-w-7xl">
                 {/* Toggle Switch */}
-                <div className="flex justify-center mb-2">
-                    <label className="inline-flex items-center cursor-pointer">
-                        <input
-                            type="checkbox"
-                            className="sr-only peer"
-                            checked={mappingMode}
-                            onChange={changeMappingMode}
-                        />
-                        <div
-                            className="relative w-11 h-6 bg-custom-dark-blue peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-custom-dark-blue rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-                        <span className="ms-3 text-fontSize16 font-medium text-custom-dark-blue">
-                            {mappingMode ? 'Šifrovaný text na šifrovací kľúč' : 'Šifrovací kľúč na šifrované texty'}
-                        </span>
-                    </label>
-                </div>
+                <motion.div className="flex justify-center mb-4">
+                    <button
+                        onClick={changeMappingMode}
+                        className="flex items-center gap-2 px-4 py-2 bg-custom-dark-blue text-white rounded-full shadow hover:bg-custom-dark-blue-hover transition-colors duration-300"
+                    >
+        <span className="transition-transform duration-500 ease-in-out">
+            {mappingMode ? 'Šifrovaný text' : 'Šifrovací kľúč'}
+        </span>
+
+                        <svg
+                            className={`w-5 h-5 transform transition-transform duration-500 ${
+                                mappingMode ? 'rotate-0' : 'rotate-180'
+                            }`}
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+
+                        <span className="transition-transform duration-500 ease-in-out">
+            {mappingMode ? 'Šifrovací kľúč' : 'Šifrovaný text'}
+        </span>
+                    </button>
+                </motion.div>
+
+
+                <AnimatePresence mode="wait">
 
                 {/* Input Form */}
                 {mappingMode ? (
-                    <div className="flex flex-col items-center">
+                    <motion.div
+                        key="mapMode"
+                        initial={{ opacity: 0.6 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0.6 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="flex flex-col items-center">
                         <h2 className="text-custom-dark-blue text-fontSize24 font-semibold my-2 text-center">
                             Mapovať šifrovaný text na šifrovací kľúč
                         </h2>
@@ -257,17 +284,24 @@ const Mapping = () => {
                             value={ciphertext}
                             onChange={(e) => setCiphertext(e.target.value)}
                             placeholder="Zadajte šifrovaný text (v tvare: #1 #4 #56 #222)"
-                            className="mt-1 block w-full rounded-3xl shadow-md sm:text-sm p-4 resize-none border-2 focus:outline-custom-dark-blue-hover border-dashed border-custom-dark-blue-hover"
+                            className="mt-1 block w-full sm:w-2/3 rounded-3xl shadow-md sm:text-sm p-4 resize-none border-2 focus:outline-custom-dark-blue-hover border-dashed border-custom-dark-blue-hover"
                         />
                         <button
                             onClick={mapCiphertextToKey}
-                            className="mt-4 px-6 py-2 bg-custom-light-blue text-custom-dark-blue text-fontSize16 font-medium rounded-xl hover:bg-custom-light-blue-hover focus:outline-none"
+                            className="mt-4 px-6 py-2 bg-custom-light-blue text-custom-dark-blue text-fontSize16 font-semibold rounded-xl hover:bg-custom-light-blue-hover focus:outline-none"
                         >
                             Mapovať
                         </button>
-                    </div>
+                    </motion.div>
                 ) : (
-                    <div className="flex flex-col items-center">
+                    <motion.div
+                        key="keyMode"
+                        initial={{ opacity: 0.6 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0.6 }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="flex flex-col items-center"
+                    >
                         <h2 className="text-custom-dark-blue text-fontSize24 font-semibold my-2">
                             Mapovať šifrovací kľúč na šifrované texty
                         </h2>
@@ -276,16 +310,18 @@ const Mapping = () => {
                             rows="10"
                             onChange={(e) => setKey(e.target.value)}
                             placeholder='Zadajte kľúč (napr. { "e": [1], "d": [4], "j": [56, 222, 333] })'
-                            className="mt-1 block w-full rounded-3xl shadow-md sm:text-sm p-4 resize-none border-2 focus:outline-custom-dark-blue-hover border-dashed border-custom-dark-blue-hover"
+                            className="mt-1 block w-full sm:w-2/3 rounded-3xl shadow-md sm:text-sm p-4 resize-none border-2 focus:outline-custom-dark-blue-hover border-dashed border-custom-dark-blue-hover"
                         />
                         <button
                             onClick={mapKeyToCiphertexts}
-                            className="mt-4 px-6 py-2 bg-custom-light-blue text-custom-dark-blue text-fontSize16 font-medium rounded-xl hover:bg-custom-light-blue-hover focus:outline-none"
+                            className="mt-4 px-6 py-2 bg-custom-light-blue text-custom-dark-blue text-fontSize16 font-semibold rounded-xl hover:bg-custom-light-blue-hover focus:outline-none"
                         >
                             Mapovať
                         </button>
-                    </div>
+                    </motion.div>
                 )}
+                </AnimatePresence>
+
 
                 {/* Error Message */}
                 {error ? (
@@ -330,7 +366,7 @@ const Mapping = () => {
                                 {result.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="sm:w-full w-5/6 max-w-3xl rounded-3xl px-6 py-5 bg-custom-dark-blue shadow-lg transform transition-all duration-500 ease-in-out opacity-0 animate-fadeIn"
+                                        className="max-w-full w-full sm:w-3/4 rounded-3xl px-6 py-5 bg-custom-dark-blue shadow-lg transform transition-all duration-500 ease-in-out opacity-0 animate-fadeIn"
                                     >
                                         <p className="text-white font-semibold text-fontSize24 text-center mb-3 flex justify-center items-center gap-2">
                                             <span
@@ -364,7 +400,7 @@ const Mapping = () => {
                                                                 </svg>
                                                                 <span
                                                                     className="absolute left-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    Kopírovať text
+                                                    Kopírovať dešifrovaný text
                                                 </span>
                                                             </button>
                                                             {copiedTextId === index && (
@@ -398,10 +434,16 @@ const Mapping = () => {
                                                     <div className="justify-center sm:flex gap-6">
                                                         <div
                                                             className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
+                                                            <p className="text-white font-semibold mb-2 text-fontSize17">Šifrovaný text:</p>
+                                                            <p className="break-all text-gray-50">{ciphertext}</p>
+                                                        </div>
+                                                        <div
+                                                            className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
                                                             <p className="text-white font-semibold mb-2 text-fontSize17">Dešifrovaný
                                                                 text:</p>
                                                             <p className="break-all text-gray-50">{item.plaintext}</p>
                                                         </div>
+
                                                         <div
                                                             className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
                                                             <p className="text-white font-semibold mb-2 text-fontSize17">Použitý
@@ -449,7 +491,7 @@ const Mapping = () => {
                                                                 </svg>
                                                                 <span
                                                                     className="absolute right-2/3 top-10 ml-2 whitespace-nowrap bg-custom-dark-blue text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    Kopírovať text
+                                                    Kopírovať dešifrovaný text
                                                 </span>
                                                             </button>
                                                             {copiedTextId === index && (
@@ -483,6 +525,13 @@ const Mapping = () => {
                                                     <div className="justify-center sm:flex gap-6">
                                                         <div
                                                             className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
+                                                            <p className="text-white font-semibold mb-2 text-fontSize17">Šifrovaný
+                                                                text:</p>
+                                                            <p className="break-all text-gray-50">{item.document}</p>
+                                                        </div>
+
+                                                        <div
+                                                            className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
                                                             <p className="text-white font-semibold mb-2 text-fontSize17">Dešifrovaný
                                                                 text:</p>
                                                             <p className="break-all text-gray-50">{item.plaintext}</p>
@@ -496,7 +545,8 @@ const Mapping = () => {
                                                                 typeof parsedKey === "string" ? JSON.parse(parsedKey) : parsedKey
                                                             ).map(([keyName, values]) => (
                                                                 <div key={keyName} className="my-2">
-                                                                    <span className="text-white font-bold">{keyName.toUpperCase()}:</span>
+                                                                    <span
+                                                                        className="text-white font-bold">{keyName.toUpperCase()}:</span>
                                                                     <span className="text-white ml-2">
                                                                   {Array.isArray(values)
                                                                       ? values.join(", ")
@@ -520,7 +570,7 @@ const Mapping = () => {
                     </div>
                 )}
             </div>
-        </div>
+        </motion.div>
     )
         ;
 };

@@ -320,7 +320,9 @@ export function DemoLogin({setStep, setProgress, progress}) {
             </div>
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-6 border-t border-gray-300">
                 <button
-                    onClick={() => setStep(null)}
+                    onClick={() => {setStep(null)
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                    }}
                     className="flex items-center gap-2 px-5 py-2 text-custom-dark-blue border border-custom-dark-blue rounded-2xl hover:bg-custom-dark-blue hover:text-white transition-all duration-300"
                 >
                     <FaUndo className="text-lg"/>
@@ -328,7 +330,9 @@ export function DemoLogin({setStep, setProgress, progress}) {
                 </button>
 
                 <button
-                    onClick={() => setStep('textUpload')}
+                    onClick={() => { setStep('textUpload')
+                        window.scrollTo({ top: 0, behavior: 'smooth' })}
+                }
                     disabled={progress.login !== 'completed'}
                     className="flex items-center gap-2 px-5 py-2 bg-custom-dark-blue text-white rounded-2xl hover:bg-custom-dark-blue-hover transition-all duration-300 disabled:opacity-50"
                 >

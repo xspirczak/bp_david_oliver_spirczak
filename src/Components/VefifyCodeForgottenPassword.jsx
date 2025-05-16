@@ -1,6 +1,7 @@
 import { IoSendOutline } from "react-icons/io5";
 import { useState} from "react";
 import {useNavigate, useLocation, Navigate} from "react-router-dom";
+import {motion} from "framer-motion";
 
 export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPassword}) {
     const [verificationCode, setVerificationCode] = useState("");
@@ -67,7 +68,12 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
     return (
         <section className="bg-gradient-to-r from-blue-500 to-cyan-200">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen h-screen lg:py-0">
-                <div className="bg-white md:rounded-91 rounded-3xl shadow xl:w-5/12 w-5/6 flex justify-center p-6">
+                <motion.div
+                    initial={{opacity: 0, y: 50}}
+                    whileInView={{opacity: 1, y: 0}}
+                    viewport={{once: true}}
+                    transition={{duration: 0.3, ease: "easeOut"}}
+                    className="bg-white md:rounded-91 rounded-3xl shadow xl:w-5/12 w-5/6 flex justify-center p-6">
                     <div className="w-full">
                         <h1 className="lg:text-fontSize61 text-fontSize32 font-bold text-custom-dark-blue text-center">
                             Resetovanie hesla
@@ -100,7 +106,7 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
                             <p className="text-green-500 invisible text-center text-fontSize16 font-bold">Placeholder</p>
                         )}
                     </div>
-                </div>
+                </motion.div>
             </div>
         </section>
     );

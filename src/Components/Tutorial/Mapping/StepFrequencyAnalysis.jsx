@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaCheck, FaSpinner, FaInfoCircle, FaExclamationTriangle, FaThumbsUp } from "react-icons/fa";
 import Joyride from "react-joyride";
 import {FrequencyChart} from "../FrequencyChart.jsx";
+import {motion} from "framer-motion";
 
 export function StepFrequencyAnalysis({ mappingResult, setFrequencyResult }) {
     const [result, setResult] = useState(null);
@@ -75,13 +76,14 @@ export function StepFrequencyAnalysis({ mappingResult, setFrequencyResult }) {
                 }}
             />
 
-            <div className="space-y-6">
+            <motion.div
+                initial={{opacity: 0, y: 50}}
+                whileInView={{opacity: 1, y: 0}}
+                viewport={{once: true}}
+                transition={{duration: 0.6, ease: "easeOut"}}
+                className="space-y-6">
                 <h3 className="text-xl font-bold text-custom-dark-blue text-center flex items-center justify-center gap-2">
                     Frekvenčná analýza
-                    <FaInfoCircle
-                        title="Frekvenčná analýza porovnáva rozloženie znakov vo výslednom texte s očakávaným rozložením v prirodzenom jazyku."
-                        className="text-custom-dark-blue cursor-help"
-                    />
                 </h3>
 
                 <div className="text-center">
@@ -106,7 +108,11 @@ export function StepFrequencyAnalysis({ mappingResult, setFrequencyResult }) {
                 </div>
 
                 {typeof result === "number" && (
-                    <div
+                    <motion.div
+                        initial={{opacity: 0, y: 50}}
+                        whileInView={{opacity: 1, y: 0}}
+                        viewport={{once: true}}
+                        transition={{duration: 0.6, ease: "easeOut"}}
                         id="frequencyResult"
                         className={`rounded-xl p-4 text-center border ${
                             result >= 0.8
@@ -125,7 +131,7 @@ export function StepFrequencyAnalysis({ mappingResult, setFrequencyResult }) {
                         </div>
                         <FrequencyChart plaintext={mappingResult} />
 
-                    </div>
+                    </motion.div>
 
                 )}
 
@@ -134,7 +140,7 @@ export function StepFrequencyAnalysis({ mappingResult, setFrequencyResult }) {
                         {result}
                     </div>
                 )}
-            </div>
+            </motion.div>
         </>
     );
 }

@@ -1,35 +1,8 @@
 import {useState} from "react";
 import Joyride from "react-joyride";
+import {motion} from "framer-motion";
 
-const mockTexts = [
-    {
-        text: "Text A",
-        content: "#1 #3 hello #22."
-    },
-    {
-        text: "Text B",
-        content: "ca #13 #14 demo #1001"
-    },
-    {
-        text: "Text C",
-        content: "#999 Te je #1002."
-    },
-    {
-        text: "Text D",
-        content: "#42 #43 s Mesiac #44"
-    },
-    {
-        text: "Text E",
-        content: "Hviezda #45 veľká #46 je jasná."
-    },
-    {
-        text: "Text F",
-        content: "#77 #78 al B #88"
-    }
-];
-
-
-export function StepSelectText({ selectedText, setSelectedText }) {
+export function StepSelectText({ selectedText, setSelectedText, mockTexts }) {
     const [run, setRun] = useState(true);
     const steps = [
         {
@@ -69,7 +42,12 @@ export function StepSelectText({ selectedText, setSelectedText }) {
                     nextLabelWithProgress: 'Krok {step} z {steps}',
                 }}
             />
-        <div className="space-y-6">
+        <motion.div
+            initial={{opacity: 0, y: 50}}
+            whileInView={{opacity: 1, y: 0}}
+            viewport={{once: true}}
+            transition={{duration: 0.6, ease: "easeOut"}}
+            className="space-y-6">
             <h3 className="text-xl font-semibold text-custom-dark-blue text-center" id="textSelectionTitle">
                 Vyberte šifrovaný text
             </h3>
@@ -89,14 +67,14 @@ export function StepSelectText({ selectedText, setSelectedText }) {
                             `}
                         >
                             <h4 className="text-lg font-semibold mb-2">{textObj.text}</h4>
-                            <p className="text-sm whitespace-pre-wrap font-mono bg-gray-100 p-2 rounded text-custom-dark-blue max-h-[150px] min-h-[150px] overflow-auto">
+                            <p className="text-sm whitespace-pre-wrap font-mono bg-gray-100 p-2 rounded text-custom-dark-blue max-h-[60px] min-h-[60px] overflow-auto">
                                 {textObj.content}
                             </p>
                         </button>
                     );
                 })}
             </div>
-        </div>
+        </motion.div>
             </>
     );
 }

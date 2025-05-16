@@ -22,6 +22,9 @@ export default {
         '54' : '54px',
         '91' : '91px',
       },
+      fontFamily: {
+        sans: ['Roboto', 'sans-serif'],
+      },
       fontSize: {
         'fontSize28' : '28px',
         'fontSize20' : '20px',

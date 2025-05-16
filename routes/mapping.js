@@ -87,7 +87,7 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
         const results = await Promise.all(documents.map(async (doc) => {
             const plaintext = decrypt(doc.document, key);
             const codebookScore = calculateCodebookMatches(doc.document, key);
-            return { docId: doc._id, plaintext, score: codebookScore, language: doc.language };
+            return { docId: doc._id, plaintext, score: codebookScore, language: doc.language, document: doc.document };
         }));
 
         const top5Matches = results
@@ -101,7 +101,7 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
             const totalScore = 0.5 * doc.score + 0.5 * freqScore;
             //console.log("doc at" , idx, "code match: ", key.score, " freq score: ", freqScore )
 
-            return {docId: doc.docId, plaintext: doc.plaintext, score: totalScore};
+            return {docId: doc.docId, plaintext: doc.plaintext, score: totalScore, document: doc.document};
         }));
 
         const final = finalResults

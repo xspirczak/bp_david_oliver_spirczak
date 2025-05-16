@@ -5,7 +5,6 @@ import authMiddleware from "../middleware/authMiddleware.js";
 import tokenExistsMiddleware from "../middleware/tokenExistsMiddleware.js";
 import mongoose from "mongoose";
 import {checkForDuplicates} from "../src/utils/functions.js";
-import Text from "../models/Text.js";
 
 // Delete key based on the id (keyID)
 router.delete("/:id", authMiddleware, async (req, res) => {
@@ -74,7 +73,7 @@ router.get("/:id", async (req, res) => {
 router.put("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, language, country, year, key } = req.body;
+        const { name, description, language, country, year, source, key, author } = req.body;
 
         if (!id) {
             return res.status(400).json({ message: "ID kľúča musí byť zadané." });
@@ -109,7 +108,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
         }
         const updatedKey = await Key.findByIdAndUpdate(
             id,
-            {  name: name, description: description, language: language, country: country, year: year,key: parsed },
+            {  name: name, description: description, language: language, country: country,source: source, author: author, year: year,key: parsed },
             { new: true}
         );
 
@@ -127,7 +126,7 @@ router.put("/:id", authMiddleware, async (req, res) => {
 
 router.post('/', tokenExistsMiddleware,async (req, res) => {
     try {
-        const { key, name, description, country, year } =  req.body;
+        const { key, name, description, country, year, language, source, author, createdAt } =  req.body;
 
         if (!key) {
             return res.status(400).json({ error: 'Kľúč nesmie byť prázdny.' });
@@ -140,7 +139,7 @@ router.post('/', tokenExistsMiddleware,async (req, res) => {
         const uploadedBy = req.user ? req.user.id : null;
 
         // Save the key to the database
-        const newKey = new Key({ key, name, description, country, year, uploadedBy });
+        const newKey = new Key({ key, name, description, country, year, language, source, author, createdAt, uploadedBy });
 
         const savedKey = await newKey.save(); // Await saving the document
         res.status(201).json(savedKey); // Send a response with the created document
