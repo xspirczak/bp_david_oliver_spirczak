@@ -45,6 +45,7 @@ export default function Profile({setUser}) {
 
                 if (!token) {
                     navigate('/login');
+                    return;
                 }
 
                 // fetch("http://localhost:3000/api/users",
@@ -61,6 +62,7 @@ export default function Profile({setUser}) {
                 //console.log(response)
 
                 if (!response.ok) {
+                    console.log(await response.json())
                     localStorage.removeItem("token");
                     localStorage.removeItem("fullName");
                     navigate('/login')
@@ -320,13 +322,13 @@ export default function Profile({setUser}) {
 
                         <div className="mt-4" id="titleInfo">
                             <p className="md:text-fontSize28 text-fontSize20 font-bold text-custom-dark-blue break-after-all">
-                            {profileData.firstName + " "} {profileData.lastName}
+                                {profileData.firstName + " "} {profileData.lastName}
                             </p>
                             <p className="md:text-fontSize20 text-fontSize16 font-semibold text-custom-dark-blue break-all">
                                 {profileData.email}
                             </p>
                             <p className="md:text-fontSize16 text-fontSize12 font-light text-custom-dark-blue">
-                                {profileData.role === 'user' ? ('používateľ') : ('administrátor')}
+                                {profileData.role === 'user' ? ('používateľ') : ('administrátor')} - <span className="text-fontSize12 font-extralight">{profileData.provider === 'google' ? ('prihlásený cez Google') : ('prihlásený lokálne')} </span>
                             </p>
                         </div>
                     </div>
@@ -358,7 +360,13 @@ export default function Profile({setUser}) {
                                             <MdDone/>
                                         </button>
                                         <span
-                                            className="absolute bottom-1/2 left-full ml-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                            className="
+            absolute bottom-full
+            left-1/2 -translate-x-1/2
+            px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl
+            opacity-0 group-hover:opacity-100 transition-opacity
+            max-w-[200px] w-max text-center whitespace-nowrap z-10
+        ">
                                                 Potvrdiť zmeny
                                             </span>
                                     </div>
@@ -382,7 +390,13 @@ export default function Profile({setUser}) {
                                             <CiEdit/>
                                         </button>
                                         <span
-                                            className="absolute bottom-1/2 left-full ml-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                            className="
+            absolute bottom-full
+            left-1/2 -translate-x-1/2
+            px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl
+            opacity-0 group-hover:opacity-100 transition-opacity
+            max-w-[200px] w-max text-center whitespace-nowrap z-10
+        ">
                                                 Upraviť meno
                                             </span>
                                     </div>
@@ -415,7 +429,13 @@ export default function Profile({setUser}) {
                                                 <IoSendOutline/>
                                             </button>
                                             <span
-                                                className="absolute right-full ml-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                                className="
+            absolute bottom-full
+            left-1/2 -translate-x-1/2
+            px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl
+            opacity-0 group-hover:opacity-100 transition-opacity
+            max-w-[200px] w-max text-center whitespace-nowrap z-10
+        ">
                                                     Poslať overovací kód
                                                 </span>
                                         </div>
@@ -428,8 +448,14 @@ export default function Profile({setUser}) {
                                                 <IoMdClose />
                                             </button>
                                             <span
-                                                className="absolute bottom-1/2 left-full ml-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    Zavrieť
+                                                className="
+            absolute bottom-full
+            left-1/2 -translate-x-1/2
+            px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl
+            opacity-0 group-hover:opacity-100 transition-opacity
+            max-w-[200px] w-max text-center whitespace-nowrap z-10
+        ">
+                                                Zavrieť
                                                 </span>
                                         </div>
                                     </div>
@@ -446,12 +472,19 @@ export default function Profile({setUser}) {
                                         </div>
                                         <div className="relative group items-center flex">
                                             <button type="button" onClick={() => setEditingField("email")}
+                                                    disabled={profileData.provider === "google"}
                                                     className="flex items-center gap-2 md:text-fontSize16 text-fontSize12 font-semibold border border-gray-200 rounded-3xl py-2 px-3">
                                         <CiEdit/>
                                         </button>
                                         <span
-                                            className="absolute bottom-1/2 left-full ml-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
-                                                Zmeniť email
+                                            className="
+            absolute bottom-full mb-2
+            left-1/2 -translate-x-1/2
+            px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl
+            opacity-0 group-hover:opacity-100 transition-opacity
+            max-w-[200px] w-max text-center whitespace-nowrap z-10
+        ">
+                                            {profileData.provider === "google" ? "Zmeniť email nie je možné." : "Zmeniť email"}
                                             </span>
                                     </div>
                                 </>
@@ -556,7 +589,13 @@ export default function Profile({setUser}) {
                                                 <MdDone/>
                                             </button>
                                             <span
-                                                className="absolute right-full ml-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                                className="
+            absolute bottom-32
+            left-1/2 -translate-x-1/2
+            px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl
+            opacity-0 group-hover:opacity-100 transition-opacity
+            max-w-[200px] w-max text-center whitespace-nowrap z-10
+        ">
                                                         Potvrdiť zmeny
                                             </span>
                                         </div>
@@ -570,7 +609,13 @@ export default function Profile({setUser}) {
                                                 <IoMdClose/>
                                             </button>
                                             <span
-                                                className="absolute bottom-1/2 left-full ml-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
+                                                className="
+            absolute bottom-32
+            left-1/2 -translate-x-1/2
+            px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl
+            opacity-0 group-hover:opacity-100 transition-opacity
+            max-w-[200px] w-max text-center whitespace-nowrap z-10
+        ">
                                                     Zavrieť
                                                 </span>
                                         </div>
@@ -587,27 +632,41 @@ export default function Profile({setUser}) {
 
                                     </div>
                                     <div className="relative group items-center flex">
-                                        <button type="button" onClick={() => setEditingField("password")}
-                                                className="flex items-center gap-2 md:text-fontSize16 text-fontSize12 font-semibold border border-gray-200 rounded-3xl py-2 px-3">
-                                        <CiEdit/>
-                                            </button>
-                                            <span
-                                                className="absolute bottom-1/2 left-full ml-2 px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
-                                                Zmeniť heslo
-                                            </span>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                            {error && editingField === "password" ? (
-                                <p className="text-center text-fontSize16 font-semibold text-red-500">{error}</p>
-                            ) : successPassword ? (
-                                <p className="text-center text-fontSize16 font-semibold text-green-500">{successPassword}</p>
-                            ) : <></>
-                            }
+                                        <button
+                                            type="button"
+                                            onClick={() => setEditingField("password")}
+                                            disabled={profileData.provider === "google"}
+                                            className="flex items-center gap-2 md:text-fontSize16 text-fontSize12 font-semibold border border-gray-200 rounded-3xl py-2 px-3"
+                                        >
+                                            <CiEdit/>
+                                        </button>
+                                        <span
+                                            className="
+            absolute bottom-full mb-2
+            left-1/2 -translate-x-1/2
+            px-2 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-xl
+            opacity-0 group-hover:opacity-100 transition-opacity
+            max-w-[200px] w-max text-center whitespace-nowrap z-10
+        "
+                                        >
+        {profileData.provider === "google"
+            ? "Zmeniť heslo nie je možné."
+            : "Zmeniť heslo"}
+    </span>
+                                    </div>
+
+                                </>
+                            )}
                         </div>
-                    </motion.div>
-                </div>
+                        {error && editingField === "password" ? (
+                            <p className="text-center text-fontSize16 font-semibold text-red-500">{error}</p>
+                        ) : successPassword ? (
+                            <p className="text-center text-fontSize16 font-semibold text-green-500">{successPassword}</p>
+                        ) : <></>
+                        }
+                    </div>
+                </motion.div>
+            </div>
         </section>
-    )
+   )
 }

@@ -4,6 +4,8 @@ import LoginSuccess from "./LoginSuccess.jsx";
 import AlreadyLoggedIn from "./AlreadyLoggedIn.jsx";
 import {togglePasswordVisibility} from "../utils/functions.js";
 import {motion} from "framer-motion";
+import { GoogleLogin } from '@react-oauth/google';
+import {jwtDecode} from "jwt-decode";
 
 export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validateEmail, decodeJWT }) {
     const [email, setEmail] = useState('');
@@ -37,7 +39,10 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.error || 'Prihlásenie zlyhaLo.');
+            if (!response.ok) {
+                setError(data.error);
+                return;
+            }
 
             localStorage.setItem('token', data.token); // Save token for session
 
@@ -176,6 +181,65 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                             <button type="submit"
                                     className="w-full text-white text-fontSize16 font-semibold leading-6 hover:bg-custom-dark-blue-hover bg-custom-dark-blue focus:outline-none rounded-3xl px-5 py-1.5 text-center">Prihlásiť sa
                             </button>
+
+                            <div className="flex justify-center">
+                                <GoogleLogin
+                                    text={"signin_with"}
+                                    shape={"pill"}
+                                    onSuccess={async (credentialResponse) => {
+
+                                        try {
+                                            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/google-login`, {
+                                                method: 'POST',
+                                                headers: {'Content-Type': 'application/json'},
+                                                body: JSON.stringify({token: credentialResponse.credential}),
+                                            });
+
+                                            if (!response.ok) {
+                                                console.log("BAD");
+                                                return;
+                                            }
+                                            const data = await response.json();
+
+                                            localStorage.setItem('token', data.token);
+
+                                            setIsLoggedIn(true);
+
+                                            const decoded = jwtDecode(data.token);
+
+
+                                            setFullName(decoded.fullName);
+
+                                            localStorage.setItem('fullName', decoded.fullName);
+                                            window.dispatchEvent(new Event('fullNameUpdated'));
+
+                                            setUser(decoded.email);
+
+                                            // fetch('http://localhost:3000/api/protected',
+                                            fetch(`${import.meta.env.VITE_API_URL}/api/protected`, {
+                                                method: 'GET',
+                                                headers: {
+                                                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            })
+                                                .then(res => res.json())
+                                                .then(data => console.log("Protected Route Response:", data))
+                                                .catch(err => console.error('Fetch error:', err));
+
+
+                                            setIsLoginSuccessful(true);
+
+                                        } catch (err) {
+                                            setError(err);
+                                        }
+                                    }}
+                                    onError={() => {
+                                        setError("Prihlásenie nebolo úspešné");
+                                    }}
+                                />
+                            </div>
+
                             {error ? ( <p className="text-red-500 text-center text-fontSize20 font-semibold">{error}</p>
                             ) : (
                                 <p className="text-center text-fontSize20 invisible font-semibold">Error placeholder</p>

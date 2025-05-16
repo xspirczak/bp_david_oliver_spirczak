@@ -6,11 +6,14 @@ import {isStrongPassword} from "../src/utils/functions.js";
 import bcrypt from "bcrypt";
 const router = express.Router();
 import dotenv from 'dotenv';
+import { OAuth2Client } from 'google-auth-library';
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
+
+const client = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID);
+
 
 router.put('/update-name', authMiddleware, async (req, res) => {
     try {
@@ -34,7 +37,7 @@ router.put('/update-name', authMiddleware, async (req, res) => {
         // Generovanie nového JWT tokenu s aktualizovaným menom
         const newToken = jwt.sign(
             { id: updatedUser._id, email: updatedUser.email, fullName: `${updatedUser.firstName} ${updatedUser.lastName}` },
-            process.env.JWT_SECRET,
+            JWT_SECRET,
             { expiresIn: "1h" }
         );
 
@@ -47,8 +50,11 @@ router.put('/update-name', authMiddleware, async (req, res) => {
 router.put('/update-password', authMiddleware, async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
+        const provider = req.user.provider;
 
-        //console.log(req.body);
+        if (provider === "google") {
+            return res.status(401).json({ message: "Nemáte právo zmeniť heslo tohto používateľa." });
+        }
 
         if (!oldPassword || !newPassword) {
             return res.status(400).json({ error: "Staré a nové heslá sú povinné" });
@@ -96,13 +102,17 @@ router.post('/', async (req, res) => {
 
         if (!user) return res.status(400).json({ error: 'Email alebo heslo je nesprávne.' });
 
+        if (!user.password) {
+            return res.status(400).json({error: 'Používateľ neexistuje.'})
+        }
+
         // Compare password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ error: 'Email alebo heslo je nesprávne.' });
 
         const userFullName = user.firstName + " " + user.lastName;
         // Generate JWT token
-        const accessToken = jwt.sign({ id: user._id, email: user.email, fullName: userFullName }, JWT_SECRET, { expiresIn: '1h' });
+        const accessToken = jwt.sign({ id: user._id, email: user.email, provider: user.provider, fullName: userFullName }, JWT_SECRET, { expiresIn: '1h' });
 
         //console.log("TOKEN: ", accessToken);
 
@@ -114,9 +124,54 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.post('/google-login', async(req, res) => {
+    const { token } = req.body;
+
+    try {
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.VITE_GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+
+        const { email, given_name, family_name } = payload;
+
+        let user = await User.findOne({ email });
+
+        const fullName = given_name + " " + family_name;
+
+        if (!user) {
+            user = await User.create({
+                email,
+                firstName: given_name,
+                lastName: family_name,
+                provider: 'google',
+                role: 'user',
+            });
+        }
+
+        const appToken = jwt.sign(
+            { id: user._id, email: user.email, provider: user.provider, fullName: fullName },
+            JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.json({ token: appToken });
+
+    } catch (error) {
+        console.error('Google login error:', error);
+        res.status(401).json({ message: 'Neplatný Google token' });
+    }
+})
+
+
+
 router.get('/', authMiddleware, async (req, res) => {
     try {
+        //console.log(req.user.id);
         const user = await User.findById(req.user.id).select('-password'); // Exclude password
+
         if (!user) return res.status(404).json({ error: 'Používateľ sa nenašiel' });
 
         res.json(user);
@@ -124,6 +179,9 @@ router.get('/', authMiddleware, async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 });
+
+
+
 
 
 export default router;

@@ -22,6 +22,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {PrivacyPage} from "./Pages/privacy.jsx";
 
+
 export default function App() {
   // State to track if the user is logged in
   const [isLoggedIn, setIsLoggedIn] = useState(null);

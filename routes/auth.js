@@ -110,6 +110,11 @@ router.post("/request-email-change", authMiddleware, async (req, res) => {
     try {
         const { newEmail } = req.body;
         const userId = req.user.id;
+        const provider = req.user.provider;
+
+        if (provider === "google") {
+            return res.status(401).json({ message: "Nemáte právo zmeniť email." });
+        }
 
         if (!userId) {
             return res.status(400).json({ message: "Chýba ID používateľa." });

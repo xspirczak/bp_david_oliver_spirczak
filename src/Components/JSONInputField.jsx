@@ -252,7 +252,7 @@ export default function JSONInputField() {
                                         value={source}
                                         onChange={handleInputChange(setSource)}
                                         className="w-full text-fontSize12 border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover p-2.5"
-                                        required
+                                        required=""
                                     >
                                         <option value="">-- Vyberte zdroj pôvodu kľúča--</option>
                                         <option value="Archív">Archív</option>
