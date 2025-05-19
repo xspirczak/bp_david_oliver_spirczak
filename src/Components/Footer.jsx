@@ -8,7 +8,7 @@ export default function Footer() {
                 <div className="sm:flex sm:items-center sm:justify-between">
                     <ScrollLink to="/" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
                         <span
-                            className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">CipherMatcher</span>
+                            className="self-center text-2xl font-semibold whitespace-nowrap text-white">CipherMatcher</span>
                     </ScrollLink>
 
                     <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-white">
@@ -26,7 +26,7 @@ export default function Footer() {
                 <hr className="my-6 border-white sm:mx-auto lg:my-8"/>
 
                 <span className="block text-sm text-white sm:text-center">© 2025  <ScrollLink to="/" className="hover:underline">CipherMatcher
-                </ScrollLink>. All Rights Reserved.</span>
+                </ScrollLink>. Všetky práva vyhradené.</span>
 
             </div>
         </footer>

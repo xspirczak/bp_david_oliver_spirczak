@@ -7,7 +7,7 @@ export function StepSelectText({ selectedText, setSelectedText, mockTexts }) {
     const steps = [
         {
             target: '#textSelectionTitle',
-            content: 'Tu si zvoľte šfirovaný text, ktorý sa použije na mapovanie.',
+            content: 'Tu si zvoľte šfirovaný text, ktorý sa použije na vyhľadávanie.',
         },
         {
             target: '#text0',

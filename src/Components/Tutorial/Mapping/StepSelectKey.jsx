@@ -7,7 +7,7 @@ export function StepSelectKey({ selectedKey, setSelectedKey, mockKeys }) {
     const steps = [
         {
             target: '#keySelectionTitle',
-            content: 'Tu si zvoľte šifrovací kľúč, ktorý sa použije na mapovanie.',
+            content: 'Tu si zvoľte šifrovací kľúč, ktorý sa použije na vyhľadávanie.',
         },
         {
             target: '#key0',

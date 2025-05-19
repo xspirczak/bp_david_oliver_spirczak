@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import {
     HiOutlineInformationCircle,
     HiOutlineUser,
@@ -24,7 +23,7 @@ export default function About() {
 
                 <p className="text-lg text-custom-dark-blue">
                     Aplikácia vznikla ako bakalárska práca na tému:{" "}
-                    <span className="font-semibold">Mapovanie šifrovaných textov na šifrovacie kľúče</span>.
+                    <span className="font-semibold">Mapovanie (v aplikácii vyhľadávanie) šifrovaných textov na šifrovacie kľúče</span>.
                 </p>
 
                 <div className="space-y-3 text-custom-dark-blue text-base md:text-lg">

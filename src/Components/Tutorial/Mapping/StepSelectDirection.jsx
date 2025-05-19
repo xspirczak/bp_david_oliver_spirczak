@@ -7,7 +7,7 @@ export function StepSelectDirection({ direction, setDirection }) {
     const steps = [
         {
             target: 'div#mappingDirection',
-            content: 'Vyberte smer mapovania.',
+            content: 'Vyberte smer vyhľadávania.',
         },
         {
             target: 'button#nextStepButton',
@@ -44,7 +44,7 @@ export function StepSelectDirection({ direction, setDirection }) {
             viewport={{once: true}}
             transition={{duration: 0.6, ease: "easeOut"}}
             className="space-y-6">
-            <h3 className="text-xl font-bold text-custom-dark-blue text-center">Zvoľte smer mapovania</h3>
+            <h3 className="text-xl font-bold text-custom-dark-blue text-center">Zvoľte smer vyhľadávania</h3>
             <div className="grid sm:flex gap-4 justify-center" id="mappingDirection">
                 <label
                     htmlFor="optionKeyToText"

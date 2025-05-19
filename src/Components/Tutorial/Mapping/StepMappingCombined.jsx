@@ -11,7 +11,7 @@ export function StepMappingCombined({ direction, mockKeys, mockTexts, selectedKe
     const steps = [
         {
             target: '#startCombinedMappingButton',
-            content: 'Tlačidlo na začatie automatického mapovania.',
+            content: 'Tlačidlo na začatie automatického vyhľadávania.',
         },
         {
             target: '#mappedDoc',
@@ -50,7 +50,7 @@ export function StepMappingCombined({ direction, mockKeys, mockTexts, selectedKe
             });
 
             if (!response.ok) {
-                setError("Chyba pri mapovaní.");
+                setError("Chyba pri vyhľadávaní.");
                 setLoading(false);
                 return;
             }
@@ -103,21 +103,22 @@ export function StepMappingCombined({ direction, mockKeys, mockTexts, selectedKe
         transition={{duration: 0.6, ease: "easeOut"}}
         className="space-y-6">
                  <div className="text-center">
+                <p className="text-custom-dark-blue text-fontSize16 mb-3 font-semibold">Nakoniec vyskúšajte vyhľadávanie {direction === "textToKey" ? "pre vami vybraný text pomocou všetkých kľúčov" : "pre vami vybraný kľúč pomocou všetkých textov"} a porovnajte výsledky.</p>
                 <button
                     id="startCombinedMappingButton"
                     onClick={handleBulkMapping}
                     disabled={loading}
-                    className="px-5 py-2 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-2xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 mx-auto"
+                    className="px-5 py-2 bg-custom-dark-blue hover:bg-custom-dark-blue-hover text-white rounded-2xl font-semibold min-w-[350px] transition-all duration-200 flex items-center justify-center gap-2 mx-auto"
                 >
                     {loading ? (
                         <>
                             <FaSpinner className="animate-spin"/>
-                            Mapujem...
+                            Vyhľadávam...
                         </>
                     ) : (
                         <>
                             <FaCheck/>
-                            Mapovať všetky {direction === "textToKey" ? "kľúče na tento text" : "texty na tento kľúč"}
+                            Vyhľadávať pomocou všetkých {direction === "textToKey" ? "kľúčov" : "textov"}
                         </>
                     )}
                 </button>
@@ -132,7 +133,7 @@ export function StepMappingCombined({ direction, mockKeys, mockTexts, selectedKe
                     viewport={{once: true}}
                     transition={{duration: 0.6, ease: "easeOut"}}
                     className="border border-gray-200 rounded-xl shadow-sm p-6 bg-white space-y-6">
-                    <h2 className="text-custom-dark-blue font-bold text-fontSize20 text-center" id="mappingResult">Výsledok mapovania - skóre: <span className="text-fontSize24">{(result.score *100).toFixed(2)} / 100 </span></h2>
+                    <h2 className="text-custom-dark-blue font-bold text-fontSize20 text-center" id="mappingResult">Výsledok vyhľadávania - skóre: <span className="text-fontSize24">{(result.score *100).toFixed(2)} / 100 </span></h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-gray-800">
                         <div>
                             <h3 className="font-semibold mb-2 text-custom-dark-blue">
@@ -163,7 +164,7 @@ export function StepMappingCombined({ direction, mockKeys, mockTexts, selectedKe
                     </div>
 
                     <div className="text-fontSize16 text-custom-dark-blue">
-                        <span className="font-semibold">Skóre: {(result.score *100).toFixed(2)} </span>oproti pôvodnému skóre <span className="font-semibold">{(score).toFixed(2)}</span>, ktoré bolo získame mapovaním, kde sa manuálne vyberal text a kľúč.
+                        <span className="font-semibold">Skóre: {(result.score *100).toFixed(2)} </span>oproti pôvodnému skóre <span className="font-semibold">{(score).toFixed(2)}</span>, ktoré bolo získame vyhľadávanim, kde sa manuálne vyberal text a kľúč. {result.score < score ? "Ako môžete vidieť automatické vyhľadávanie, kde sa použíjú všetky dokumenty je efektívnejšie a je väčšia šanca, že sa nájde zhoda." : null}
                     </div>
                 </motion.div>
             )}

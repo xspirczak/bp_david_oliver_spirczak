@@ -15,11 +15,11 @@ export function StepMapping({ selectedText, selectedKey, setMappingResult }) {
         },
         {
             target: '#startMappingButton',
-            content: 'Tlačidlom spustíte proces mapovania.',
+            content: 'Tlačidlom spustíte proces vyhľadávania.',
         },
         {
             target: '#mappingResult',
-            content: 'Tu sa zobrazí výsledok mapovania v porovnaní s pôvodným šifrovaným textom.',
+            content: 'Tu sa zobrazí výsledok vyhľadávania v porovnaní s pôvodným šifrovaným textom.',
         },
 
     ];
@@ -40,13 +40,13 @@ export function StepMapping({ selectedText, selectedKey, setMappingResult }) {
 
 
             const data = await response.json();
-            console.log(data)
+            //console.log(data)
 
             setResult(data.result || "");
             setMappingResult(data.result || "");
         } catch (err) {
-            console.error("Chyba pri mapovaní:", err);
-            setResult("Nepodarilo sa vykonať mapovanie.");
+            //console.error("Chyba pri mapovaní:", err);
+            setResult("Nepodarilo sa vykonať vyhľadávanie.");
         } finally {
             setLoading(false);
         }
@@ -77,7 +77,7 @@ export function StepMapping({ selectedText, selectedKey, setMappingResult }) {
                 viewport={{once: true}}
                 transition={{duration: 0.6, ease: "easeOut"}}
                 className="space-y-6">
-                <h3 className="text-xl font-bold text-custom-dark-blue text-center">Proces mapovania</h3>
+                <h3 className="text-xl font-bold text-custom-dark-blue text-center">Proces vyhľadávania</h3>
 
                 <div className="text-center">
                     <button
@@ -89,12 +89,12 @@ export function StepMapping({ selectedText, selectedKey, setMappingResult }) {
                         {loading ? (
                             <>
                                 <FaSpinner className="animate-spin" />
-                                Mapujem...
+                                Vyhľadávam...
                             </>
                         ) : (
                             <>
                                 <FaCheck />
-                                Spustiť mapovanie
+                                Spustiť vyhľadávanie
                             </>
                         )}
                     </button>
@@ -109,7 +109,7 @@ export function StepMapping({ selectedText, selectedKey, setMappingResult }) {
                     </div>
 
                     <div id="mappingResult">
-                        <h4 className="text-custom-dark-blue font-semibold mb-2">Výsledok mapovania:</h4>
+                        <h4 className="text-custom-dark-blue font-semibold mb-2">Výsledok vyhľadávania:</h4>
                         <div className="p-4 border border-gray-300 bg-gray-50 rounded-xl min-h-[150px] text-sm text-gray-800 whitespace-pre-wrap">
                             {result || "—"}
                         </div>

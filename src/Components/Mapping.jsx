@@ -103,11 +103,11 @@ const Mapping = () => {
             setResultData(keysData);
 
 
-            console.log(keysData);
+            //console.log(keysData);
         } catch (error) {
             setLoading(false);
-            setError('Chyba pri mapovaní: ' + error.message);
-            console.error('Chyba pri mapovaní:', error);
+            setError('Chyba pri vyhľadávaní: ' + error.message);
+            //console.error('Chyba pri mapovaní:', error);
         }
     };
 
@@ -164,8 +164,8 @@ const Mapping = () => {
 
         } catch (error) {
             setLoading()
-            setError('Chyba pri mapovaní: ' + error.message);
-            console.error('Chyba pri mapovaní:', error);
+            setError('Chyba pri vyhľadávaní: ' + error.message);
+            //console.error('Chyba pri mapovaní:', error);
         }
     };
 
@@ -197,12 +197,12 @@ const Mapping = () => {
             transition={{duration: 0.6, ease: "easeOut"}}
             className="flex flex-col justify-center items-center mb-6">
             <h1 className="text-custom-dark-blue lg:text-fontSize61 md:text-fontSize48 text-fontSize32 font-bold mb-6 text-center mt-6 px-2">
-                Mapovanie dokumentov
+                Vyhľadávanie dokumentov
             </h1>
 
             <div
                 className="grid gap-2 text-custom-dark-blue font-light md:text-fontSize16 text-fontSize12 text-center px-4 mb-5">
-                Mapujte šifrovaný text na šifrovací kľúč alebo šifrovací kľúč na šifrované texty.
+                Vyhľadávajte najvhodnejšie šifrované texty pre šifrovací kľúč alebo šifrovacie kľúče pre šifrovaný text.
                 <span className="font-semibold flex text-center justify-center items-center gap-2">
         Vyberte režim a zadajte vstup
         <div className="relative group inline-block">
@@ -211,7 +211,7 @@ const Mapping = () => {
                         className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-1 text-fontSize12 text-white bg-custom-dark-blue rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center z-10"
                         id="tooltipDocuments"
                     >
-                        Prepínačom vyberte požadovaný režim mapovania.
+                        Prepínačom vyberte požadovaný režim vyhľadávania.
                     </span>
         </div>
             </span>
@@ -260,7 +260,7 @@ const Mapping = () => {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                         className="flex flex-col items-center">
                         <h2 className="text-custom-dark-blue text-fontSize24 font-semibold my-2 text-center">
-                            Mapovať šifrovaný text na šifrovací kľúč
+                            Vyhľadávať šifrované texty pre šifrovací kľúč
                         </h2>
                         <div className="my-3">
                             <label htmlFor="language"
@@ -290,7 +290,7 @@ const Mapping = () => {
                             onClick={mapCiphertextToKey}
                             className="mt-4 px-6 py-2 bg-custom-light-blue text-custom-dark-blue text-fontSize16 font-semibold rounded-xl hover:bg-custom-light-blue-hover focus:outline-none"
                         >
-                            Mapovať
+                            Vyhľadávať
                         </button>
                     </motion.div>
                 ) : (
@@ -303,7 +303,7 @@ const Mapping = () => {
                         className="flex flex-col items-center"
                     >
                         <h2 className="text-custom-dark-blue text-fontSize24 font-semibold my-2">
-                            Mapovať šifrovací kľúč na šifrované texty
+                            Vyhľadávať šifrovacie kľúče pre šifrovaný text
                         </h2>
                         <textarea
                             value={key}
@@ -316,7 +316,7 @@ const Mapping = () => {
                             onClick={mapKeyToCiphertexts}
                             className="mt-4 px-6 py-2 bg-custom-light-blue text-custom-dark-blue text-fontSize16 font-semibold rounded-xl hover:bg-custom-light-blue-hover focus:outline-none"
                         >
-                            Mapovať
+                            Vyhľadávať
                         </button>
                     </motion.div>
                 )}
@@ -340,7 +340,7 @@ const Mapping = () => {
                         <div
                             className="animate-spin rounded-full h-10 w-10 border-t-4 border-custom-dark-blue mb-3"></div>
 
-                        <p className="text-lg text-custom-dark-blue font-medium">Prebieha mapovanie...</p>
+                        <p className="text-lg text-custom-dark-blue font-medium">Prebieha vyhľadávanie...</p>
 
                         <p className="text-sm text-gray-500 mt-1">
                             Tento proces môže chvíľu trvať.&nbsp;
@@ -355,7 +355,7 @@ const Mapping = () => {
                 {!loading && result && (
                     <div className="w-full">
                         <h3 className="text-custom-dark-blue text-fontSize28 md:text-fontSize48 font-bold mb-6 text-center">
-                            Výsledky mapovania:
+                            Výsledky vyhľadávania:
                         </h3>
                         {result.length === 0 ? (
                             <p className="text-center text-custom-dark-blue">

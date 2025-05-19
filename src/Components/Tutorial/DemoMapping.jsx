@@ -117,26 +117,26 @@ export function DemoMapping({ setStep , setProgress}) {
 
     return (
         <div className="bg-white rounded-xl shadow-lg px-10 pb-10 space-y-6 max-w-screen-sm mx-auto">
-            <h2 className="text-fontSize48 font-bold text-custom-dark-blue text-center">Mapovací Algoritmus</h2>
+            <h2 className="text-fontSize48 font-bold text-custom-dark-blue text-center">Vyhľadávanie dokumentov</h2>
             <p className="text-custom-dark-blue text-center font-light">
-                Prejdite si ukážku mapovania šifrovaného textu na kľúč alebo opačne.
+                Prejdite si ukážku vyhľadávania najvhodnejšieho šifrovaného textu na kľúč alebo opačne.
             </p>
 
             <div className="bg-gray-200 rounded-3xl p-4 shadow-sm border border-custom-dark-blue-hover">
-                <h3 className="text-lg font-bold text-custom-dark-blue mb-3">Proces mapovania:</h3>
+                <h3 className="text-lg font-bold text-custom-dark-blue mb-3">Proces vyhľadávania:</h3>
                 <ul className="space-y-2 text-custom-dark-blue">
                     <li className="flex items-start gap-2">
                         <FaCheckCircle className="text-custom-dark-blue w-3 h-3 flex-shrink-0 mt-1.5"/>
 
                         <span>
-        Na začiatku sa vyberie <span className="font-bold">smer mapovania</span>
+        Na začiatku sa vyberie <span className="font-bold">smer vyhľadávania</span>
         <span className="relative group inline-block align-middle ml-1">
             <FaInfoCircle className="text-custom-dark-blue text-fontSize12 cursor-pointer mb-0.5"/>
             <span
                 className="absolute top-full left-1/2 -translate-x-1/2 mt-1 px-3 py-1 text-white text-xs bg-custom-dark-blue rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-w-32 md:max-w-fit md:whitespace-nowrap text-center z-10"
                 id="tooltipMappingDirection"
             >
-                Mapovať kľúč na text alebo text na kľúč.
+                Vyhľadávať kľúč pre zvolený text alebo text pre zvolený kľúč.
             </span>
         </span>
         .
@@ -145,25 +145,25 @@ export function DemoMapping({ setStep , setProgress}) {
 
                     <li className="flex items-start gap-2">
                         <FaCheckCircle className="text-custom-dark-blue w-3 h-3 flex-shrink-0 mt-1.5"/>
-                        <span>Na základe zvoleného smeru mapovania <span className="font-bold">vyberieme dokument</span>
+                        <span>Na základe zvoleného smeru vyhľadávania <span className="font-bold">vyberieme dokument</span>
                             <span className="relative group inline-block align-middle ml-1">
             <FaInfoCircle className="text-custom-dark-blue text-fontSize12 cursor-pointer mb-0.5"/>
             <span
                 className="absolute top-full max-w-32 md:max-w-fit md:whitespace-nowrap left-1/2 -translate-x-1/2 mt-1 px-3 py-1 text-white text-xs bg-custom-dark-blue rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-center z-10"
                 id="tooltipSelectDocument"
-            >Ššifrovaný text alebo šifrovací kľúč
+            >Šifrovaný text alebo šifrovací kľúč
             </span>
-        </span>, na ktorý chceme použiť mapovací algoritmus</span>
+        </span>, na ktorý chceme použiť vyhľadávací algoritmus</span>
                     </li>
                     <li className="flex flex-col gap-1 text-custom-dark-blue">
                         <div className="flex items-start gap-2">
                             <FaCheckCircle className="w-3 h-3 flex-shrink-0 mt-1.5"/>
-                            <span>Vyberieme dokument, pomocou ktorého chceme mapovať.</span>
+                            <span>Vyberieme dokument, pomocou ktorého chceme vyhľadávať.</span>
                         </div>
                         <ul className="pl-6 mt-1 space-y-1">
                             <li className="flex items-start gap-2 text-sm text-custom-dark-blue">
                                 <FaCircleMinus className="w-3 h-3 flex-shrink-0 mt-1.5"/>
-                                <span>V prvej časti dema je proces mapovania <span
+                                <span>V prvej časti dema je proces vyhľadávania <span
                                     className="font-bold">zjednodušený</span>. V reálnom prípade algoritmus skúša všetky dokumenty (texty/kľúče) z databázy (druhá časť tutoriálu).</span>
                             </li>
                         </ul>
@@ -171,7 +171,7 @@ export function DemoMapping({ setStep , setProgress}) {
 
                     <li className="flex items-start gap-2">
                         <FaCheckCircle className="text-custom-dark-blue w-3 h-3 flex-shrink-0 mt-1.5"/>
-                        <span>Vykoná sa samotný proces mapovania, kde sa <span className="font-bold">kódy</span> z šifrovaného textu nahradia <span
+                        <span>Vykoná sa samotný proces priraďovania, kde sa <span className="font-bold">kódy</span> z šifrovaného textu nahradia <span
                             className="font-bold">písmenami, slovami alebo slovnymi spojeniami</span>.</span>
                     </li>
                     <li className="flex items-start gap-2">

@@ -14,7 +14,7 @@ export function StepMappingResults ({comparisonResult, frequencyResult, setScore
             viewport={{once: true}}
             transition={{duration: 0.6, ease: "easeOut"}}
             className="space-y-8 text-center">
-            <h3 className="text-3xl font-bold text-custom-dark-blue">Výsledky mapovania</h3>
+            <h3 className="text-3xl font-bold text-custom-dark-blue">Výsledky vyhľadávania</h3>
 
             <div className="grid sm:grid-cols-3 gap-4 text-custom-dark-blue">
                 <div

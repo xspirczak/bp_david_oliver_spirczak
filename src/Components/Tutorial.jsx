@@ -5,7 +5,7 @@ import {DemoLogin} from "./Tutorial/DemoLogin.jsx";
 import {CiLock} from "react-icons/ci";
 import {DemoUploadText} from "./Tutorial/DemoUploadText.jsx";
 import {DemoUploadKey} from "./Tutorial/DemoUploadKey.jsx";
-import {FaCircleMinus} from "react-icons/fa6";
+import {FaCircleMinus, FaEllipsis} from "react-icons/fa6";
 import {DemoMapping} from "./Tutorial/DemoMapping.jsx";
 import {useNavigate} from "react-router-dom";
 import {motion} from "framer-motion";
@@ -52,7 +52,7 @@ export default function Tutorial() {
                                 window.scrollTo({ top: 0, behavior: 'smooth' })
 
                             }}
-                            className="min-w-[80%] sm:min-w-60 sm:w-auto px-4 py-2 bg-custom-dark-blue text-white rounded-lg hover:bg-custom-dark-blue-hover transition flex items-center gap-2 justify-center disabled:bg-gray-600"
+                            className="min-w-[80%] sm:min-w-60 sm:w-auto px-4 py-2 bg-custom-dark-blue text-white rounded-xl hover:bg-custom-dark-blue-hover transition flex items-center gap-2 justify-center disabled:bg-gray-600"
                             disabled={!isUnlocked}
                         >
                             {buttonText}
@@ -64,7 +64,7 @@ export default function Tutorial() {
                             {isCompleted ? (
                                 <FaCheckCircle className="text-green-300 w-7 h-7"/>
                             ) : isUnlocked ? (
-                                <FaCircleMinus className="text-orange-400 w-7 h-7"/>
+                                <FaEllipsis  className="bg-orange-400 rounded-full text-custom-dark-blue w-7 h-7"/>
                             ) : (
                                 <FaCircleMinus className="text-red-400 w-7 h-7"/>
                             )}
@@ -128,7 +128,7 @@ export default function Tutorial() {
                                 icon: <FaBook className="text-custom-dark-blue w-6 h-6"/>,
                                 title: "3. Nahrávanie textov",
                                 description: "Vyskúšajte si nahrávanie šífrovaných textov.",
-                                buttonText: "Spustiť demo",
+                                buttonText: "Vyskúšať nahrávanie",
                                 onClick: () => setStep("textUpload"),
                                 state: progress.textUpload
                             },
@@ -136,15 +136,15 @@ export default function Tutorial() {
                                 icon: <FaKey className="text-custom-dark-blue w-6 h-6"/>,
                                 title: "4. Nahrávanie kľúčov",
                                 description: "Vyskúšajte si nahrávanie šifrovacích kľúčov.",
-                                buttonText: "Spustiť demo",
+                                buttonText: "Vyskúšať nahrávanie",
                                 onClick: () => setStep("keyUpload"),
                                 state: progress.keyUpload
                             },
                             {
                                 icon: <FaPlayCircle className="text-custom-dark-blue w-6 h-6"/>,
-                                title: "5. Mapovací algoritmus",
-                                description: "Mapovací algorimus.",
-                                buttonText: "Vyskúšať mapovanie",
+                                title: "5. Vyhľadávanie",
+                                description: "Vyhľadávanie najvhodnejších dokumentov.",
+                                buttonText: "Vyskúšať vyhľadávanie",
                                 onClick: () => setStep("mapping"),
                                 state: progress.mapping
                             }

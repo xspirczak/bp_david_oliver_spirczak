@@ -51,7 +51,7 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
     } catch (error) {
         console.timeEnd('serial-ciphertext-to-key'); // Ukonči meranie aj pri chybe
 
-        res.status(500).json({ message: 'Chyba pri mapovaní', error: error.message });
+        res.status(500).json({ message: 'Chyba pri vyhľadávaní', error: error.message });
     }
 });
 
@@ -111,7 +111,7 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
         res.json(final);
     } catch (error) {
         console.timeEnd('serial-key-to-ciphertexts');
-        res.status(500).json({ message: 'Chyba pri mapovaní', error: error.message });
+        res.status(500).json({ message: 'Chyba pri vyhľadávaní', error: error.message });
     }
 });
 

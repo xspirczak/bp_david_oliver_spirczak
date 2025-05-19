@@ -106,45 +106,58 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
           </NavLink>
         </div>
         <div className="flex lg:hidden gap-3">
-          {isLoggedIn ? (<Popover className="relative">
-                <PopoverButton className="flex items-center space-x-2">
-                  {avatarUrl ? (
-                      <img
-                          src={avatarUrl}
-                          alt="profilePhoto"
-                          className="w-10 h-10 rounded-full border border-custom-dark-blue"
-                      />
-                  ) :         <FaUserCircle className="text-custom-dark-blue w-10 h-10" />
-                  }
+          {isLoggedIn ? (
+              <Popover className="relative">
+                {({ close }) => (
+                    <>
+                      <PopoverButton className="flex items-center space-x-2">
+                        {avatarUrl ? (
+                            <img
+                                src={avatarUrl}
+                                alt="profilePhoto"
+                                className="w-10 h-10 rounded-full border border-custom-dark-blue"
+                            />
+                        ) : (
+                            <FaUserCircle className="text-custom-dark-blue w-10 h-10" />
+                        )}
 
-                  <ChevronDownIcon className="w-5 h-5 text-white"/>
-                </PopoverButton>
+                        <ChevronDownIcon className="w-5 h-5 text-white" />
+                      </PopoverButton>
 
-                <PopoverPanel
-                    className="absolute right-0 mt-2 w-56 bg-white text-custom-dark-blue shadow-lg rounded-md border border-custom-dark-blue font-semibold">
-                <div className="px-4 py-3 border-b border-custom-dark-blue">
-                    <p className="text-sm font-semibold">{fullName || "-"}</p>
-                    <p className="text-xs text-gray-400">{user || "-"}</p>
-                  </div>
+                      <PopoverPanel className="absolute right-0 mt-2 w-56 bg-white text-custom-dark-blue shadow-lg rounded-md border border-custom-dark-blue font-semibold">
+                        <div className="px-4 py-3 border-b border-custom-dark-blue">
+                          <p className="text-sm font-semibold">{fullName || "-"}</p>
+                          <p className="text-xs text-gray-400">{user || "-"}</p>
+                        </div>
 
-                  <div className="py-2 hover:bg-custom-dark-blue-hover hover:text-white">
-                    <NavLink to="/profile" className="flex w-full text-left px-4 py-2 text-sm gap-1">
-                      <FiUser className="text-lg" />
-                      Profil
-                    </NavLink>
-                  </div>
+                        <div className="py-2 hover:bg-custom-dark-blue-hover hover:text-white">
+                          <NavLink
+                              to="/profile"
+                              onClick={() => close()}
+                              className="flex w-full text-left px-4 py-2 text-sm gap-1"
+                          >
+                            <FiUser className="text-lg" />
+                            Profil
+                          </NavLink>
+                        </div>
 
-                  <div className="border-t border-custom-dark-blue">
-                    <button
-                        onClick={handleLogoutClick}
-                        className="flex w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400 gap-1"
-                    >
-                      <FiLogOut className="text-lg" />
-                      Odhlásiť sa
-                    </button>
-                  </div>
-                </PopoverPanel>
+                        <div className="border-t border-custom-dark-blue">
+                          <button
+                              onClick={() => {
+                                handleLogoutClick();
+                                close();
+                              }}
+                              className="flex w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400 gap-1"
+                          >
+                            <FiLogOut className="text-lg" />
+                            Odhlásiť sa
+                          </button>
+                        </div>
+                      </PopoverPanel>
+                    </>
+                )}
               </Popover>
+
           ) : null}
           <button
             type="button"
@@ -163,7 +176,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
             Domov
           </NavLink>
           <NavLink to="/mapping" style={getActiveStyles} className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-custom-dark-blue">
-            Mapovanie
+            Vyhľadávanie
           </NavLink>
           <Popover className="relative">
             <PopoverButton className="-mx-3 flex items-center gap-x-1 rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-white hover:bg-gray-50 hover:text-custom-dark-blue">
@@ -200,42 +213,54 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                  <div className="relative">
                    {isLoggedIn ? (
                        <Popover className="relative">
-                         <PopoverButton className="flex items-center space-x-2">
-                           {avatarUrl ? (
-                               <img
-                                   src={avatarUrl}
-                                   alt="profilePhoto"
-                                   className="w-10 h-10 rounded-full border border-gray-300"
-                               />
-                           ) :         <FaUserCircle className="text-custom-dark-blue w-10 h-10" />
-                           }
-                           <ChevronDownIcon className="w-5 h-5 text-white"/>
-                         </PopoverButton>
+                         {({ close }) => (
+                             <>
+                               <PopoverButton className="flex items-center space-x-2">
+                                 {avatarUrl ? (
+                                     <img
+                                         src={avatarUrl}
+                                         alt="profilePhoto"
+                                         className="w-10 h-10 rounded-full border border-gray-300"
+                                     />
+                                 ) : (
+                                     <FaUserCircle className="text-custom-dark-blue w-10 h-10" />
+                                 )}
+                                 <ChevronDownIcon className="w-5 h-5 text-white" />
+                               </PopoverButton>
 
-                         <PopoverPanel
-                             className="absolute right-0 mt-2 w-56 bg-white text-custom-dark-blue shadow-lg rounded-md border border-custom-dark-blue font-semibold">
-                           <div className="px-4 py-3 border-b border-custom-dark-blue">
-                             <p className="text-sm font-semibold">{fullName || "-"}</p>
-                             <p className="text-xs text-gray-400">{user || "-"}</p>
-                           </div>
+                               <PopoverPanel className="absolute right-0 mt-2 w-56 bg-white text-custom-dark-blue shadow-lg rounded-md border border-custom-dark-blue font-semibold">
+                                 <div className="px-4 py-3 border-b border-custom-dark-blue">
+                                   <p className="text-sm font-semibold">{fullName || "-"}</p>
+                                   <p className="text-xs text-gray-400">{user || "-"}</p>
+                                 </div>
 
-                           <div className="py-2 hover:bg-custom-dark-blue-hover hover:text-white">
-                             <NavLink to="/profile" className="flex w-full text-left px-4 py-2 text-sm gap-1">
-                               <FiUser className="text-lg" /> Profil
-                             </NavLink>
-                           </div>
+                                 <div className="py-2 hover:bg-custom-dark-blue-hover hover:text-white">
+                                   <NavLink
+                                       to="/profile"
+                                       onClick={() => close()}
+                                       className="flex w-full text-left px-4 py-2 text-sm gap-1"
+                                   >
+                                     <FiUser className="text-lg" /> Profil
+                                   </NavLink>
+                                 </div>
 
-                           <div className="border-t border-custom-dark-blue">
-                             <button
-                                 onClick={handleLogoutClick}
-                                 className="flex w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400 gap-1"
-                             >
-                               <FiLogOut className="text-lg" />
-                               Odhlásiť sa
-                             </button>
-                           </div>
-                         </PopoverPanel>
+                                 <div className="border-t border-custom-dark-blue">
+                                   <button
+                                       onClick={() => {
+                                         handleLogoutClick();
+                                         close();
+                                       }}
+                                       className="flex w-full text-left px-4 py-2 text-sm hover:bg-custom-dark-blue-hover text-red-400 gap-1"
+                                   >
+                                     <FiLogOut className="text-lg" />
+                                     Odhlásiť sa
+                                   </button>
+                                 </div>
+                               </PopoverPanel>
+                             </>
+                         )}
                        </Popover>
+
                    ) : null}
                  </div>
                </div>
@@ -277,7 +302,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
                 </NavLink>
                 <NavLink to="/mapping" onClick={() => setMobileMenuOpen(false)}
                          className="-mx-3 block rounded-lg px-3 py-2 text-fontSize20 font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                  Mapovanie
+                  Vyhľadávanie
                 </NavLink>
                 <div className="-mx-3 px-3">
                   <button

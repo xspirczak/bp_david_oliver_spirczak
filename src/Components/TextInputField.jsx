@@ -140,22 +140,26 @@ export default function TextInputField() {
 
             <h1 className="text-custom-dark-blue lg:text-fontSize61 md:text-fontSize48 text-fontSize32 font-bold mb-6 text-center mt-6 px-2">Vložte
                 šifrovaný text</h1>
+
+            <p className="text-custom-dark-blue font-light md:text-fontSize16 text-fontSize12 text-center px-2 sm:px-6">Nahrať
+                text je možné v digitálnom
+                formáte <span className="font-semibold">(.txt)</span> alebo samotným vložením textu do vstupného
+                poľa
+                nižšie.</p>
+
             <motion.div
                 initial={{opacity: 0, y: 50}}
                 whileInView={{opacity: 1, y: 0}}
                 viewport={{once: true}}
                 transition={{duration: 0.6, ease: "easeOut"}}
+                className="lg:w-1/2 w-5/6"
             >
-                <p className="text-custom-dark-blue font-light md:text-fontSize16 text-fontSize12 text-center px-2 sm:px-6">Nahrať
-                    text je možné v digitálnom
-                    formáte <span className="font-semibold">(.txt)</span> alebo samotným vložením textu do vstupného
-                    poľa
-                    nižšie.</p>
-                <div className="bg-white shadow-lg rounded-lg py-4 w-11/12  max-w-4xl">
-                    <form className="space-y-6" onSubmit={handleSubmit} encType="multipart/form-data">
 
+
+                <div className="bg-white shadow-lg rounded-3xl py-4">
+                    <form className="space-y-6" onSubmit={handleSubmit} encType="multipart/form-data">
                         <div className="shadow-lg rounded-xl bg-white p-6 mb-6">
-                            <div className="flex justify-center bg-gray-50 border-custom-dark-blue p-4 rounded-lg">
+                            <div className="flex justify-center bg-gray-50 border-custom-dark-blue p-4 rounded-3xl">
                                 <div
                                     className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 w-full sm:w-2/3 justify-center">
                                     <div>
@@ -266,7 +270,7 @@ export default function TextInputField() {
                             />
                         </div>
 
-                        <div className="relative rounded-3xl">
+                        <div className="relative rounded-3xl px-4">
                         <textarea
                             id="textarea"
                             name="textarea"

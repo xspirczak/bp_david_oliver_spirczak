@@ -24,7 +24,7 @@ export default function TitlePageInfo() {
                 transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
                 className="mt-4 max-w-xl mx-auto text-fontSize17 sm:px-4 px-10 p-4 text-center"
             >
-                Webová aplikácia na mapovanie substitučných šifrovacích kľúčov na šifrované texty,
+                Webová aplikácia na vyhľadávanie najvhodnejších substitučných šifrovacích kľúčov pre šifrované texty,
                 navrhnutá na pomoc pri dešifrovaní historických dokumentov.
                 Vytvorená ako súčasť bakalárskej práce so zameraním na{" "}
                 <span className="font-semibold">nomenklátorové šifry</span>.

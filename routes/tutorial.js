@@ -55,7 +55,7 @@ router.post('/combined-mapping', async (req, res) => {
     const { direction, mappedObject, mappedObjects} = req.body;
 
     if (!mappedObject && !mappedObjects) {
-        return res.status(400).json({error: 'Mapované dokumenty nie sú zadané.'})
+        return res.status(400).json({error: 'Dokumenty nie sú zadané.'})
     }
 
     if (direction === "textToKey") {
@@ -104,7 +104,7 @@ router.post('/combined-mapping', async (req, res) => {
 
         res.json(final[0])
     } else {
-        return res.status(400).json({error: 'Nesprávny smer mapovania.'})
+        return res.status(400).json({error: 'Nesprávny smer vyhľadávania.'})
     }
 });
 

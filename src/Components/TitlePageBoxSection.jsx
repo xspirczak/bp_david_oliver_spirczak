@@ -9,7 +9,7 @@ export default function TitlePageBoxSection() {
                 whileInView={{opacity: 1, x: 0}}
                 viewport={{once: true}}
                 transition={{duration: 0.6, ease: "easeOut"}}
-                className="flex flex-col lg:flex-row items-center gap-10 bg-gray-50 border border-gray-200 rounded-2xl shadow-md p-6 w-full max-w-3xl"
+                className="flex flex-col lg:flex-row items-center gap-10 bg-gray-50 border border-gray-200 rounded-[54px] shadow-md p-6 w-full max-w-3xl"
             >
                 <ScrollLink
                     to="/mapping"
@@ -34,11 +34,11 @@ export default function TitlePageBoxSection() {
                         <path d="M85.0667 79.2667H81.2001V83.1333H85.0667V79.2667Z" fill="#212D40"/>
                         <path d="M85.0667 87H81.2001V90.8667H85.0667V87Z" fill="#212D40"/>
                     </svg>
-                    <p className="text-xl text-custom-dark-blue mt-6 font-semibold">Mapovanie</p>
+                    <p className="text-xl text-custom-dark-blue mt-6 font-semibold">Vyhľadávanie</p>
                 </ScrollLink>
 
                 <p className="max-w-md text-center lg:text-left text-lg text-gray-700">
-                    Vyskúšajte mapovanie dokumentov. Slúži na mapovanie šifrovaných textov na šifrovacie kľúče alebo opačne.
+                    Vyskúšajte výhľadávanie najvhodnejších dokumentov. Slúži na vyhľadanie zodpovedajúcich šifrovaných textov pre šifrovacie kľúče alebo opačne.
                 </p>
             </motion.div>
 
@@ -47,7 +47,7 @@ export default function TitlePageBoxSection() {
                 whileInView={{opacity: 1, x: 0}}
                 viewport={{once: true}}
                 transition={{duration: 0.6, delay: 0.2, ease: "easeOut"}}
-                className="flex flex-col lg:flex-row-reverse items-center gap-10 bg-gray-50 border border-gray-200 rounded-2xl shadow-md p-6 w-full max-w-3xl"
+                className="flex flex-col lg:flex-row-reverse items-center gap-10 bg-gray-50 border border-gray-200 rounded-[54px] shadow-md p-6 w-full max-w-3xl"
             >
                 <ScrollLink
                     to="/keys"
@@ -69,7 +69,7 @@ export default function TitlePageBoxSection() {
                     <p className="text-xl text-custom-dark-blue mt-6 font-semibold">Kľúče</p>
                 </ScrollLink>
                 <p className="max-w-md text-center lg:text-left text-lg text-gray-700">
-                    Nahrávajte šifrovacie kľúče v digitálnomo formáte (JSON). Kľúče prispievajú k lepšiemu mapovaniu v budúcnosti.
+                    Nahrávajte šifrovacie kľúče v digitálnomo formáte (JSON). Kľúče prispievajú k lepšiemu vyhľadávaniu vhodných dokumentov v budúcnosti.
                 </p>
             </motion.div>
             <motion.div
@@ -77,7 +77,7 @@ export default function TitlePageBoxSection() {
                 whileInView={{opacity: 1, x: 0}}
                 viewport={{once: true}}
                 transition={{duration: 0.6, ease: "easeOut"}}
-                className="flex flex-col lg:flex-row items-center gap-10 bg-gray-50 border border-gray-200 rounded-2xl shadow-md p-6 w-full max-w-3xl"
+                className="flex flex-col lg:flex-row items-center gap-10 bg-gray-50 border border-gray-200 rounded-[54px] shadow-md p-6 w-full max-w-3xl"
             >
                 <ScrollLink
                     to="/mapping"
@@ -128,7 +128,7 @@ export default function TitlePageBoxSection() {
                 </ScrollLink>
 
                 <p className="max-w-md text-center lg:text-left text-lg text-gray-700">
-                    Nahrávajte šifrované texty v digitálnom formáte (.txt). Nahratím zlepšíte mapovanie v budúcnosti.
+                    Nahrávajte šifrované texty v digitálnom formáte (.txt). Nahratím zlepšíte vyhľadávanie najvhodnejších dokumentov v budúcnosti.
                 </p>
             </motion.div>
         </section>
