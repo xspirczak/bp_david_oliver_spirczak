@@ -3,8 +3,6 @@ import {useEffect, useState} from "react";
 import VerifyCodeForm from "./VerifyCodeForm.jsx";
 import {togglePasswordVisibility} from "../utils/functions.js";
 import {motion} from "framer-motion";
-import {GoogleLogin} from "@react-oauth/google";
-import {jwtDecode} from "jwt-decode";
 
 export default function RegisterForm({ validateEmail, validEmail }) {
     const [error, setError] = useState(null);
@@ -23,11 +21,10 @@ export default function RegisterForm({ validateEmail, validEmail }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
-        console.log(`Name: ${e.target.name}, Value: ${e.target.value}`); // Debugging log
-
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    // Zmena zadaných údajov a ich kontrola
     useEffect(() => {
         if (formData.password === "" || formData.newPasswordRepeat === "") {
             setPasswordMatch(false);
@@ -36,6 +33,7 @@ export default function RegisterForm({ validateEmail, validEmail }) {
         }
     }, [formData.password, formData.newPasswordRepeat]);
 
+    // Registrácia
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -65,12 +63,8 @@ export default function RegisterForm({ validateEmail, validEmail }) {
         }
 
         try {
-            //console.log(JSON.stringify(formData.password + " " + formData.newPasswordRepeat));
-
-            //console.log(formData)
 
             // fetch("http://localhost:3000/api/auth/register",
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

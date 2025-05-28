@@ -22,6 +22,7 @@ export default function Tutorial() {
         finished: 'uncompleted'
     });
 
+    // Inicializácia stavu
     useEffect(() => {
         const storedProgress = localStorage.getItem('tutorialProgress');
         if (storedProgress) {

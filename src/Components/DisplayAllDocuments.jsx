@@ -56,13 +56,13 @@ export default function DisplayAllDocuments() {
     }, []);
 
 
-
+    // Filtrovanie
     useEffect(() => {
         let filteredKeys = keys;
         let filteredDocuments = documents;
         const normalizedSearchText = normalizeString(filters.searchText.toLowerCase());
 
-
+        // Search bar
         if (filters.searchText) {
             filteredKeys = filteredKeys.filter(key =>
                 normalizeString(key.name.toLowerCase()).includes(normalizedSearchText)
@@ -75,6 +75,7 @@ export default function DisplayAllDocuments() {
         if (!filters.key) filteredKeys = [];
         if (!filters.document) filteredDocuments = [];
 
+        // Interval rokov
         if (filters.yearRange.start && filters.yearRange.end) {
             const startYear = parseInt(filters.yearRange.start, 10);
             const endYear = parseInt(filters.yearRange.end, 10);
@@ -88,6 +89,7 @@ export default function DisplayAllDocuments() {
             );
         }
 
+        // Zvolený jazyk
         if (filters.language && filters.language.length > 0) {
             const selectedLanguages = filters.language.map(lang => lang.toLowerCase());
 
@@ -102,7 +104,7 @@ export default function DisplayAllDocuments() {
             );
         }
 
-
+        // Zvolený zdroj
         if (filters.source && filters.source.length > 0) {
             const selectedSources = filters.source.map(lang => lang.toLowerCase());
 
@@ -117,6 +119,7 @@ export default function DisplayAllDocuments() {
             );
         }
 
+        // Zvolená krajina
         if (filters.country && filters.country.length > 0) {
             const selectedCountries = filters.country.map(lang => lang.toLowerCase());
 
@@ -144,6 +147,7 @@ export default function DisplayAllDocuments() {
     };
 
 
+    // Vymaž kľúč
     const deleteKey = (keyId) => {
         const updatedKeys = filteredKeys.filter(key => key._id !== keyId);
         setFilteredKeys(updatedKeys);
@@ -151,6 +155,7 @@ export default function DisplayAllDocuments() {
         adjustCurrentPage([...updatedKeys, ...filteredDocuments]);
     };
 
+    // Vymaž text
     const deleteDoc = (docId) => {
         const updatedDocs = filteredDocuments.filter(doc => doc._id !== docId);
         setFilteredDocuments(updatedDocs);
@@ -181,11 +186,10 @@ export default function DisplayAllDocuments() {
     const paginatedDocuments = paginatedTogether.filter(item => Object.hasOwn(item, 'document'));
 
 
-    // Calculates how many pages are needed
+    // Vypočíta podľa strán je potrebných
     const totalPages = Math.ceil(filteredTogether.length / itemsPerPage);
 
-
-
+    // Pri zmene veľkosti okna sa mení počet zobrazených strán (pagination bar)
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
         window.addEventListener("resize", handleResize);
@@ -224,7 +228,7 @@ export default function DisplayAllDocuments() {
                 </button>
             );
 
-            // Ellipsis pred currentPage
+            // "..." pred currentPage
             if (currentPage > 2 && currentPage < totalPages) {
                 buttons.push(<span key="start-ellipsis" className="px-2">...</span>);
             }
@@ -242,7 +246,7 @@ export default function DisplayAllDocuments() {
                 );
             }
 
-            // Ellipsis za currentPage
+            // "..." za currentPage
             if (currentPage < totalPages - 1 && currentPage > 1) {
                 buttons.push(<span key="end-ellipsis" className="px-2">...</span>);
             }
@@ -260,7 +264,7 @@ export default function DisplayAllDocuments() {
                 );
             }
         } else {
-            // Pôvodná logika pre väčšie obrazovky
+            // Pre väčšie obrazovky
             const maxVisible = 2;
             const startPage = Math.max(2, currentPage - maxVisible);
             const endPage = Math.min(totalPages - 1, currentPage + maxVisible);
@@ -355,5 +359,5 @@ export default function DisplayAllDocuments() {
 
                 <div className="mt-auto">{renderPagination()}</div>
             </motion.div>
-            );
-            }
+    );
+}

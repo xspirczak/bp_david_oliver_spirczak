@@ -8,7 +8,6 @@ export default function JSONInputField() {
     const [submissionSuccess, setSubmissionSuccess] = useState(false);
     const [inputType, setInputType] = useState(true); // true - file input; false - manual input
 
-
     const [inputText, setInputText] = useState('');
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
@@ -34,8 +33,9 @@ export default function JSONInputField() {
         setError('');
     };
 
+    // Zmena nahratého súboru
     const handleFileChange = (event) => {
-        const file = event.target.files[0];  // Get the first selected file
+        const file = event.target.files[0];
         if (file) {
 
             if (file.type !== 'application/json') {
@@ -43,11 +43,11 @@ export default function JSONInputField() {
                 return;
             }
 
-            const reader = new FileReader();  // Create a FileReader instance
+            const reader = new FileReader();
 
             reader.onload = (e) => {
-                if (!checkForDuplicates(JSON.parse(e.target.result))) { // Check whether the key has duplicate codes
-                    setInputText(e.target.result);  // Set the file content to state
+                if (!checkForDuplicates(JSON.parse(e.target.result))) { // Over, či kľúč neobsahuje duplikáty
+                    setInputText(e.target.result);
                     setError('');
                 } else {
                     setError('Kľúč nesmie obsahovať rovnaké kódy pre viacero hodnôt.');
@@ -59,15 +59,15 @@ export default function JSONInputField() {
                 console.error('Error reading file:', e);
             };
 
-            reader.readAsText(file);  // Read the file as text
+            reader.readAsText(file);
         }
     };
 
     const [data, setData] = useState({});
     const [newKey, setNewKey] = useState("");
-    const [newValues, setNewValues] = useState({}); // Stores input values for each key
+    const [newValues, setNewValues] = useState({});
 
-    // Add a new key with an empty array
+    // Manuálne zadávaný vstup
     const addKey = () => {
         if (newKey && !data[newKey]) {
             setData({ ...data, [newKey]: [] });
@@ -75,35 +75,35 @@ export default function JSONInputField() {
         }
     };
 
-    // Find whether value is already a code in key
+    // Zisti, či sa kód nenachádza v kľúči
     const findValue = (value) => {
         let found = false
         Object.keys(data).forEach((key) => {
             data[key].forEach((v) => {
-                if (v === value) // value is already present in key
+                if (v === value)
                     found = true
             })
         })
         return found
     }
 
-    // Add a value to an existing key
+    // Pridaj hodnotu ku kľúču
     const addValue = (key) => {
 
-        const toBeAddedValue = Number(newValues[key]); // value that are about to add to key
-        const foundValue = findValue(toBeAddedValue); // searching the already existing key if that value
+        const toBeAddedValue = Number(newValues[key]);
+        const foundValue = findValue(toBeAddedValue);
 
         if (newValues[key] !== undefined && newValues[key] !== "" && !foundValue) {
             setData({ ...data, [key]: [...data[key], Number(newValues[key])] });
-            setNewValues({ ...newValues, [key]: "" }); // Clear input after adding
+            setNewValues({ ...newValues, [key]: "" });
         }
     };
 
-    // Handle value input change
     const handleValueChange = (key, value) => {
         setNewValues({ ...newValues, [key]: value });
     };
 
+    // Vytvorenie nového záznamu
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -115,12 +115,10 @@ export default function JSONInputField() {
         }
 
         try {
-            // Parse the JSON input from the textarea
 
             let jsonData;
 
-
-            if (inputType) { // File input
+            if (inputType) {  // Súbor ako vstup
                 const temp = JSON.parse(inputText);
                 jsonData = {
                     key: temp,
@@ -131,9 +129,9 @@ export default function JSONInputField() {
                     author,
                     country,
                     createdAt: new Date().toISOString(),
-                    year: year ? Number(year) : -1 // -1 when there is no year provided (so later I know  that are is no year provided, when displaying or filtering)
+                    year: year ? Number(year) : -1
                 };
-            } else { // Manual input
+            } else { // Manuálny vstup
                 jsonData = {
                     key: data,
                     name,
@@ -143,7 +141,7 @@ export default function JSONInputField() {
                     language: language === "Iný" ? customLanguage : language,
                     source,
                     createdAt: new Date().toISOString(),
-                    year: year ? Number(year) : -1 // -1 when there is no year provided (so later I know  that are is no year provided, when displaying or filtering)
+                    year: year ? Number(year) : -1
                 };
             }
 
@@ -151,10 +149,7 @@ export default function JSONInputField() {
                 setError("Kľúč nesmie obsahovať duplicitné kódy.")
                 return;
             }
-            // Check if the structure matches what the server expects
             if (jsonData.key) {
-                // Send a POST request to your API
-
 
                 //  fetch('http://localhost:3000/api/keys',
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/api/keys`, {
@@ -164,14 +159,12 @@ export default function JSONInputField() {
                         'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : ""
                     },
 
-                    body: JSON.stringify(jsonData), // Send the JSON data as a string
+                    body: JSON.stringify(jsonData),
                 });
 
-                // Handle the response
                 if (response.ok) {
                     const result = await response.json();
-                    console.log('Data saved successfully:', result);
-                    setInputText(''); // Clear the textarea after submission
+                    setInputText('');
                     setIsValid(true);
                     setSubmissionSuccess(true);
                     setError('');

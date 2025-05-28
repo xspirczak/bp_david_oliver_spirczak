@@ -12,6 +12,7 @@ export default function EditTextForm({ doc, onSave, onCancel, error, setError}) 
         document: doc.document || "",
     });
 
+    // Synchronizácia
     useEffect(() => {
         setFormData({
             name: doc.name || "",
@@ -25,7 +26,7 @@ export default function EditTextForm({ doc, onSave, onCancel, error, setError}) 
         });
     }, [doc]);
 
-
+    // Ulož zmenu textu
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === "document" && value.trim() !== "") {

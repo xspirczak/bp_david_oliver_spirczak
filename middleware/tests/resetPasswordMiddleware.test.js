@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const app = express();
 app.use(express.json());
 
-// Fake route protected by resetPasswordMiddleware
+// Umelo-vytvorený route
 app.post('/reset-password', resetPasswordMiddleware, (req, res) => {
     res.status(200).json({
         message: 'Authorized',

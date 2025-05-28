@@ -2,7 +2,6 @@ import {useEffect, useState} from 'react';
 import { FaInfoCircle } from "react-icons/fa";
 import {AnimatePresence, motion} from "framer-motion";
 
-
 const facts = [
     "Nomenklátorové šifry kombinovali kódovanie slov a šifrovanie písmen.",
     "Používali sa najmä v 15. až 18. storočí v diplomatickej korešpondencii.",
@@ -24,12 +23,13 @@ const Mapping = () => {
     const [loading, setLoading] = useState(false);
     const [factIndex, setFactIndex] = useState(0);
 
+    // Zmena faktov počas vyhľadávania
     useEffect(() => {
         const interval = setInterval(() => {
             setFactIndex(prev => (prev + 1) % facts.length);
-        }, 4000); // každé 4 sekundy
+        }, 4000);
 
-        return () => clearInterval(interval); // vyčistenie po unmountnutí
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -39,14 +39,15 @@ const Mapping = () => {
 
     const changeMappingMode = () => {
         setMappingMode((prev) => !prev);
-        setCiphertext(''); // Reset input fields when switching modes
+        setCiphertext('');
         setKey('');
         setResult(null);
         setError('');
-        setViewDecrypted([]); // Reset view states
+        setViewDecrypted([]);
         setLanguage('');
     };
 
+    // Mapovanie text -> kľúče
     const mapCiphertextToKey = async () => {
         if (!ciphertext.trim()) {
             setError('Šifrovaný text nesmie byť prázdny.');
@@ -57,9 +58,8 @@ const Mapping = () => {
 
         try {
             setError('');
-            setResultData([]); // Clear previous results
+            setResultData([]);
 
-            //console.log(ciphertext, language);
             // fetch('http://localhost:3000/api/mapping/ciphertext-to-key',
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/mapping/ciphertext-to-key`, {
                 method: 'POST',
@@ -76,12 +76,9 @@ const Mapping = () => {
             }
 
             const data = await response.json();
-            //console.log("Vysledok: ", data);
 
             setResult(data);
-            // Initialize viewDecrypted for each result as true (showing plaintext by default)
             setViewDecrypted(data.map(() => true));
-
 
             // fetch(`http://localhost:3000/api/keys/${item.keyId}`,
             const keyDataPromises = data.slice(0, 3).map(async (item) => {
@@ -102,15 +99,13 @@ const Mapping = () => {
 
             setResultData(keysData);
 
-
-            //console.log(keysData);
         } catch (error) {
             setLoading(false);
             setError('Chyba pri vyhľadávaní: ' + error.message);
-            //console.error('Chyba pri mapovaní:', error);
         }
     };
 
+    // Mapovanie kľúč -> texty
     const mapKeyToCiphertexts = async () => {
         if (!key.trim()) {
             setError('Kľúč nesmie byť prázdny.');
@@ -165,7 +160,6 @@ const Mapping = () => {
         } catch (error) {
             setLoading()
             setError('Chyba pri vyhľadávaní: ' + error.message);
-            //console.error('Chyba pri mapovaní:', error);
         }
     };
 

@@ -21,6 +21,7 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
 
     let counter = 1;
 
+    // Kopírovanie kľúča
     const handleCopy = (key, keyId) => {
         // Vždy skonvertuj kľúč na JSON reťazec, aj keď je už objekt
         const jsonKey = typeof key === "string" ? key : JSON.stringify(key);
@@ -32,12 +33,12 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
             .catch(err => console.error("Error copying text: ", err));
     };
 
-
+    // Sťahovanie kľúča
     const handleDownload = (doc) => {
         if (typeof window === "undefined") return;
 
         const jsonData = {
-            key: doc.key, // Tu môže byť objekt alebo reťazec
+            key: doc.key,
             name: doc.name || "Neznámy dokument",
             description: doc.description || "Bez popisu",
             country: doc.country || "Neznáma krajina",
@@ -56,7 +57,7 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
         document.body.removeChild(element);
     };
 
-
+    // Uprava kľúča
     const handleEditSubmit = async (formData, id) => {
         if (!id) {
             setError("Zadajte ID kľúča.");
@@ -65,7 +66,6 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
         try {
 
             // fetch('localhost:3000/api/keys/${id}',
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/keys/${id}`, {
                 method: "PUT",
                 headers: {
@@ -105,6 +105,7 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
         setError(null);
     };
 
+    // Vymazanie kľúča
     const handleDelete = async (keyId) => {
 
         if (!keyId) {
@@ -139,7 +140,6 @@ export default function DisplayKey({ keys, setKeys, userId, deleteKey }) {
         setShowDeleteAlert(true);
     };
 
-    // Called when the user cancels the logout.
     const dismissDelete = () => {
         setKeyId(null);
         setShowDeleteAlert(false);

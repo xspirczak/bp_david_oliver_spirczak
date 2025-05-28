@@ -11,13 +11,12 @@ export default function VerifyCodeForgottenPassword({forgotPassword, setForgotPa
     const location = useLocation();
     const email = location.state?.email || ""; // Retrieve email from previous page
 
+    // Verifikácia kódu
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-
         setError("");
         setMessage("");
-
 
         if (!email) {
             setError("Email nie je zadaný.");

@@ -2,6 +2,7 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+// Otvorenie súboru letterFrequency.json
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -29,7 +30,7 @@ export function decrypt(ciphertext, key) {
 
         for (const part of parts) {
             if (part.startsWith('#')) {
-                // Je to kód, pokús sa ho dešifrovať
+                // Je to kód - dešifrovať
                 const code = parseInt(part.replace('#', ''));
                 let found = false;
                 for (const [entry, codeList] of Object.entries(key)) {
@@ -40,10 +41,10 @@ export function decrypt(ciphertext, key) {
                     }
                 }
                 if (!found) {
-                    decryptedWord += `#${code}`; // Ak kód nie je v kľúči, ponechaj ho
+                    decryptedWord += `#${code}`; // Ak kód nie je v kľúči, nezmeň ho
                 }
             } else {
-                // Nie je to kód, je to plaintext – ponechaj nezmenené
+                // Nie je to kód, je to plaintext – nechaj nezmenené
                 decryptedWord += part;
             }
         }
@@ -75,7 +76,7 @@ export function calculateCodebookMatches(ciphertext, key) {
         }
     }
 
-    return totalCodes > 0 ? matches / totalCodes : 0; // Normalizované skóre (0-1)
+    return totalCodes > 0 ? matches / totalCodes : 0; // (0-1)
 }
 
 export function calculateFrequencyScore(plaintext, language = null) {
@@ -89,9 +90,9 @@ export function calculateFrequencyScore(plaintext, language = null) {
 
     const expected = frequencies.languages[language] || frequencies.languages['english'];
 
-    // skutočná frekvencia znakov v texte, normalizovaná (delená celkovým počtom znakov)
+    // Skutočná frekvencia znakov v texte, normalizovaná (delená celkovým počtom znakov)
     const observedVector = [];
-    // typická frekvencia znakov pre jazyk
+    // Typická frekvencia znakov pre jazyk
     const expectedVector = [];
 
     for (const letter of Object.keys(expected)) {

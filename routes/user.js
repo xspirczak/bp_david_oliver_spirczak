@@ -12,9 +12,10 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// OAuth 2 - API kľúč
 const client = new OAuth2Client(process.env.VITE_GOOGLE_CLIENT_ID);
 
-
+// Zmena mena používateľa
 router.put('/update-name', authMiddleware, async (req, res) => {
     try {
         const { firstName, lastName } = req.body;
@@ -23,7 +24,7 @@ router.put('/update-name', authMiddleware, async (req, res) => {
             return res.status(400).json({ error: "Krstné meno a priezvisko sú povinné." });
         }
 
-        // Find the user by ID (from middleware)
+        // Zmena údajov
         const updatedUser = await User.findByIdAndUpdate(
             req.user.id,
             { firstName, lastName },
@@ -41,12 +42,13 @@ router.put('/update-name', authMiddleware, async (req, res) => {
             { expiresIn: "1h" }
         );
 
-        res.json({ message: "Name updated successfully", user: updatedUser, token: newToken});
+        res.json({ message: "Meno bolo úspešne zmenené", user: updatedUser, token: newToken});
     } catch (err) {
-        res.status(500).json({ error: "Server error: " + err.message });
+        res.status(500).json({ error: "Interná chyba servera: " + err.message });
     }
 });
 
+// Zmena hesla používateľa
 router.put('/update-password', authMiddleware, async (req, res) => {
     try {
         const { oldPassword, newPassword } = req.body;
@@ -60,70 +62,69 @@ router.put('/update-password', authMiddleware, async (req, res) => {
             return res.status(400).json({ error: "Staré a nové heslá sú povinné" });
         }
 
+        // Overí "silu" zadaného hesla
         const passwordError = isStrongPassword(newPassword);
 
         if (!passwordError.strong) {
             return res.status(400).json({ error: passwordError.error });
         }
 
-        // Find user in the database
         const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).json({ error: "Používateľ sa nenašiel." });
         }
 
-        // Check if the current password is correct
+        // Porovná zadané staré heslo s heslom z DB
         const isMatch = await bcrypt.compare(oldPassword, user.password);
         if (!isMatch) {
             return res.status(400).json({ error: "Staré heslo je nesprávne." });
         }
 
-        // Update the password
         user.password = newPassword;
         await user.save();
 
         res.json({ message: "Heslo bolo zmenené." });
     } catch (err) {
-        res.status(500).json({ error: "Server error: " + err.message });
+        res.status(500).json({ error: "Interná chyba servera: " + err.message });
     }
 });
 
+// Prihlásenie používateľa
 router.post('/', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        //console.log(req.body);
         if (!email || !password) {
-            return res.status(400).json({error: "Zadajte povinné údaje."})
+            return res.status(401).json({error: "Zadajte povinné údaje."})
         }
 
-        // Check if user exists
         const user = await User.findOne({ email });
 
-        if (!user) return res.status(400).json({ error: 'Email alebo heslo je nesprávne.' });
+        if (!user) return res.status(401).json({ error: 'Email alebo heslo je nesprávne.' });
 
         if (!user.password) {
-            return res.status(400).json({error: 'Používateľ neexistuje.'})
+            return res.status(401).json({error: 'Používateľ neexistuje.'})
         }
 
-        // Compare password
+        // Porovanie zadaného hesla a hesla z DB
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ error: 'Email alebo heslo je nesprávne.' });
+        if (!isMatch) return res.status(401).json({ error: 'Email alebo heslo je nesprávne.' });
 
         const userFullName = user.firstName + " " + user.lastName;
-        // Generate JWT token
+
+        // Access Token
         const accessToken = jwt.sign({ id: user._id, email: user.email, provider: user.provider, fullName: userFullName }, JWT_SECRET, { expiresIn: '1h' });
 
-        //console.log("TOKEN: ", accessToken);
 
         res.json({ message: 'Prihlásenie bolo úspešné', token: accessToken, user});
     } catch (err) {
-        console.log("login error: ", err);
+        console.log("Chyba pri prihlasovaní: ", err);
 
         res.status(500).json({ error: err.message });
     }
 });
 
+// Prihlásenie pomocou OAuth 2 Google
 router.post('/google-login', async(req, res) => {
     const { token } = req.body;
 
@@ -141,6 +142,7 @@ router.post('/google-login', async(req, res) => {
 
         const fullName = given_name + " " + family_name;
 
+        // Vytvorenie nového používateľa, ak ešte neexistuje
         if (!user) {
             user = await User.create({
                 email,
@@ -151,6 +153,7 @@ router.post('/google-login', async(req, res) => {
             });
         }
 
+        // Access Token
         const appToken = jwt.sign(
             { id: user._id, email: user.email, provider: user.provider, fullName: fullName },
             JWT_SECRET,
@@ -160,23 +163,21 @@ router.post('/google-login', async(req, res) => {
         res.json({ token: appToken });
 
     } catch (error) {
-        console.error('Google login error:', error);
+        console.error('Chyba pri Google prihlasovaní:', error);
         res.status(401).json({ message: 'Neplatný Google token' });
     }
 })
 
-
-
+// Získanie používateľa podľa ID
 router.get('/', authMiddleware, async (req, res) => {
     try {
-        //console.log(req.user.id);
         const user = await User.findById(req.user.id).select('-password'); // Exclude password
 
         if (!user) return res.status(404).json({ error: 'Používateľ sa nenašiel' });
 
         res.json(user);
     } catch (err) {
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'Interná chyba servera.' });
     }
 });
 

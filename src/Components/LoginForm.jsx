@@ -17,8 +17,7 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
     const relocateRef = useRef(null);
 
-
-
+    // Prihlásenie
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -30,7 +29,6 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
         try {
             //const response = await fetch('http://localhost:3000/api/users', {
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -44,7 +42,7 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
                 return;
             }
 
-            localStorage.setItem('token', data.token); // Save token for session
+            localStorage.setItem('token', data.token); // Uloží Access Token do localStorage
 
             setIsLoggedIn(true);
 
@@ -52,7 +50,7 @@ export default function LoginForm({ isLoggedIn, setIsLoggedIn, setUser, validate
 
             setFullName(data.user.firstName + ' ' + data.user.lastName);
 
-            localStorage.setItem('fullName',data.user.firstName + ' ' + data.user.lastName);
+            localStorage.setItem('fullName',data.user.firstName + ' ' + data.user.lastName); // Uloží meno používateľa do localStorage
             window.dispatchEvent(new Event('fullNameUpdated'));
 
             setUser(decoded.email);

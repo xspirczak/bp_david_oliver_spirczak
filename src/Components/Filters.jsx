@@ -69,7 +69,6 @@ const SearchBar = ({ filters, onFilterChange }) => {
     return (
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8 max-w-3xl sm:w-full w-5/6 mx-auto">
             <div className="space-y-6">
-                {/* Search Input */}
                 <div className="relative sm:w-2/3 w-full flex mx-auto">
                     <input
                         type="text"
@@ -86,7 +85,6 @@ const SearchBar = ({ filters, onFilterChange }) => {
                 </div>
 
                 <div className="grid sm:flex justify-center gap-6">
-                    {/* Filter Options */}
                     <div className="sm:flex sm:gap-6 gap-2 grid">
                         <div className="relative group items-center justify-center flex">
                             <input type="checkbox" id="optionDocuments" className="hidden peer" name="document"

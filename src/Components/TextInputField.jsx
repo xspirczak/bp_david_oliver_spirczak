@@ -27,8 +27,9 @@ export default function TextInputField() {
         setter(event.target.value);
     };
 
+    // Zmena vybraného súboru
     const handleFileChange = (event) => {
-        const file = event.target.files[0];  // Get the first selected file
+        const file = event.target.files[0];
         if (file) {
 
             if (file.type !== 'text/plain') {
@@ -36,10 +37,10 @@ export default function TextInputField() {
                 return;
             }
 
-            const reader = new FileReader();  // Create a FileReader instance
+            const reader = new FileReader();
 
             reader.onload = (e) => {
-                setInputText(e.target.result);  // Set the file content to state
+                setInputText(e.target.result);
                 setError('');
             };
 
@@ -47,24 +48,22 @@ export default function TextInputField() {
                 console.error('Error reading file:', e);
             };
 
-            reader.readAsText(file);  // Read the file as text
+            reader.readAsText(file);
         }
 
     };
 
+    // Vytvorenie nového záznamu
     const handleSubmit = async (e) => {
         e.preventDefault();
-        //console.log("Handle:" + inputText);
 
         const trimmedInput = inputText.trim();
 
-        // Validate that the input is not empty
         if (trimmedInput === '') {
-            setIsValid(false);  // Update your state to reflect invalid input
+            setIsValid(false);
             setSubmissionSuccess(false);
-            setError('Vstupné pole nesmie byť prazdne!');  // Set an error message
-            //console.error('Error: Input cannot be empty.'); // Log the error
-            return;  // Stop the function from executing further
+            setError('Vstupné pole nesmie byť prazdne!');
+            return;
         }
 
         const validFormat = /^([A-Za-z]+|#[0-9a-fA-F]+|[!.,?]|\s)+$/;
@@ -79,9 +78,8 @@ export default function TextInputField() {
             return;
         }
 
-        //console.log("PRINT" ,name, description, language, country);
         const jsonData = {
-            document: trimmedInput,  // This is the plain text to be sent as JSON
+            document: trimmedInput,
             name,
             description,
             language: language === "Iný" ? customLanguage : language,
@@ -89,29 +87,26 @@ export default function TextInputField() {
             source,
             author,
             createdAt: new Date().toISOString(),
-            year: year ? Number(year) : -1 // -1 when there is no year provided (so later I know  that are is no year provided, when displaying or filtering)
+            year: year ? Number(year) : -1
         };
 
 
         try {
 
             // fetch('http://localhost:3000/api/texts',
-            // Use fetch with proper configuration
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/texts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : ""
                 },
-                body: JSON.stringify(jsonData)  // Convert the object to a JSON string
+                body: JSON.stringify(jsonData)
             });
 
 
-            // Handle the response
             if (response.ok) {
                 const result = await response.json();
-                //console.log('Data saved successfully:', result);
-                setInputText('');  // Clear the textarea after submission
+                setInputText('');
                 setName('');
                 setDescription('');
                 setLanguage('');

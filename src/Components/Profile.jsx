@@ -28,6 +28,7 @@ export default function Profile({setUser}) {
 
     const navigate = useNavigate();
 
+    // Zmena avataru, keď sa zmení meno
     useEffect(() => {
         if (changedFullName) {
             const seed = `${changedFullName}`;
@@ -37,10 +38,10 @@ export default function Profile({setUser}) {
         }
     }, [changedFullName]);
 
+    // Ziskanie údajov o používateľovi
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                // Get user ID from localStorage or authentication context
                 const token = localStorage.getItem("token");
 
                 if (!token) {
@@ -49,8 +50,6 @@ export default function Profile({setUser}) {
                 }
 
                 // fetch("http://localhost:3000/api/users",
-
-                // Fetch user data
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
                     method: "GET",
                     headers: {
@@ -59,10 +58,8 @@ export default function Profile({setUser}) {
                     },
                 });
 
-                //console.log(response)
 
                 if (!response.ok) {
-                    console.log(await response.json())
                     localStorage.removeItem("token");
                     localStorage.removeItem("fullName");
                     navigate('/login')
@@ -83,13 +80,12 @@ export default function Profile({setUser}) {
         fetchUserProfile();
     }, []);
 
+    //  Zmena mena
     const updateName = async () => {
 
-        // Ensure we always send both firstName and lastName
         const updatedFirstName = firstName || profileData.firstName;
         const updatedLastName = lastName || profileData.lastName;
 
-        // If user does not change values
         if (updatedFirstName === profileData.firstName && updatedLastName === profileData.lastName) {
             setEditingField(null);
             return;
@@ -153,6 +149,7 @@ export default function Profile({setUser}) {
         }
     }, [successEmail]);
 
+    // Zmena hesla
     const changePassword = async () => {
         setSuccessPassword(null);
         setError(null);
@@ -169,7 +166,6 @@ export default function Profile({setUser}) {
 
         try {
             // fetch("http://localhost:3000/api/users/update-password",
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/update-password`,  {
                 method: "PUT",
                 headers: {
@@ -196,7 +192,7 @@ export default function Profile({setUser}) {
         }
     };
 
-
+    // Zmena emailu
     const sendVerificationEmail = async () => {
 
         if (isSubmitting) return;
@@ -218,11 +214,9 @@ export default function Profile({setUser}) {
             return;
         }
 
-        //console.log(newEmail)
         try {
 
             //fetch("http://localhost:3000/api/auth/request-email-change",
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/request-email-change`,  {
                 method: "POST",
                 headers: {
@@ -246,6 +240,7 @@ export default function Profile({setUser}) {
         }
     };
 
+    // Verifikačný kód pri zmene emailu
     const verifyCodeAndChangeEmail = async () => {
         setError(null);
         setSuccessEmail(null);
@@ -258,7 +253,6 @@ export default function Profile({setUser}) {
         try {
 
             //fetch("http://localhost:3000/api/auth/verify-email-change",
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/verify-email-change`, {
                 method: "POST",
                 headers: {
@@ -273,15 +267,13 @@ export default function Profile({setUser}) {
                 setError(data.error);
             } else {
                 setSuccessEmail("Email bol úspešne zmenený.");
-                //console.log(data.token)
 
-                // Change the token
                 localStorage.setItem("token", data.token);
                 setEditingField(null);
                 setShowVerificationInput(false);
                 setUser(newEmail);
 
-                // Update profileData with the new email
+                // Uprav údaje na profile
                 setProfileData((prevData) => ({
                     ...prevData,
                     email: newEmail,
@@ -291,8 +283,6 @@ export default function Profile({setUser}) {
             setError("Chyba pri overovaní kódu.");
         }
     };
-
-
 
     if (loading) {
         return (

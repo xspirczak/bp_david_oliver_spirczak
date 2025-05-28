@@ -9,9 +9,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const app = express();
 app.use(express.json());
 
-// Mock protected route
+// Mock GET požiadavka
 app.get('/protected', authMiddleware, (req, res) => {
-    res.json({ message: 'Access granted', user: req.user });
+    res.json({ message: 'Prístup povolený', user: req.user });
 });
 
 describe('authMiddleware', () => {

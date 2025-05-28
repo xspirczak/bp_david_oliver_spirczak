@@ -9,10 +9,11 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Express app with middleware and test route
+// Express App
 const app = express();
 app.use(express.json());
 
+// Umelo-vytvorený route
 app.get('/check-token', tokenExistsMiddleware, (req, res) => {
     res.status(200).json({
         hasUser: !!req.user,

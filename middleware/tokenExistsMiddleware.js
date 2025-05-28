@@ -2,9 +2,9 @@ import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'random';
+const JWT_SECRET = process.env.JWT_SECRET;
 
-// Checks if token exists
+// Overí, či token existuje
 const tokenExistsMiddleware = (req, res, next) => {
     const token = req.header("Authorization")?.split(" ")[1];
 

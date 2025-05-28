@@ -24,9 +24,9 @@ import {PrivacyPage} from "./Pages/privacy.jsx";
 
 
 export default function App() {
-  // State to track if the user is logged in
+  // Stav, použivateľ prihlasený alebo nie
   const [isLoggedIn, setIsLoggedIn] = useState(null);
-  // Email address
+  // Emailova adresa prihláseného použivateľa
   const [user, setUser] = useState(null);
   const [validEmail, setValidEmail] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(null);
@@ -92,11 +92,12 @@ export default function App() {
         setIsLoggedIn(false);
         setUser(null);
       }
-    }, 5000); // každých 5 sekúnd
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
 
+  // Validnosť emailu
   const validateEmail = (email, id) => {
     const isValidEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     const input = document.getElementById(id);

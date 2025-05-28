@@ -7,6 +7,7 @@ export default function VerifyCodeForm({ email, firstName, lastName, password, r
     const [error, setError] = useState(null);
     const [success, setVerificationSuccess] = useState(null);
 
+    // Verifikácia kódu (zmena emailu)
     const handleSubmit = async (e) => {
         e.preventDefault();
 

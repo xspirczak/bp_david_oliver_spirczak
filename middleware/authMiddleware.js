@@ -4,13 +4,14 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Overí platnosť JWT token a vráti objekt prihláseného používateľa ( email, meno, rola ...)
 const authMiddleware = (req, res, next) => {
     const token = req.header('Authorization');
     if (!token) return res.status(401).json({ error: 'Prístup zamietnutý. Token nebol poskytnutý.' });
-    //console.log("TOKEN", token)
+
     try {
         const decoded = jwt.verify(token.replace('Bearer ', ''), JWT_SECRET);
-        console.log(decoded)
+
         req.user = decoded;
         next();
     } catch (err) {

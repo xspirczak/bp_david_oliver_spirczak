@@ -5,7 +5,7 @@ import Text from '../models/Text.js';
 import authMiddleware from "../middleware/authMiddleware.js";
 import {decrypt, calculateCodebookMatches, calculateFrequencyScore } from '../src/utils/mappingUtils.js';
 
-//  Mapovanie šifrovaného textu na kľúč (počet zhôd (vyberie top 5) následne na top 5 frekvečná analýza)
+//  Mapovanie šifrovaného textu na kľúče (počet zhôd (vyberie top 5) následne z top 5 vyberie top 3 na základe frekvečnej analýzy)
 router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
     console.time('serial-ciphertext-to-key'); // Začni meranie času
 
@@ -13,38 +13,43 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
         const { ciphertext, language } = req.body;
         if (!ciphertext) return res.status(400).json({ message: 'Šifrovaný text je povinný' });
 
+        // Všetky kľúče
         const keys = await Key.find();
         if (!keys.length) return res.status(404).json({ message: 'Žiadne kľúče nenájdené' });
 
+        // Pre každý kľúč z DB
         const results = await Promise.all(keys.map(async (key) => {
+            // Rozparsuje kľúč
             const keyObject = Object.fromEntries(key.key);
+            // Dešifrovanie textu pomocou kľúča
             const plaintext = decrypt(ciphertext, keyObject);
+            // Vypočeť zhôd kódov medzi textom a kľúčom
             const codebookScore = calculateCodebookMatches(ciphertext, keyObject);
             return { keyId: key._id, plaintext, score: codebookScore };
         }));
 
-        //console.log("Results after first step:", JSON.stringify(results));
 
+        // Vyberie najlepších 5 výsledkov
         const top5Matches = results
             .sort((a, b) => b.score - a.score)
             .slice(0, 5);
 
-        //console.log("Top 5 results after first step:", JSON.stringify(top5Matches));
 
+        // Pre Top 5 výsledkov
         const finalResults = await Promise.all(top5Matches.map(async (key) => {
+            // Vypočíta frekvenčné skóre
             const freqScore = calculateFrequencyScore(key.plaintext, language);
 
             const totalScore = 0.5 * key.score + 0.5 * freqScore;
-            //console.log("key at" , idx, "code match: ", key.score, " freq score: ", freqScore )
 
             return {keyId: key.keyId, plaintext: key.plaintext, score: totalScore};
         }));
 
+        // Vyberie 3 najlepšie výsledky
         const final = finalResults
             .sort((a, b) => b.score - a.score)
             .slice(0, 3);
 
-        //console.log("Top 3 final results after second step:", JSON.stringify(final));
         console.timeEnd('serial-ciphertext-to-key'); // Ukonči meranie času
 
         res.json(final);
@@ -57,7 +62,7 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
 
 
 
-// Key to text mapping (steps separated)
+//  Mapovanie šifrovacieho kľúča na texty (počet zhôd (vyberie top 5) následne z top 5 vyberie top 3 na základe frekvečnej analýzy)
 router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
     console.time('serial-key-to-ciphertexts');
 
@@ -85,25 +90,29 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
 
         // Pre každý dokument vypočítaj skóre
         const results = await Promise.all(documents.map(async (doc) => {
+            // Dešfifrovanie textu pomocou kľúča
             const plaintext = decrypt(doc.document, key);
+            // Vypočeť zhôd kódov medzi textom a kľúčom
             const codebookScore = calculateCodebookMatches(doc.document, key);
             return { docId: doc._id, plaintext, score: codebookScore, language: doc.language, document: doc.document };
         }));
 
+        // Vyberie najlepších 5 výsledkov
         const top5Matches = results
             .sort((a, b) => b.score - a.score)
             .slice(0, 5);
 
-
+        // Pre Top 5 výsledkov
         const finalResults = await Promise.all(top5Matches.map(async (doc) => {
+            // Vypočíta frekvenčné skóre
             const freqScore = calculateFrequencyScore(doc.plaintext, doc.language);
 
             const totalScore = 0.5 * doc.score + 0.5 * freqScore;
-            //console.log("doc at" , idx, "code match: ", key.score, " freq score: ", freqScore )
 
             return {docId: doc.docId, plaintext: doc.plaintext, score: totalScore, document: doc.document};
         }));
 
+        // Vyberie 3 najlepšie výsledky
         const final = finalResults
             .sort((a, b) => b.score - a.score)
             .slice(0, 3);

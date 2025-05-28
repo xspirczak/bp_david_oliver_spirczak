@@ -2,9 +2,9 @@ import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'random';
+const JWT_SECRET = process.env.JWT_SECRET;
 
-// Check whether token is set and if it contains the verification code
+// Overí, či je token nastavený a či obsahuje overovací kód
 const resetPasswordMiddleware = (req, res, next) => {
     const token = req.header("Authorization")?.split(" ")[1];
 

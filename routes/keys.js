@@ -6,7 +6,7 @@ import tokenExistsMiddleware from "../middleware/tokenExistsMiddleware.js";
 import mongoose from "mongoose";
 import {checkForDuplicates} from "../src/utils/functions.js";
 
-// Delete key based on the id (keyID)
+// Vymazanie kľúč na základe ID
 router.delete("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
@@ -38,11 +38,11 @@ router.delete("/:id", authMiddleware, async (req, res) => {
         res.json({ message: "Klúč bol úspešne vymazaný." });
     } catch (error) {
         console.error("Chyba pri mazaní kľúča:", error);
-        res.status(500).json({ message: "Chyba servera." });
+        res.status(500).json({ message: "Interná chyba servera." });
     }
 });
 
-// Get key based on id
+// Získanie kľúča na základe ID
 router.get("/:id", async (req, res) => {
     try {
         const { id } = req.params;
@@ -57,7 +57,6 @@ router.get("/:id", async (req, res) => {
 
         const foundKey = await Key.findById(id);
 
-        //console.log(foundKey);
         if (!foundKey) {
             return res.status(404).json({ message: "Kľúč nebol nájdený." });
         }
@@ -65,11 +64,11 @@ router.get("/:id", async (req, res) => {
         res.json({ key: foundKey });
     } catch (error) {
         console.error("Chyba pri získavaní kľúča:", error);
-        res.status(500).json({ message: "Chyba servera." });
+        res.status(500).json({ message: "Interná chyba servera." });
     }
 });
 
-// Update key
+// Upravenie kľúč
 router.put("/:id", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
@@ -120,10 +119,11 @@ router.put("/:id", authMiddleware, async (req, res) => {
         res.json({ message: "Kľúč bol úspešne zmenený.", key:updatedKey });
     } catch (error) {
         console.error("Chyba pri upravovaní kľúča:", error);
-        res.status(500).json({ message: "Chyba servera." });
+        res.status(500).json({ message: "Interná chyba servera." });
     }
 });
 
+// Vytvorenie nového záznamu kľúča
 router.post('/', tokenExistsMiddleware,async (req, res) => {
     try {
         const { key, name, description, country, year, language, source, author, createdAt } =  req.body;
@@ -138,30 +138,29 @@ router.post('/', tokenExistsMiddleware,async (req, res) => {
 
         const uploadedBy = req.user ? req.user.id : null;
 
-        // Save the key to the database
         const newKey = new Key({ key, name, description, country, year, language, source, author, createdAt, uploadedBy });
 
-        const savedKey = await newKey.save(); // Await saving the document
-        res.status(201).json(savedKey); // Send a response with the created document
+        const savedKey = await newKey.save();
+        res.status(201).json(savedKey);
     } catch (err) {
-        console.error('Error during key creation:', err.message); // Log the error message
-        res.status(500).json({ error: 'Server error: ' + err.message });
+        console.error('Chyba pri vytváraní nového záznamu:', err.message);
+        res.status(500).json({ error: 'Interná chyba servera: ' + err.message });
     }
 });
 
+// Ziskanie všetkých kľúčov
 router.get('/', async (req, res) => {
     try {
-        const keys = await Key.find();  // Fetch all documents in the 'keys' collection
-        //const userId = req.user.id;
+        const keys = await Key.find();
 
-        res.json(keys);  // Send the result as JSON
-        //console.log("KEYS", keys)
+        res.json(keys);
     } catch (err) {
-        res.status(500).send('Server error');
+        console.error('Chyba pri ziskavaní záznamov:', err.message);
+        res.status(500).send('Interná chyba servera');
     }
 });
 
-
+// Určené na testovanie
 router.post('/insertMany', async (req, res) => {
     try {
         let key = '{"a":[604,522,799,126,503],"b":[860,437,201,602,970],"c":[365],"d":[813,824],"e":[300,393],"f":[33,708],"g":[447,929,651,956],"h":[908],"i":[459,812,728,233],"j":[690,692,500,167],"k":[958,554,680],"l":[438,340,111,919],"m":[253],"n":[546,596],"o":[521,525,861,114,756],"p":[565,292],"q":[922,482,649,907,942],"r":[748,561,72],"s":[54],"t":[75],"u":[261,32],"v":[470,180,149,83,766],"w":[341,686],"x":[662,571,734,257,841],"y":[774,489,51,478],"z":[502,583,584],"un mandat":[71,74,640,36,902],"habiller":[1,628,737,317],"sécuritaire":[358,274,394,496],"un million":[585,865,638,765,221],"formidable":[772,627,62,103],"une alternative":[569,911,783,336],"effacer":[457,50],"un désir":[81],"une queue":[163],"laver":[290,518],"une loi":[430,738],"protéger":[387],"une plante":[468,276,644],"maintenir":[961,609,304,784],"déterminant":[131,751,18],"une audience":[397,576,816,696],"constamment":[872],"une chose":[746,916],"convertir":[887,533,421],"croyant":[826,246,543,380,383],"interrompre":[807,504],"frapper":[403,28,994,362,480]}'
@@ -169,9 +168,9 @@ router.post('/insertMany', async (req, res) => {
         const n = 500
         for (let i = 0; i < n; i++) {
             const newDocument = new Key({ key: key});
-            await newDocument.save(); // Await saving the document
+            await newDocument.save();
         }
-        res.status(201).json("Saved {n} keys"); // Send a response with the created document
+        res.status(201).json("Saved {n} keys");
 
     } catch (err) {
         res.status(500).send('Server error: ' + err.message);

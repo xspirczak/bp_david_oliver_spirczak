@@ -20,6 +20,7 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
 
     let counter = 1;
 
+    // Kopírovanie textu
     const handleCopy = (text, docId) => {
         navigator.clipboard.writeText(text)
             .then(() =>  {
@@ -29,7 +30,7 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
             .catch(err => console.error("Error copying text: ", err));
     };
 
-
+    // Stiahnutie textu
     const handleDownload = (text) => {
         if (!isClient) return;
         const element = document.createElement("a");
@@ -46,12 +47,12 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
         setShowDeleteAlert(true);
     };
 
-    // Called when the user cancels the logout.
     const dismissDelete = () => {
         setDocId(null);
         setShowDeleteAlert(false);
     };
 
+    // Vymazanie textu
     const handleDelete = async (docId) => {
         if (!docId) {
             setError("Zadajte ID textu.")
@@ -60,7 +61,6 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
         try {
 
             // fetch(`http://localhost:3000/api/texts/${docId}`,
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/texts/${docId}`, {
                 method: "DELETE",
                 headers: {
@@ -88,6 +88,7 @@ export default function DisplayText({docs, setDocs, userId, deleteDoc}) {
         setIsEditing(true);
     };
 
+    // Uprava textu
     const handleEditSubmit = async (formData, id) => {
 
         if (!id) {

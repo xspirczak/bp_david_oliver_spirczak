@@ -27,7 +27,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
 
   const [avatarUrl, setAvatarUrl] = useState("");
 
-
+// Nastavenie avataru
   useEffect(() => {
     const updateAvatar = () => {
       const fullName = localStorage.getItem('fullName');
@@ -49,7 +49,7 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
     };
   }, []);
 
-
+  // Aktualne aktívna podstránka
   const getActiveStyles = ({isActive}) => {
     return {
       "textDecoration": isActive ? 'underline' : 'none',
@@ -57,12 +57,10 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
     }
   }
 
-  // Trigger the alert instead of logging out immediately.
   const handleLogoutClick = () => {
     setShowLogoutAlert(true);
   };
 
-  // Called when the user confirms logout in the alert.
   const confirmLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('fullName');
@@ -72,12 +70,12 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
     navigate('/login');
   };
 
-  // Called when the user cancels the logout.
   const dismissLogout = () => {
     setShowLogoutAlert(false);
   };
 
 
+  // Nastaví sa meno používateľa do navigácie
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -87,7 +85,6 @@ export default function Navbar({ isLoggedIn, setIsLoggedIn, user, setUser}) {
         setFullName(name);
         window.dispatchEvent(new Event('fullNameUpdated'));
       } catch (error) {
-        //console.error("Neplatný token", error);
         localStorage.removeItem("token");
         localStorage.removeItem('fullName');
         setIsLoggedIn(false);

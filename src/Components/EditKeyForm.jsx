@@ -11,8 +11,9 @@ export default function EditKeyForm({ currentKey, onSave, onCancel, error, setEr
         source: currentKey.source || "",
         key: typeof currentKey.key === 'string' ? currentKey.key : JSON.stringify(currentKey.key, null, 2) || "{}"
     });
+    const keyTextareaRef = useRef(null);
 
-    // Sync formData when currentKey changes
+    // Synchronizácia
     useEffect(() => {
         setFormData({
             name: currentKey.name || "",
@@ -26,7 +27,6 @@ export default function EditKeyForm({ currentKey, onSave, onCancel, error, setEr
         });
     }, [currentKey]);
 
-    const keyTextareaRef = useRef(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -36,6 +36,7 @@ export default function EditKeyForm({ currentKey, onSave, onCancel, error, setEr
         }));
     };
 
+    // Ulož zmenu
     const handleSubmit = async (e) => {
         e.preventDefault();
 

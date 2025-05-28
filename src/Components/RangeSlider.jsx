@@ -10,13 +10,13 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
     const range = useRef(null);
     const prevValues = useRef({ start: min, end: max }); // Track previous values
 
-    // Convert value to percentage
+    // Premen na percentá
     const getPercent = useCallback(
         (value) => Math.round(((value - min) / (max - min)) * 100),
         [min, max]
     );
 
-    // Update range bar position
+    // Uprav poziciu slideru
     useEffect(() => {
         const minPercent = getPercent(minVal);
         const maxPercent = getPercent(maxVal);
@@ -26,7 +26,6 @@ const MultiRangeSlider = ({ min, max, onChange }) => {
             range.current.style.width = `${maxPercent - minPercent}%`;
         }
 
-        // call onChange if values actually changed
         if (prevValues.current.start !== minVal || prevValues.current.end !== maxVal) {
             prevValues.current = { start: minVal, end: maxVal };
             onChange(prevValues.current);

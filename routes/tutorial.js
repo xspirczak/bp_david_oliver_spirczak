@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import {decrypt, calculateCodebookMatches, calculateFrequencyScore } from '../src/utils/mappingUtils.js';
 
+// Dešifrovanie textu pomocou kľúča
 router.post('/decrypt', async (req, res) => {
     const { text, key } = req.body;
 
@@ -18,6 +19,7 @@ router.post('/decrypt', async (req, res) => {
     }
 });
 
+// Vypočet kódových zhôd medzi textom a kľúčom
 router.post('/calculate-matches', async (req, res) => {
     const { text, key } = req.body;
 
@@ -35,6 +37,7 @@ router.post('/calculate-matches', async (req, res) => {
     }
 });
 
+// Vypočeť skóre frekvenčnej analýzy
 router.post('/calculate-frequency-score', async (req, res) => {
     const { plaintext } = req.body;
 
@@ -51,6 +54,7 @@ router.post('/calculate-frequency-score', async (req, res) => {
     }
 });
 
+// Vykonanie krokov (decrypt, calculateCodebookMatches a calculateFrequencyScore) naraz
 router.post('/combined-mapping', async (req, res) => {
     const { direction, mappedObject, mappedObjects} = req.body;
 
@@ -60,8 +64,6 @@ router.post('/combined-mapping', async (req, res) => {
 
     if (direction === "textToKey") {
         const results = await Promise.all(mappedObjects.map(async (key) => {
-            console.log(key.mapping)
-            //const keyObject = Object.fromEntries(key.mapping);
             const plaintext = decrypt(mappedObject, key.mapping);
             const codebookScore = calculateCodebookMatches(mappedObject, key.mapping);
             return { key: key.mapping,plaintext, score: codebookScore };

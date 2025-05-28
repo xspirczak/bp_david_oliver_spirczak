@@ -12,7 +12,7 @@ export default function ResetPassword({forgotPassword, setForgotPassword}) {
     const email = location.state?.email || ""; // Retrieve email from previous step
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-
+    // Resetovanie hesla
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -34,7 +34,6 @@ export default function ResetPassword({forgotPassword, setForgotPassword}) {
             return;
         }
 
-        //console.log(newPassword, confirmPassword)
         if (newPassword !== confirmPassword) {
             setIsSubmitting(false);
             setError("Heslá sa nezhodujú.");
@@ -42,7 +41,6 @@ export default function ResetPassword({forgotPassword, setForgotPassword}) {
         }
         try {
             // fetch("http://localhost:3000/api/auth/reset-password",
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/reset-password`,  {
                 method: "POST",
                 headers: {
