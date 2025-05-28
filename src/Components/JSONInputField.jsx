@@ -307,7 +307,7 @@ export default function JSONInputField() {
                                     <div>
                                         <label htmlFor="year"
                                                className="mb-2 block text-fontSize16 text-custom-dark-blue">Rok</label>
-                                        <input type="number" name="year" id="year" min="1400" max="2000" value={year}
+                                        <input type="number" name="year" id="year" min="1400" max="2025" value={year}
                                                onChange={handleInputChange(setYear)}
                                                className="w-full text-fontSize12 border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover p-2"
                                                placeholder="Rok vzniku kľúča" required=""/>
@@ -371,7 +371,7 @@ export default function JSONInputField() {
                                         <button
                                             type="button"
                                             onClick={beautifyJson}
-                                            className="absolute bottom-2 right-2 px-3 py-2 text-sm bg-custom-dark-blue text-white rounded-3xl hover:bg-custom-dark-blue-hover"
+                                            className="absolute bottom-2 right-6 px-3 py-2 text-sm bg-custom-dark-blue text-white rounded-3xl hover:bg-custom-dark-blue-hover"
                                         >
                                             Beautify JSON
                                         </button>

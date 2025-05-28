@@ -66,13 +66,6 @@ export default function TextInputField() {
             return;
         }
 
-        const validFormat = /^([A-Za-z]+|#[0-9a-fA-F]+|[!.,?]|\s)+$/;
-
-        if (!validFormat.test(trimmedInput)) {
-            setError("Text obsahuje neplatné znaky alebo formát.");
-            return;
-        }
-
         if (language === 'Iný' && !customLanguage.trim()) {
             setError("Zadajte jazyk textu.");
             return;
@@ -246,7 +239,7 @@ export default function TextInputField() {
                                     <div>
                                         <label htmlFor="year"
                                                className="mb-2 block text-fontSize16 text-custom-dark-blue">Rok</label>
-                                        <input type="number" name="year" id="year" min="1400" max="2000" value={year}
+                                        <input type="number" name="year" id="year" min="1400" max="2025" value={year}
                                                onChange={handleInputChange(setYear)}
                                                className="w-full text-fontSize12 border border-custom-dark-blue text-custom-dark-blue rounded-3xl focus:ring-custom-dark-blue-hover focus:outline-custom-dark-blue-hover focus:border-custom-dark-blue-hover p-2"
                                                placeholder="Rok vzniku textu" required=""/>

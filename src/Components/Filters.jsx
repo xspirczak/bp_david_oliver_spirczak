@@ -10,6 +10,7 @@ const SearchBar = ({ filters, onFilterChange }) => {
 
     const sourceOptions = [
         { value: 'Archív', label: 'Archív' },
+        { value: 'Umelo-vytvorený', label: 'Umelo-vytvorený' },
         { value: 'Kniha', label: 'Kniha' },
         { value: 'Nezmámy', label: 'Nezmámy' },
         { value: 'Iný', label: 'Iný' },

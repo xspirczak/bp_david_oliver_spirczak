@@ -41,12 +41,6 @@ export function DemoUploadText({ setProgress, setStep, progress }) {
             errs.push("Text nesmie byť prázdny.");
         }
 
-        const validFormat = /^([A-Za-z]+|#[0-9a-fA-F]+|[!.,?]|\s)+$/;
-
-        if (!validFormat.test(text)) {
-            errs.push("Text obsahuje neplatné znaky alebo formát.");
-        }
-
         if (errs.length > 0) {
             setErrors(errs);
             setSuccess(false);
