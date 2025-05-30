@@ -68,7 +68,7 @@ export default function Profile({setUser}) {
                 const data = await response.json();
                 setProfileData(data);
                 setFirstName(data.firstName);
-                setLastName(data.lastName);
+                setLastName(data.lastName || '');
                 setChangedFullName(data.firstName + ' ' + data.lastName);
             } catch (err) {
                 setError(err.message);

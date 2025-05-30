@@ -10,7 +10,7 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
     console.time('serial-ciphertext-to-key'); // Začni meranie času
 
     try {
-        const { ciphertext, language } = req.body;
+        const { ciphertext, language, resultLimit } = req.body;
         if (!ciphertext) return res.status(400).json({ message: 'Šifrovaný text je povinný' });
 
         // Všetky kľúče
@@ -29,14 +29,14 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
         }));
 
 
-        // Vyberie najlepších 5 výsledkov
-        const top5Matches = results
+        // Vyberie najlepších m výsledkov (m = 20)
+        const topMatches = results
             .sort((a, b) => b.score - a.score)
-            .slice(0, 5);
+            .slice(0, 20);
 
 
-        // Pre Top 5 výsledkov
-        const finalResults = await Promise.all(top5Matches.map(async (key) => {
+        // Pre Top m výsledkov
+        const finalResults = await Promise.all(topMatches.map(async (key) => {
             // Vypočíta frekvenčné skóre
             const freqScore = calculateFrequencyScore(key.plaintext, language);
 
@@ -45,10 +45,10 @@ router.post('/ciphertext-to-key', authMiddleware, async (req, res) => {
             return {keyId: key.keyId, plaintext: key.plaintext, score: totalScore};
         }));
 
-        // Vyberie 3 najlepšie výsledky
+        // Vyberie n (resultLimit) najlepšie výsledky
         const final = finalResults
             .sort((a, b) => b.score - a.score)
-            .slice(0, 3);
+            .slice(0, resultLimit);
 
         console.timeEnd('serial-ciphertext-to-key'); // Ukonči meranie času
 
@@ -67,7 +67,7 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
     console.time('serial-key-to-ciphertexts');
 
     try {
-        let { key } = req.body;
+        let { key, resultLimit } = req.body;
         if (!key) return res.status(400).json({ message: 'Kľúč je povinný' });
 
         // Ak je key reťazec, pokús sa ho parsovať na objekt
@@ -97,12 +97,12 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
             return { docId: doc._id, plaintext, score: codebookScore, language: doc.language, document: doc.document };
         }));
 
-        // Vyberie najlepších 5 výsledkov
+        // Vyberie najlepších m (m = 20) výsledkov
         const top5Matches = results
             .sort((a, b) => b.score - a.score)
-            .slice(0, 5);
+            .slice(0, 20);
 
-        // Pre Top 5 výsledkov
+        // Pre Top m výsledkov
         const finalResults = await Promise.all(top5Matches.map(async (doc) => {
             // Vypočíta frekvenčné skóre
             const freqScore = calculateFrequencyScore(doc.plaintext, doc.language);
@@ -112,10 +112,10 @@ router.post('/key-to-ciphertexts', authMiddleware, async (req, res) => {
             return {docId: doc.docId, plaintext: doc.plaintext, score: totalScore, document: doc.document};
         }));
 
-        // Vyberie 3 najlepšie výsledky
+        // Vyberie n (resultLimit) najlepšie výsledky
         const final = finalResults
             .sort((a, b) => b.score - a.score)
-            .slice(0, 3);
+            .slice(0, resultLimit);
         console.timeEnd('serial-key-to-ciphertexts');
         res.json(final);
     } catch (error) {

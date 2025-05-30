@@ -16,7 +16,7 @@ const allowedOrigins = [
   "http://localhost:5174"
 ];
 
-// Initialize apps
+// Inicializácia aplikácie
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -26,21 +26,20 @@ app.use(cors({
 }));
 
 
-// Connect to MongoDB
+// Pripojenie na MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected", process.env.MONGODB_URI))
   .catch(err => console.log(err));
 
-// Listen on a port
-const PORT = process.env.PORT || 3000;
+// Iniacializácia portu
+const PORT = process.env.PORT;
 
-//app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 // Testovanie
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
-// Create a simple route
+// Jednoducha route na otestovanie API pripojenia
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
@@ -49,6 +48,7 @@ app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
   res.status(500).send('Something went wrong.');
 });
+
 app.get('/api/protected', authMiddleware, (req, res) => {
   res.json({ message: `Hello, ${req.user.email}! You accessed a protected route.` });
 });

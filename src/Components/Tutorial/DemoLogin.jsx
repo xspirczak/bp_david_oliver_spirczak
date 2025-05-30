@@ -313,7 +313,7 @@ export function DemoLogin({setStep, setProgress, progress}) {
                         <p className="text-sm text-green-800 italic">
                             Po úspešnom prihlásení vám bol vygenerovaný <strong>prístupový token</strong>, ktorý slúži
                             na prístup k zabezpečenému obsahu aplikácie.
-                            Token uvedený vyššie je umelo vytvorený a neslúži na skutočné overenie.
+                            Token uvedený vyššie je umelovytvorený a neslúži na skutočné overenie.
                         </p>
                     </div>
                 )}

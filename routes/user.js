@@ -140,7 +140,8 @@ router.post('/google-login', async(req, res) => {
 
         let user = await User.findOne({ email });
 
-        const fullName = given_name + " " + family_name;
+        // Špeciálny prípad, keď používateľ nemá vyplnené family_name (priezvisko) vo svojom Google účte
+        const fullName = given_name +  (family_name === undefined ? "" : " " + family_name);
 
         // Vytvorenie nového používateľa, ak ešte neexistuje
         if (!user) {

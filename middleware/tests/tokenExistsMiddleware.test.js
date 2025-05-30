@@ -13,7 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const app = express();
 app.use(express.json());
 
-// Umelo-vytvorený route
+// Umelovytvorený route
 app.get('/check-token', tokenExistsMiddleware, (req, res) => {
     res.status(200).json({
         hasUser: !!req.user,

@@ -184,7 +184,7 @@ export default function TextInputField() {
                                             <option value="">-- Vyberte zdroj pôvodu textu --</option>
                                             <option value="Archív">Archív</option>
                                             <option value="Kniha">Kniha</option>
-                                            <option value="Umelo-vytvorený">Umelo-vytvorený</option>
+                                            <option value="Umelovytvorený">Umelovytvorený</option>
                                             <option value="Neznámy">Neznámy</option>
                                             <option value="Iný">Iný</option>
                                         </select>

@@ -106,7 +106,7 @@ export function DemoUploadKey({ setProgress, setStep, progress }) {
             },
             {
                 name: "Nesprávny formát JSON",
-                value: '{"A": [1], "B": [2]' // chýba zatváracia zátvorka
+                value: '{"A": [1], "B": [2]'
             },
             {
                 name: "Pole namiesto objektu",

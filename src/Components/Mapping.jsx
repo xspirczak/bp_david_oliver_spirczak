@@ -22,6 +22,8 @@ const Mapping = () => {
     const [parsedKey, setParsedKey] = useState('');
     const [loading, setLoading] = useState(false);
     const [factIndex, setFactIndex] = useState(0);
+    const [resultLimit, setResultLimit] = useState(5);
+    const [finalCipherText, setFinalCipherText] = useState('');
 
     // Zmena faktov počas vyhľadávania
     useEffect(() => {
@@ -67,7 +69,7 @@ const Mapping = () => {
                     'Content-Type': 'application/json',
                     "Authorization": `Bearer ${localStorage.getItem("token")}`
                 },
-                body: JSON.stringify({ ciphertext, language }),
+                body: JSON.stringify({ ciphertext, language, resultLimit }),
             });
 
             if (!response.ok) {
@@ -81,7 +83,7 @@ const Mapping = () => {
             setViewDecrypted(data.map(() => true));
 
             // fetch(`http://localhost:3000/api/keys/${item.keyId}`,
-            const keyDataPromises = data.slice(0, 3).map(async (item) => {
+            const keyDataPromises = data.slice(0, resultLimit).map(async (item) => {
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/api/keys/${item.keyId}`,  {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
@@ -96,6 +98,7 @@ const Mapping = () => {
 
             const keysData = await Promise.all(keyDataPromises);
             setLoading(false);
+            setFinalCipherText(ciphertext);
 
             setResultData(keysData);
 
@@ -142,7 +145,7 @@ const Mapping = () => {
                     'Content-Type': 'application/json',
                     "Authorization": `Bearer ${localStorage.getItem("token")}`
                 },
-                body: JSON.stringify({ key: keyToSend }),
+                body: JSON.stringify({ key: keyToSend, resultLimit }),
             });
 
             if (!response.ok) {
@@ -153,10 +156,9 @@ const Mapping = () => {
             const data = await response.json();
             setResult(data);
             setViewDecrypted(data.map(() => true));
+            setFinalCipherText(ciphertext);
             setParsedKey(keyToSend);
             setLoading(false);
-
-
         } catch (error) {
             setLoading()
             setError('Chyba pri vyhľadávaní: ' + error.message);
@@ -213,7 +215,7 @@ const Mapping = () => {
 
 
             <div className="bg-white shadow-lg rounded-lg sm:p-6 p-2 w-11/12 max-w-7xl">
-                {/* Toggle Switch */}
+                {/* Toggle */}
                 <motion.div className="flex justify-center mb-4">
                     <button
                         onClick={changeMappingMode}
@@ -244,27 +246,32 @@ const Mapping = () => {
 
                 <AnimatePresence mode="wait">
 
-                {/* Input Form */}
+                {/* Vstupný formulár*/}
                 {mappingMode ? (
                     <motion.div
                         key="mapMode"
-                        initial={{ opacity: 0.6 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0.6 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
-                        className="flex flex-col items-center">
+                        initial={{opacity: 0.6}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0.6}}
+                        transition={{duration: 0.3, ease: "easeOut"}}
+                        className="flex flex-col items-center"
+                    >
                         <h2 className="text-custom-dark-blue text-fontSize24 font-semibold my-2 text-center">
-                            Vyhľadávať šifrované texty pre šifrovací kľúč
+                            Vyhľadávať šifrovacie kľúče pre šifrovaný text
                         </h2>
-                        <div className="my-3">
-                            <label htmlFor="language"
-                                   className="block mb-2 text-fontSize16 text-custom-dark-blue font-semibold">Vyberte
-                                jazyk (využíva sa na frekvečnú analýzu dešifrovaného textu)</label>
-                            <div className="flex flex-col items-center">
-                                <select id="language"
-                                        className="w-1/2 bg-gray-50 border border-custom-dark-blue focus:outline-custom-dark-blue text-custom-dark-blue text-fontSize16 rounded-xl focus:ring-custom-dark-blue-hover focus:border-custom-dark-blue-hover block p-2.5"
-                                        onChange={(e) => setLanguage(e.target.value)}
-                                        value={language}
+
+                        <div className="grid md:flex items-center justify-center gap-4 my-4 w-full">
+                            {/* Výber jazyka */}
+                            <div className="w-full sm:w-[300px]">
+                                <label htmlFor="language"
+                                       className="block mb-2 text-fontSize16 text-custom-dark-blue font-semibold">
+                                    Vyberte jazyk (využíva sa na frekvečnú analýzu dešifrovaného textu)
+                                </label>
+                                <select
+                                    id="language"
+                                    className="w-full bg-gray-50 border border-custom-dark-blue focus:outline-custom-dark-blue text-custom-dark-blue text-fontSize16 rounded-xl focus:ring-custom-dark-blue-hover focus:border-custom-dark-blue-hover block p-2.5"
+                                    onChange={(e) => setLanguage(e.target.value)}
+                                    value={language}
                                 >
                                     <option defaultChecked value="">Vyberte jazyk</option>
                                     <option value="english">Anglicky</option>
@@ -272,7 +279,26 @@ const Mapping = () => {
                                     <option value="gernam">Nemecky</option>
                                 </select>
                             </div>
+
+                            {/* Výber počtu výsledkov */}
+                            <div className="w-full md:w-[150px] sm:w-[300px] ">
+                                <label htmlFor="limit"
+                                       className="block mb-2 text-fontSize16 text-custom-dark-blue font-semibold">
+                                    Počet zobrazených výsledkov
+                                </label>
+                                <select
+                                    id="limit"
+                                    value={resultLimit}
+                                    onChange={(e) => setResultLimit(Number(e.target.value))}
+                                    className="w-full bg-gray-50 border border-custom-dark-blue focus:outline-custom-dark-blue text-custom-dark-blue text-fontSize16 rounded-xl focus:ring-custom-dark-blue-hover focus:border-custom-dark-blue-hover block p-2.5"
+                                >
+                                    <option value={3}>3</option>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                </select>
+                            </div>
                         </div>
+
                         <textarea
                             rows="10"
                             value={ciphertext}
@@ -280,6 +306,7 @@ const Mapping = () => {
                             placeholder="Zadajte šifrovaný text (v tvare: #1 #4 #56 #222)"
                             className="mt-1 block w-full sm:w-2/3 rounded-3xl shadow-md sm:text-sm p-4 resize-none border-2 focus:outline-custom-dark-blue-hover border-dashed border-custom-dark-blue-hover"
                         />
+
                         <button
                             onClick={mapCiphertextToKey}
                             className="mt-4 px-6 py-2 bg-custom-light-blue text-custom-dark-blue text-fontSize16 font-semibold rounded-xl hover:bg-custom-light-blue-hover focus:outline-none"
@@ -287,18 +314,36 @@ const Mapping = () => {
                             Vyhľadávať
                         </button>
                     </motion.div>
+
                 ) : (
                     <motion.div
                         key="keyMode"
-                        initial={{ opacity: 0.6 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0.6 }}
-                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        initial={{opacity: 0.6}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0.6}}
+                        transition={{duration: 0.3, ease: "easeOut"}}
                         className="flex flex-col items-center"
                     >
                         <h2 className="text-custom-dark-blue text-fontSize24 font-semibold my-2">
-                            Vyhľadávať šifrovacie kľúče pre šifrovaný text
+                            Vyhľadávať šifrované texty pre šifrovací kľúč
                         </h2>
+                        {/* Výber počtu výsledkov */}
+                        <div className="w-full sm:w-[150px] my-4">
+                            <label htmlFor="limit"
+                                   className="block mb-2 text-fontSize16 text-custom-dark-blue font-semibold">
+                                Počet zobrazených výsledkov
+                            </label>
+                            <select
+                                id="limit"
+                                value={resultLimit}
+                                onChange={(e) => setResultLimit(Number(e.target.value))}
+                                className="w-full bg-gray-50 border border-custom-dark-blue focus:outline-custom-dark-blue text-custom-dark-blue text-fontSize16 rounded-xl focus:ring-custom-dark-blue-hover focus:border-custom-dark-blue-hover block p-2.5"
+                            >
+                                <option value={3}>3</option>
+                                <option value={5}>5</option>
+                                <option value={10}>10</option>
+                            </select>
+                        </div>
                         <textarea
                             value={key}
                             rows="10"
@@ -317,18 +362,18 @@ const Mapping = () => {
                 </AnimatePresence>
 
 
-                {/* Error Message */}
+                {/* Error spravy */}
                 {error ? (
-                    <div className="text-red-500 text-center mt-4">
+                    <div className="text-red-500 text-center font-semibold text-fontSize20 mt-4">
                         {error}
                     </div>
                 ) : (
-                    <div className="text-red-500 text-center mt-4 invisible">
+                    <div className="text-red-500 text-center font-semibold text-fontSize20 invisible mt-4">
                         Error placeholder
                     </div>
                 )}
 
-                {/* Results */}
+                {/* Výsledky */}
                 {loading && (
                     <div className="flex flex-col items-center mt-6 min-h-[60vh] text-center px-4">
                         <div
@@ -429,7 +474,7 @@ const Mapping = () => {
                                                         <div
                                                             className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
                                                             <p className="text-white font-semibold mb-2 text-fontSize17">Šifrovaný text:</p>
-                                                            <p className="break-all text-gray-50">{ciphertext}</p>
+                                                            <p className="break-all text-gray-50">{finalCipherText}</p>
                                                         </div>
                                                         <div
                                                             className="mb-2 p-4 rounded-lg shadow-sm bg-custom-dark-blue-hover max-h-40 overflow-y-auto w-full sm:w-1/2">
