@@ -39,7 +39,7 @@ describe('authMiddleware', () => {
             .set('Authorization', `Bearer ${token}`);
 
         expect(res.statusCode).toBe(200);
-        expect(res.body).toHaveProperty('message', 'Access granted');
+        expect(res.body).toHaveProperty('message', 'Prístup povolený');
         expect(res.body.user).toMatchObject(user);
     });
 });

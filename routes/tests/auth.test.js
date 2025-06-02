@@ -19,7 +19,7 @@ describe('Auth Routes', () => {
     const name = {firstName: "Test", lastName: "Auth"};
 
     beforeAll(async () => {
-        // Ensure MongoDB is connected
+        // Zisti, či MongoDB je pripojená
         if (mongoose.connection.readyState === 0) {
             await mongoose.connect(process.env.MONGODB_URI, {
                 useNewUrlParser: true,
@@ -27,7 +27,7 @@ describe('Auth Routes', () => {
             });
         }
 
-        // Clean up if the user already exists
+        // Vymaz používateľa ak existuje
         await User.deleteOne({ email: 'testauth@example.com' });
 
         const testUser = await User.create({
@@ -45,7 +45,7 @@ describe('Auth Routes', () => {
         await mongoose.connection.close();
     });
 
-    /* Commented out so the email is not sent every time
+    /* Zakomentované, aby sa verifikačný email stále nesposielal
     it('should send verification code on registration', async () => {
         const res = await request(app).post('/api/auth/register').send({
             email: "newemailauthtest@example.com",

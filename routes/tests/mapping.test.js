@@ -19,7 +19,7 @@ describe('Mapping Routes', () => {
             });
         }
 
-        // Create test user
+        // Vytvorí nového testovacieho používateľa
         await User.deleteOne({ email: 'mapping@example.com' });
         await User.create({
             firstName: 'Map',
@@ -36,7 +36,7 @@ describe('Mapping Routes', () => {
 
         token = res.body.token;
 
-        // Create test key
+        // Vytvorí nový testovací kľúč
         testKey = await Key.create({
             name: 'Test Key',
             description: 'Testing key mapping',
@@ -46,7 +46,7 @@ describe('Mapping Routes', () => {
             uploadedBy: res.body.user._id
         });
 
-        // Create test text
+        // Vytvorí nový testovací text
         testText = await Text.create({
             name: 'Test Text',
             description: 'Example cipher',
@@ -71,7 +71,8 @@ describe('Mapping Routes', () => {
             .set('Authorization', `Bearer ${token}`)
             .send({
                 ciphertext: '#1 #2 test',
-                language: 'english'
+                language: 'english',
+                resultLimit: 3,
             });
 
         expect(res.statusCode).toBe(200);
@@ -88,7 +89,7 @@ describe('Mapping Routes', () => {
         const res = await request(app)
             .post('/api/mapping/key-to-ciphertexts')
             .set('Authorization', `Bearer ${token}`)
-            .send({ key: parsedKey });
+            .send({ key: parsedKey, resultLimit: 3 });
 
         expect(res.statusCode).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);

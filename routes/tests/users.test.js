@@ -5,18 +5,18 @@ import mongoose from 'mongoose';
 import User from '../../models/User.js';
 
 describe('User Routes', () => {
-    it('should return 400 if email or password is missing on login', async () => {
+    it('should return 401 if email or password is missing on login', async () => {
         const res = await request(app).post('/api/users').send({ email: '' });
-        expect(res.statusCode).toBe(400);
+        expect(res.statusCode).toBe(401);
         expect(res.body.error).toBe("Zadajte povinné údaje.");
     });
 
-    it('should return 400 for incorrect credentials', async () => {
+    it('should return 401 for incorrect credentials', async () => {
         const res = await request(app)
             .post('/api/users')
             .send({ email: 'wrong@example.com', password: 'wrong' });
 
-        expect(res.statusCode).toBe(400);
+        expect(res.statusCode).toBe(401);
         expect(res.body.error).toBe('Email alebo heslo je nesprávne.');
     });
 
