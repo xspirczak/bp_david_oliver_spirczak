@@ -75,7 +75,7 @@ CipherMatcher`
     }
 });
 
-// Verifikuje email and zkonpletizuje registráciu
+// Verifikuje email and skonpletizuje registráciu
 router.post('/verify-email', async (req, res) => {
     try {
         const { email, verificationCode, firstName, lastName, password, role } = req.body;
