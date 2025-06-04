@@ -56,3 +56,11 @@ MONGODB_URI=mongodb://localhost:27017/keys
 VITE_GOOGLE_CLIENT_ID=google_client_id
 PORT=3000
 ```
+
+## Spustenie aplikácie
+V termináli v adresár `bp_david_oliver_spirczak` spusti:
+
+```bash
+npm run dev
+node server.js
+```
